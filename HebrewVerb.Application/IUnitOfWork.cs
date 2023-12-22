@@ -1,4 +1,7 @@
-﻿namespace HebrewVerb.Application;
+﻿using HebrewVerb.Application.Identity;
+using HebrewVerb.Application.Interfaces;
+
+namespace HebrewVerb.Application;
 
 public interface IUnitOfWork : IDisposable
 {
@@ -6,7 +9,7 @@ public interface IUnitOfWork : IDisposable
     IRoleRepository RoleRepo { get; }
     IVerbRepository VerbRepo { get; }
     IShoreshRepository ShoreshRepo { get; }
-    IGizraRepository GizraRepo { get; }
+    IVerbModelRepository VerbModelRepo { get; }
 
     void Commit();
 }

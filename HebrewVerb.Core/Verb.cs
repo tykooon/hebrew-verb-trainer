@@ -66,5 +66,7 @@ public class Verb : Entity<int>
     public string? Translate { get; set; }
     public bool IsArchaic {  get; set; } = false;
     public bool IsLiterary { get; set;} = false;
-    public bool IsRare { get; set;} = false;
+    public bool IsSlang { get; set;} = false;
+
+    public UseFrequency UseFrequency { get; set; }
 }

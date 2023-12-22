@@ -8,8 +8,12 @@ namespace HebrewVerb.WebApp.Areas.api.Controllers;
 [Route("api/[controller]")]
 public class VerbController : BaseApiController
 {
-    public VerbController(IUnitOfWork unitOfWork) : base(unitOfWork)
-    { }
+    private ILogger _logger; 
+
+    public VerbController(IUnitOfWork unitOfWork, ILogger<VerbController> logger) : base(unitOfWork)
+    {
+        _logger = logger;    
+    }
 
     [HttpGet]
     [Route("{id}/fullinfo")]
@@ -25,6 +29,7 @@ public class VerbController : BaseApiController
     public IActionResult GetInfinitive(int id)
     {
         var v = _unitOfWork.VerbRepo.GetById(id);
+        _logger.LogInformation("Getting infinitive with id = " + id);
 
         return v == null ?
             NotFound() :

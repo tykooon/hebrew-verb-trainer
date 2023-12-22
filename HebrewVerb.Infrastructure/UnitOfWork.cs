@@ -1,4 +1,8 @@
 ﻿using HebrewVerb.Application;
+using HebrewVerb.Application.Identity;
+using HebrewVerb.Application.Interfaces;
+using HebrewVerb.Infrastructure.Identity;
+using HebrewVerb.Infrastructure.Repositories;
 
 namespace HebrewVerb.Infrastructure;
 
@@ -12,7 +16,7 @@ public class UnitOfWork : IUnitOfWork
     private IRoleRepository? _roleRepo;
     private IVerbRepository? _verbRepo;
     private IShoreshRepository? _shoreshRepo;
-    private IGizraRepository? _gizraRepo;
+    private IVerbModelRepository? _gizraRepo;
     
     private AppDbContext Context => _context ??= new AppDbContext();
 
@@ -20,7 +24,7 @@ public class UnitOfWork : IUnitOfWork
     public IRoleRepository RoleRepo => _roleRepo ??= new RoleRepository(Context);
     public IVerbRepository VerbRepo => _verbRepo ??= new VerbRepository(Context);
     public IShoreshRepository ShoreshRepo => _shoreshRepo ??= new ShoreshRepository(Context);
-    public IGizraRepository GizraRepo => _gizraRepo ??= new GizraRepository(Context);
+    public IVerbModelRepository VerbModelRepo => _gizraRepo ??= new VerbModelRepository(Context);
 
     public UnitOfWork(AppDbContext context)
     {

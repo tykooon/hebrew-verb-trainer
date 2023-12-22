@@ -1,7 +1,7 @@
-﻿using HebrewVerb.Application;
+﻿using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Core;
 
-namespace HebrewVerb.Infrastructure;
+namespace HebrewVerb.Infrastructure.Repositories;
 
 public class VerbRepository : Repository<Verb, int>, IVerbRepository
 {

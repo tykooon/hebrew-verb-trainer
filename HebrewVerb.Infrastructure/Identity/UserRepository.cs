@@ -1,6 +1,6 @@
-﻿using HebrewVerb.Application;
+﻿using HebrewVerb.Application.Identity;
 
-namespace HebrewVerb.Infrastructure;
+namespace HebrewVerb.Infrastructure.Identity;
 
 public class UserRepository : IdRepository<AppUser, int>, IUserRepository
 {

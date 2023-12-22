@@ -1,11 +1,15 @@
 using HebrewVerb.Application;
+using HebrewVerb.Application.Commands;
 using HebrewVerb.Infrastructure;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
+
+builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblies(typeof(AddVerbCommand).Assembly));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

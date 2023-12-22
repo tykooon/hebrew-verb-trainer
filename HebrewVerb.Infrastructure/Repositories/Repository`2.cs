@@ -1,8 +1,8 @@
-﻿using HebrewVerb.Application;
+﻿using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Core;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace HebrewVerb.Infrastructure;
+namespace HebrewVerb.Infrastructure.Repositories;
 
 public abstract class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
     where TEntity : Entity<TKey>

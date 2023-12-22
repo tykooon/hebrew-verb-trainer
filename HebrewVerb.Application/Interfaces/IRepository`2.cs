@@ -1,6 +1,6 @@
 ﻿using HebrewVerb.Core;
 
-namespace HebrewVerb.Application;
+namespace HebrewVerb.Application.Interfaces;
 
 public interface IRepository<TEntity, TKey>
     where TEntity : Entity<TKey>
