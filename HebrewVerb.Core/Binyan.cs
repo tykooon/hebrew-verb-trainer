@@ -8,15 +8,15 @@ public enum Binyan
     [Description("ПААЛЬ")]
     Paal = 1,
     [Description("ПИЭЛЬ")]
-    Piel,
+    Piel = 2,
     [Description("hИФЪИЛЬ")]
-    Hifil,
+    Hifil = 4,
     [Description("НИФЪАЛЬ")]
-    Nifal,
-    [Description("ПУАЛЬ")]
-    Pual,
-    [Description("hУФЪАЛЬ")]
-    Hufal,
+    Nifal = 8,
     [Description("hИТПАЭЛЬ")]
-    Hitpael
+    Hitpael = 16,
+    [Description("ПУАЛЬ")]
+    Pual = 32,
+    [Description("hУФЪАЛЬ")]
+    Hufal = 64,
 }

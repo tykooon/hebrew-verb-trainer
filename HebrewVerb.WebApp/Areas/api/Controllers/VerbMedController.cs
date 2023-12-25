@@ -14,7 +14,7 @@ public class VerbMedController : ControllerBase
     public VerbMedController(IMediator mediatr)
     {
         Guard.Against.Null(mediatr);
-        _mediatr = mediatr;    
+        _mediatr = mediatr;
     }
 
 
