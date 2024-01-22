@@ -1,6 +1,11 @@
-﻿using HebrewVerb.Application;
-using HebrewVerb.Core;
-using Microsoft.AspNetCore.Http;
+﻿using HebrewVerb.Application.Feature.VerbCards.Queries;
+using HebrewVerb.Application.Feature.Verbs.Commands;
+using HebrewVerb.Application.Feature.Verbs.Queries;
+using HebrewVerb.Application.Interfaces;
+using HebrewVerb.Application.Models;
+using HebrewVerb.Domain.Entities;
+using MediatR;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace HebrewVerb.WebApp.Areas.api.Controllers;
@@ -8,34 +13,40 @@ namespace HebrewVerb.WebApp.Areas.api.Controllers;
 [Route("api/[controller]")]
 public class VerbController : BaseApiController
 {
-    private ILogger _logger; 
+    public VerbController(IUnitOfWork unitOfWork, IMediator mediator) : base(unitOfWork, mediator)
+    { }
 
-    public VerbController(IUnitOfWork unitOfWork, ILogger<VerbController> logger) : base(unitOfWork)
+    [HttpGet]
+    [Route("{id:int}")]
+    public async Task<IActionResult> GetFullInfo(int id)
     {
-        _logger = logger;    
+        var query = new GetVerbByIdQuery(id);
+        var res = await _mediator.Send(query);
+        return res.IsSuccess ? Ok(res) : BadRequest(string.Join(", ", res.Errors));
     }
 
     [HttpGet]
-    [Route("{id}/fullinfo")]
-    public IActionResult GetFullInfo(int id)
+    [Route("fromUri")]
+    public async Task<IActionResult> GetVerbFromUri(string uri, bool passive = false)
     {
-        var v = _unitOfWork.VerbRepo.GetById(id);
-
-        return v == null ?  NotFound() : Ok(v);
+        var query = new GetVerbFromUriQuery(uri, passive);
+        var res = await _mediator.Send(query);
+        return Ok(res);
     }
+
 
     [HttpGet]
     [Route("{id}/inf")]
     public IActionResult GetInfinitive(int id)
     {
-        var v = _unitOfWork.VerbRepo.GetById(id);
-        _logger.LogInformation("Getting infinitive with id = " + id);
+        var v = _unitOfWork.VerbRepository.GetById(id);
+        //_logger.LogInformation("Getting infinitive with id = " + id);
 
         return v == null ?
             NotFound() :
             Ok(new{
-                VerbForm = v.Inf,
-                Transcription = v.InfT
+                VerbForm = v.Infinitive.HebrewNiqqud,
+                Transcription = v.Infinitive.TranscriptionRus
             });
     }
 
@@ -43,7 +54,7 @@ public class VerbController : BaseApiController
     [Route("{id}/imp/{gender}/{form}")]
     public IActionResult GetImperative(int id, string gender, string form)
     {
-        var v = _unitOfWork.VerbRepo.GetById(id);
+        var v = _unitOfWork.VerbRepository.GetById(id);
 
         if (v == null)
         {
@@ -52,10 +63,10 @@ public class VerbController : BaseApiController
 
         (string?, string?) response = (gender, form) switch
         {
-            ("m", "s") => (v.Imp2MS, v.Imp2MST),
-            ("m", "p") => (v.Imp2P, v.Imp2PT),
-            ("f", "s") => (v.Imp2FS, v.Imp2FST),
-            ("f", "p") => (v.Imp2P, v.Imp2P),
+            ("m", "s") => (v.Imperative.MS.HebrewNiqqud, v.Imperative.MS.TranscriptionRus),
+            ("m", "p") => (v.Imperative.MP.HebrewNiqqud, v.Imperative.MP.TranscriptionRus),
+            ("f", "s") => (v.Imperative.FS.HebrewNiqqud, v.Imperative.FS.TranscriptionRus),
+            ("f", "p") => (v.Imperative.FP.HebrewNiqqud, v.Imperative.FP.TranscriptionRus),
             _ => (null, null)
         };
 
@@ -71,22 +82,38 @@ public class VerbController : BaseApiController
     }
 
     [HttpPost]
-    [Route("add-json")]
-    public IActionResult AddJson(Verb verb)
+    [Route("addFromUri")]
+    public async Task<IActionResult> AddFromUri(string url, bool passive = false)
     {
-        if(verb == null)
+        var query = new GetVerbFromUriQuery(url, passive);
+        var res = await _mediator.Send(query);
+
+        if (res == null)
         {
-            return BadRequest();
+            return BadRequest("Unable to get verb forms from URL");
         }
 
-        var key = _unitOfWork.VerbRepo.Add(verb);
-        return key == null ?
-            BadRequest("Value was not added") :
-            Ok(new
-            {
-                Status = "Ok",
-                Id = key
-            });
+        var command = new AddNewVerbCommand(res);
+        var addRes = await _mediator.Send(command);
+
+        return addRes.IsSuccess ? Ok(addRes) : BadRequest(string.Join(", ", addRes.Errors));
+    }
+
+    [HttpGet]
+    [Route("getCards")]
+    public async Task<IActionResult> GetFilteredVerbCards(
+        [FromQuery] int take,
+        [FromQuery] IEnumerable<string> zmans,
+        [FromQuery] IEnumerable<string> binyans,
+        [FromQuery] IEnumerable<string> gizras,
+        [FromQuery] IEnumerable<string> verbModels)
+    {
+        var filter = Filter.FromParams(binyans, zmans, gizras, verbModels);
+        var query = new GetCardsFromFilterQuery(filter, take);
+        var res = await _mediator.Send(query);
+        
+
+        return Ok(new { amount = res.Item1, list = res.Item2 });
     }
 
 }

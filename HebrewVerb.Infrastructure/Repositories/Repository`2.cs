@@ -1,35 +1,41 @@
-﻿using HebrewVerb.Application.Interfaces;
-using HebrewVerb.Core;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+﻿using HebrewVerb.Domain.Common;
+using HebrewVerb.Application.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace HebrewVerb.Infrastructure.Repositories;
 
 public abstract class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
-    where TEntity : Entity<TKey>
+    where TEntity : BaseEntity<TKey>
     where TKey : struct
 {
-    protected AppDbContext _context;
+    protected DbSet<TEntity> DbSet;
 
     public Repository(AppDbContext context)
     {
-        _context = context;
+        DbSet = context.Set<TEntity>();
     }
 
-    public TKey? Add(TEntity entity)
+    public void Add(TEntity entity) => DbSet.Add(entity);
+
+    public void Delete(TEntity entity) => DbSet.Remove(entity);
+
+    public void Update(TEntity entity) => DbSet.Update(entity);
+
+    public IEnumerable<TEntity> FindAllBy(Expression<Func<TEntity, bool>> predicate)
     {
-        var res = _context.Set<TEntity>().Add(entity);
-        _context.SaveChanges();
-        Console.WriteLine(res.DebugView.LongView);
-        return res.IsKeySet ? entity.Id : null;
+        return MakeInclusions().Where(predicate);
     }
 
-    public TEntity GetAll()
+    public IEnumerable<TEntity> GetAll()
     {
-        throw new NotImplementedException();
+        return MakeInclusions().ToList();
     }
 
-    public TEntity? GetById(TKey key)
+    public TEntity? GetById(TKey id)
     {
-        return _context.Set<TEntity>().Find(key);
+        return MakeInclusions().FirstOrDefault(x => x.Id.Equals(id));
     }
+
+    protected virtual IQueryable<TEntity> MakeInclusions() => DbSet;
 }

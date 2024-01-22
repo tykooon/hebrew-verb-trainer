@@ -1,8 +1,6 @@
-﻿using HebrewVerb.Core;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Ardalis.GuardClauses;
-using HebrewVerb.Application.Commands;
 
 namespace HebrewVerb.WebApp.Areas.api.Controllers;
 
@@ -20,17 +18,8 @@ public class VerbMedController : ControllerBase
 
     [HttpPost]
     [Route("addnew")]
-    public async Task<IActionResult> AddJson(Verb verb)
+    public IActionResult AddJson()
     {
-        if(verb == null)
-        {
-            return BadRequest();
-        }
-
-        var key = await _mediatr.Send(new AddVerbCommand(verb));
-        return key.Match<IActionResult>(
-            ok => Ok(ok.Id),
-            err => BadRequest(err.FirstOrDefault()));
+        return BadRequest("Not implemented");
     }
-
 }

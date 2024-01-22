@@ -1,23 +1,28 @@
 using HebrewVerb.Application;
-using HebrewVerb.Application.Commands;
 using HebrewVerb.Infrastructure;
+using HebrewVerb.WebApp;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
+
+builder.Services.AddLogging();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 
-builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblies(typeof(AddVerbCommand).Assembly));
+
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(configuration);
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-builder.Services.AddAuthentication();
+builder.Services.AddJwtTokenOptions(configuration);
+builder.Services.AddAuthorizationWithPolicies(configuration);
 
 var app = builder.Build();
 

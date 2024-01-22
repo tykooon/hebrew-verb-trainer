@@ -1,8 +1,8 @@
-﻿using HebrewVerb.Application;
-using HebrewVerb.Application.Identity;
+﻿using HebrewVerb.Application.Exceptions;
 using HebrewVerb.Application.Interfaces;
-using HebrewVerb.Infrastructure.Identity;
+using HebrewVerb.Application.Interfaces.Repositories;
 using HebrewVerb.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HebrewVerb.Infrastructure;
 
@@ -12,30 +12,41 @@ public class UnitOfWork : IUnitOfWork
     private bool _isDisposed;
     private AppDbContext _context;
 
-    private IUserRepository? _userRepo;
-    private IRoleRepository? _roleRepo;
     private IVerbRepository? _verbRepo;
     private IShoreshRepository? _shoreshRepo;
-    private IVerbModelRepository? _gizraRepo;
-    
+    private IGizraRepository? _gizraRepo;
+    private IVerbModelRepository? _verbModelRepo;
+    private IWordFormRepository? _wordFormRepo;
+    private IFilterSnapshotRepository? _filterSnapshotRepo;
+    //private IPastRepository? _pastRepo;
+    //private IPresentRepository? _presentRepo;
+    //private IFutureRepository? _futureRepo;
+    //private IImperativeRepository? _imperativeRepo;
+
     private AppDbContext Context => _context ??= new AppDbContext();
 
-    public IUserRepository UserRepo => _userRepo ??= new UserRepository(Context);
-    public IRoleRepository RoleRepo => _roleRepo ??= new RoleRepository(Context);
-    public IVerbRepository VerbRepo => _verbRepo ??= new VerbRepository(Context);
-    public IShoreshRepository ShoreshRepo => _shoreshRepo ??= new ShoreshRepository(Context);
-    public IVerbModelRepository VerbModelRepo => _gizraRepo ??= new VerbModelRepository(Context);
+    public IVerbRepository VerbRepository => _verbRepo ??= new VerbRepository(Context);
+    public IShoreshRepository ShoreshRepository => _shoreshRepo ??= new ShoreshRepository(Context);
+    public IGizraRepository GizraRepository => _gizraRepo ??= new GizraRepository(Context);
+    public IVerbModelRepository VerbModelRepository => _verbModelRepo ??= new VerbModelRepository(Context);
+    public IWordFormRepository WordFormRepository => _wordFormRepo ??= new WordFormRepository(Context);
+    public IFilterSnapshotRepository FilterSnapshotRepository => _filterSnapshotRepo ??= new FilterSnapshotRepository(Context);
+    //public IPastRepository PastRepository => _pastRepo ??= new PastRepository(Context);
+    //public IPresentRepository PresentRepository => _presentRepo ??= new PresentRepository(Context);
+    //public IFutureRepository FutureRepository => _futureRepo ??= new FutureRepository(Context);
+    //public IImperativeRepository ImperativeRepository => _imperativeRepo ??= new ImperativeRepository(Context);
+
 
     public UnitOfWork(AppDbContext context)
     {
         _context = context;
     }
 
-    public void Commit()
+    public Task CommitAsync()
     {
         if (_context is null)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         if (_isDisposed)
@@ -45,20 +56,19 @@ public class UnitOfWork : IUnitOfWork
 
         try
         {
-            Context.SaveChanges();
+            return Context.SaveChangesAsync();
         }
-        //catch (DbUpdateConcurrencyException ex)
-        //{
-        //    throw new ConcurrencyException(ex.Entries.Select(x => x.Entity.ToString()));
-        //}
-        //catch (DbUpdateException ex)
-        //{
-        //    throw new UpdateException(ex.Message, ex);
-        //}
+        catch (DbUpdateConcurrencyException ex)
+        {
+            throw new ConcurrencyException(ex.Entries.Select(x => x.Entity.ToString() ?? ""));
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new UpdateException(ex.Message, ex);
+        }
         catch (Exception ex)
         {
-            //    throw new RepositoryException("Commit error.", ex);
-            throw new Exception("Commit Error", ex);
+            throw new RepositoryException("Commit error.", ex);
         }
     }
 
