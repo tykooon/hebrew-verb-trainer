@@ -13,5 +13,9 @@ public class VerbConfiguration : IEntityTypeConfiguration<Verb>
             .HasConversion(
                 b => b.Value,
                 v => Binyan.FromValue(v));
+
+        builder.HasMany(v => v.Prepositions)
+            .WithMany(p => p.Verbs)
+            .UsingEntity<VerbPreposition>();
     }
 }

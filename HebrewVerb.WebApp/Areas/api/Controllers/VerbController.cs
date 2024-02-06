@@ -3,7 +3,7 @@ using HebrewVerb.Application.Feature.Verbs.Commands;
 using HebrewVerb.Application.Feature.Verbs.Queries;
 using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Application.Models;
-using HebrewVerb.Domain.Entities;
+using HebrewVerb.WebApp.Contracts;
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -50,42 +50,11 @@ public class VerbController : BaseApiController
             });
     }
 
-    [HttpGet]
-    [Route("{id}/imp/{gender}/{form}")]
-    public IActionResult GetImperative(int id, string gender, string form)
-    {
-        var v = _unitOfWork.VerbRepository.GetById(id);
-
-        if (v == null)
-        {
-            return NotFound();
-        }
-
-        (string?, string?) response = (gender, form) switch
-        {
-            ("m", "s") => (v.Imperative.MS.HebrewNiqqud, v.Imperative.MS.TranscriptionRus),
-            ("m", "p") => (v.Imperative.MP.HebrewNiqqud, v.Imperative.MP.TranscriptionRus),
-            ("f", "s") => (v.Imperative.FS.HebrewNiqqud, v.Imperative.FS.TranscriptionRus),
-            ("f", "p") => (v.Imperative.FP.HebrewNiqqud, v.Imperative.FP.TranscriptionRus),
-            _ => (null, null)
-        };
-
-        if (response.Item1 ==  null || response.Item2 == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(new{
-            VerbForm = response.Item1,
-            Transcription = response.Item2
-        });
-    }
-
     [HttpPost]
     [Route("addFromUri")]
-    public async Task<IActionResult> AddFromUri(string url, bool passive = false)
+    public async Task<IActionResult> AddFromUri([FromBody] AddVerbFromUriRequest request)
     {
-        var query = new GetVerbFromUriQuery(url, passive);
+        var query = new GetVerbFromUriQuery(request.Url, request.IsPassive);
         var res = await _mediator.Send(query);
 
         if (res == null)
@@ -108,12 +77,11 @@ public class VerbController : BaseApiController
         [FromQuery] IEnumerable<string> gizras,
         [FromQuery] IEnumerable<string> verbModels)
     {
-        var filter = Filter.FromParams(binyans, zmans, gizras, verbModels);
-        var query = new GetCardsFromFilterQuery(filter, take);
+        var filter = Filter.FromParams(binyans, gizras, verbModels, zmans);
+        var query = new GetTrainingSetByFilterQuery(filter, take);
         var res = await _mediator.Send(query);
-        
 
-        return Ok(new { amount = res.Item1, list = res.Item2 });
+        return Ok(res);
     }
 
 }

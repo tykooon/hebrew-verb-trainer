@@ -1,0 +1,65 @@
+﻿@using HebrewVerb.BlazorApp.ViewModels
+
+<div class="card border-@CardViewModel.CardColor.ToDescriptionString() m-3 p-0" style="max-width: 24rem; border-width:medium">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="d-inline-block">
+            @if (CardViewModel.Zman == "עבר")
+            {
+                <MudIcon Icon="@Icons.Material.Filled.ArrowLeft" Size="Size.Small" Color="@CardViewModel.CardColor"></MudIcon>
+            }
+            <MudIcon Icon="@Icons.Material.Filled.Alarm" Size="Size.Small" Color="@CardViewModel.CardColor"></MudIcon>
+            @if (CardViewModel.Zman == "עתיד")
+            {
+                <MudIcon Icon="@Icons.Material.Filled.ArrowRight" Size="Size.Small" Color="@CardViewModel.CardColor"></MudIcon>
+            }
+            <MudText Typo="Typo.h6" Color="CardViewModel.CardColor"> @CardViewModel.Zman</MudText>
+            </div>
+            <div>
+                <MudTooltip Duration="500" Text="@CardViewModel.Translation">
+                    <MudText Typo="Typo.h4">
+                        <b>@CardViewModel.Infinitive</b>
+                </MudText>
+            </MudTooltip>
+        </div>
+    </div>
+    <div class="card-body">
+        <MudText Color="@CardViewModel.CardColor" Typo="Typo.h5">@CardViewModel.Guf</MudText>
+            @if (CardViewModel.IsAnswered)
+        {
+            <MudText Typo="Typo.h4">@CardViewModel.VerbForm</MudText>
+            <WordWithStress Word="@CardViewModel.VerbFormTranslit" Stress="@CardViewModel.VerbFormStress" />
+        }
+        else
+        {
+            <MudButton Variant="Variant.Text" Color="CardViewModel.CardColor" OnClick="ShowAnswer"><b>.....</b></MudButton>
+        }
+    </div>
+    <div class="card-footer text-body-secondary">
+        <div class="d-flex justify-content-start">
+            <MudChip Variant="Variant.Filled" Color="Color.Dark" Size="Size.Medium">@CardViewModel.Binyan</MudChip>
+            @foreach (var giz in CardViewModel.Gizras)
+            {
+                <MudChip Variant="Variant.Filled" Color="Color.Default" Size="Size.Medium">@giz</MudChip>
+            }
+            @foreach (var model in CardViewModel.Models)
+            {
+                <MudChip Variant="Variant.Filled" Color="Color.Default" Size="Size.Medium">@model</MudChip>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+
+@code {
+    [Parameter]
+    public CardViewModel CardViewModel { get; set; } = new();
+
+    private void ShowAnswer()
+    {
+        CardViewModel.IsAnswered = !CardViewModel.IsAnswered;
+        StateHasChanged();
+    }
+
+}

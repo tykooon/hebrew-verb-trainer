@@ -1,0 +1,26 @@
+﻿@using HebrewVerb.Application.Models
+@using HebrewVerb.Application.Services
+@using HebrewVerb.Domain.Enums;
+@rendermode InteractiveServer
+
+<div>
+    <MudSelect T="ZmanDto"  MultiSelection="true" AnchorOrigin="Origin.BottomCenter"
+        SelectedValuesChanged="OptionsChanged" SelectedValues="Options" Label="Время:">
+
+        @foreach (var zman in ZmanList)
+        {
+            <MudSelectItem T="ZmanDto" Value="@zman">@zman.NameLocal (@zman.NameHebrew)</MudSelectItem>
+        }
+    </MudSelect>
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<ZmanDto> Options { get; set; } = new HashSet<ZmanDto>();
+
+    [Parameter]
+    public IEnumerable<ZmanDto> ZmanList { get; set; } = new HashSet<ZmanDto>();
+
+    [Parameter]
+    public EventCallback<IEnumerable<ZmanDto>> OptionsChanged { get; set; }
+}

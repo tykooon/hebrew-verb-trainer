@@ -1,0 +1,28 @@
+﻿@using HebrewVerb.Application.Feature.VerbModels.Queries
+@using HebrewVerb.Application.Models
+@using HebrewVerb.Application.Services
+@inject IMediator _mediator
+@rendermode InteractiveServer
+
+<MudSelect T="VerbModelDto" AnchorOrigin="Origin.BottomCenter" MultiSelection="true"
+    SelectedValuesChanged="OptionsChanged" SelectedValues="Options" Label="Модель:">
+    @foreach (var verbModel in VerbModelList)
+    {
+        <MudSelectItem T="VerbModelDto" Value="@verbModel">
+            <MudTooltip Duration="1000" Text="@verbModel.Description">
+                @verbModel.Name
+            </MudTooltip>
+        </MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter]
+    public IEnumerable<VerbModelDto> Options { get; set; } = new HashSet<VerbModelDto>();
+
+    [Parameter]
+    public IEnumerable<VerbModelDto> VerbModelList { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<IEnumerable<VerbModelDto>> OptionsChanged { get; set; }
+}

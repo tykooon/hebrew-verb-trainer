@@ -10,31 +10,31 @@ public class VerbDto
     public string Translate { get; set; } = string.Empty;
     public string LangId { get; set; } = "ru";
 
-    public WordFormDto PresentMs { get; set; } = WordFormDto.Default;
-    public WordFormDto PresentFs { get; set; } = WordFormDto.Default;
-    public WordFormDto PresentMp { get; set; } = WordFormDto.Default;
-    public WordFormDto PresentFp { get; set; } = WordFormDto.Default;
+    public WordFormDto? PresentMs { get; set; }
+    public WordFormDto? PresentFs { get; set; }
+    public WordFormDto? PresentMp { get; set; }
+    public WordFormDto? PresentFp { get; set; }
 
-    public WordFormDto PastMs1 { get; set; } = WordFormDto.Default;
-    public WordFormDto PastMp1 { get; set; } = WordFormDto.Default;
-    public WordFormDto PastMs2 { get; set; } = WordFormDto.Default;
-    public WordFormDto PastFs2 { get; set; } = WordFormDto.Default;
-    public WordFormDto PastMp2 { get; set; } = WordFormDto.Default;
-    public WordFormDto PastFp2 { get; set; } = WordFormDto.Default;
-    public WordFormDto PastMs3 { get; set; } = WordFormDto.Default;
-    public WordFormDto PastFs3 { get; set; } = WordFormDto.Default;
-    public WordFormDto PastMp3 { get; set; } = WordFormDto.Default;
+    public WordFormDto? PastMs1 { get; set; }
+    public WordFormDto? PastMp1 { get; set; }
+    public WordFormDto? PastMs2 { get; set; }
+    public WordFormDto? PastFs2 { get; set; }
+    public WordFormDto? PastMp2 { get; set; }
+    public WordFormDto? PastFp2 { get; set; }
+    public WordFormDto? PastMs3 { get; set; }
+    public WordFormDto? PastFs3 { get; set; }
+    public WordFormDto? PastMp3 { get; set; }
 
-    public WordFormDto FutureMs1 { get; set; } = WordFormDto.Default;
-    public WordFormDto FutureMp1 { get; set; } = WordFormDto.Default;
-    public WordFormDto FutureMs2 { get; set; } = WordFormDto.Default;
-    public WordFormDto FutureFs2 { get; set; } = WordFormDto.Default;
-    public WordFormDto FutureMp2 { get; set; } = WordFormDto.Default;
-    public WordFormDto FutureMs3 { get; set; } = WordFormDto.Default;
-    public WordFormDto FutureMp3 { get; set; } = WordFormDto.Default;
-    public WordFormDto ImperativeMs { get; set; } = WordFormDto.Default;
-    public WordFormDto ImperativeFs { get; set; } = WordFormDto.Default;
-    public WordFormDto ImperativeMp { get; set; } = WordFormDto.Default;
+    public WordFormDto? FutureMs1 { get; set; }
+    public WordFormDto? FutureMp1 { get; set; }
+    public WordFormDto? FutureMs2 { get; set; }
+    public WordFormDto? FutureFs2 { get; set; }
+    public WordFormDto? FutureMp2 { get; set; }
+    public WordFormDto? FutureMs3 { get; set; }
+    public WordFormDto? FutureMp3 { get; set; }
+    public WordFormDto? ImperativeMs { get; set; }
+    public WordFormDto? ImperativeFs { get; set; }
+    public WordFormDto? ImperativeMp { get; set; }
 
     public int UseFrequency { get; set; }
 

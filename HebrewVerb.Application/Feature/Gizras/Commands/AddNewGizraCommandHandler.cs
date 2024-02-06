@@ -9,7 +9,7 @@ namespace HebrewVerb.Application.Feature.Gizras.Commands;
 public class AddNewGizraCommandHandler(IUnitOfWork unitOfWork) : BaseRequestHandler(unitOfWork),
     IRequestHandler<AddNewGizraCommand, Result>
 {
-    async Task<Result> IRequestHandler<AddNewGizraCommand, Result>.Handle(AddNewGizraCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(AddNewGizraCommand request, CancellationToken cancellationToken)
     {
         var duplicates = _unitOfWork.GizraRepository.GetAll().Where(g => g.Name == request.Name);
         if (duplicates.Any())
@@ -18,13 +18,8 @@ public class AddNewGizraCommandHandler(IUnitOfWork unitOfWork) : BaseRequestHand
         }
 
         var gizra = new Gizra(request.Name, request.Description);
-        if (gizra != null)
-        {
-            _unitOfWork.GizraRepository.Add(gizra);
-            await _unitOfWork.CommitAsync();
-            return Result.Success();
-        }
-
-        return Result.Unavailable("Failed to create gizra from data");
+        _unitOfWork.GizraRepository.Add(gizra);
+        await _unitOfWork.CommitAsync();
+        return Result.Success();
     }
 }

@@ -1,4 +1,6 @@
-﻿using HebrewVerb.Application.Interfaces.Repositories;
+﻿using HebrewVerb.Application.Common.Mappers;
+using HebrewVerb.Application.Interfaces.Repositories;
+using HebrewVerb.Application.Models;
 using HebrewVerb.Domain.Common;
 using HebrewVerb.Domain.Entities;
 using HebrewVerb.Domain.Enums;
@@ -7,24 +9,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HebrewVerb.Infrastructure.Repositories;
 
-public class VerbRepository : Repository<Verb, int>, IVerbRepository
+public class VerbRepository(AppDbContext context) : Repository<Verb, int>(context), IVerbRepository
 {
-    private readonly DbSet<Past> _pasts;
-    private readonly DbSet<Present> _presents;
-    private readonly DbSet<Future> _futures;
-    private readonly DbSet<Imperative> _imperatives;
+    private readonly DbSet<VerbModel> _verbModels = context.VerbModels;
+    private readonly DbSet<Gizra> _gizras = context.Gizras;
+    private readonly DbSet<Past> _pasts = context.Pasts;
+    private readonly DbSet<Present> _presents = context.Presents;
+    private readonly DbSet<Future> _futures = context.Futures;
+    private readonly DbSet<Imperative> _imperatives = context.Imperatives;
+    private readonly DbSet<Translation> _translations = context.Translations;
 
-    public VerbRepository(AppDbContext context) : base(context)
-    {
-        _pasts = context.Pasts;
-        _presents = context.Presents;
-        _futures = context.Futures;
-        _imperatives = context.Imperatives;
-    }
-
-    public IConjugation? GetTenseByVerbId(int verbId, Zman zman)
-    {
-        return zman.Name switch
+    public IConjugation? GetTenseByVerbId(int verbId, Zman zman) =>
+        zman.Name switch
         {
             Constants.Past => GetPastByVerbId(verbId),
             Constants.Present => GetPresentByVerbId(verbId),
@@ -32,13 +28,52 @@ public class VerbRepository : Repository<Verb, int>, IVerbRepository
             Constants.Imperative => GetImperativeByVerbId(verbId),
             _ => null
         };
+
+    public IEnumerable<Verb> GetFilteredVerbs(Filter filter, int randomTake = 0)
+    {
+        var binyans = filter.Binyans.ToBinyanList();
+        var gizras = _gizras.Where(g => filter.Gizras.Contains(g.Name));
+        var verbModels = _verbModels.Where(vm => filter.VerbModels.Contains(vm.Name));
+
+        var filtered = MakeInclusions();
+
+        if (gizras.Any())
+        {
+            filtered = filtered.Where(v => v.Shoresh.Gizras.Intersect(gizras).Any());
+        }
+
+        if (binyans.Any())
+        {
+            filtered = filtered.Where(v => binyans.Contains(v.Binyan));
+        }
+
+        if (verbModels.Any())
+        {
+            filtered = filtered.Where(v => v.VerbModels.Intersect(verbModels).Any());
+        }
+
+        var count = filtered.Count();
+
+        if (count == 0)
+        {
+            return Enumerable.Empty<Verb>();
+        }
+
+        if (randomTake == 0 || count <= randomTake)
+        {
+            return filtered.ToList();
+        }
+
+        return filtered.OrderBy(v => EF.Functions.Random()).Take(randomTake).ToList();
     }
 
     protected override IQueryable<Verb> MakeInclusions()
     {
         return base.MakeInclusions()
             .Include(v => v.Infinitive)
-            .Include(v => v.VerbModels);
+            .Include(v => v.Shoresh).ThenInclude(sh => sh.Gizras)
+            .Include(v => v.VerbModels)
+            .Include(v => v.Translation);
     }
 
     private Past? GetPastByVerbId(int verbId)
@@ -91,6 +126,4 @@ public class VerbRepository : Repository<Verb, int>, IVerbRepository
             .Include(p => p.FS)
             .FirstOrDefault(p => p.Id == imperativeId);
     }
-
-
 }

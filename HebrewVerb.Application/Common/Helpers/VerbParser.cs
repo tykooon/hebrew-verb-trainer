@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using HebrewVerb.Application.Common.Enums;
 using HebrewVerb.Application.Feature.Verbs;
 using HebrewVerb.Domain.Enums;
 using HtmlAgilityPack;
@@ -19,6 +20,8 @@ public static class VerbParser
         {
             return Result.Error($"No data retrieved from url: {url}");
         }
+
+        // TODO Check if content from pealim?
 
         var verb = document.ParseToVerb(passive);
 
@@ -152,14 +155,14 @@ public static class VerbParser
 
         if (!passive)
         {
-            verbResult.ImperativeMs = doc.GetWordFormDto(ActivePresentId["ms"]);
-            verbResult.ImperativeFs = doc.GetWordFormDto(ActivePresentId["fs"]);
-            verbResult.ImperativeMp = doc.GetWordFormDto(ActivePresentId["mp"]);
+            verbResult.ImperativeMs = doc.GetWordFormDto(ImperativeId["ms"]);
+            verbResult.ImperativeFs = doc.GetWordFormDto(ImperativeId["fs"]);
+            verbResult.ImperativeMp = doc.GetWordFormDto(ImperativeId["mp"]);
         }
 
         #endregion Imperative
 
-        verbResult.Translate = doc.GetTranslation();
+        verbResult.Translate = doc.GetTranslation() ?? "";
 
         return verbResult;
     }
@@ -178,18 +181,12 @@ public static class VerbParser
         return (String.Concat(chunk1, chunk2, chunk3), stressIndex);
     }
 
-    private static WordFormDto GetWordFormDto(this HtmlDocument doc, string idStr, Lang lang = Lang.Russian)
+    private static WordFormDto GetWordFormDto(this HtmlDocument doc, string idStr, AppLanguage lang = AppLanguage.Russian)
     {
+        //TODO: Other language support 
         var hebrewStr = doc.GetVerbForm(idStr) ?? "";
         var translateStr = doc.GetVerbFormTranscript(idStr) ?? "";
         (translateStr, int ind) = ExtractStress(translateStr);
-
-        //WordForm result = lang switch
-        //{
-        //    Lang.Russian => new(hebrewStr, hebrewStr, translateStr, ind, "", 0),
-        //    Lang.English => new(hebrewStr, hebrewStr, "", 0, translateStr, ind),
-        //    _ => new(hebrewStr, hebrewStr),
-        //};
 
         return new(hebrewStr, translateStr, ind);
     }

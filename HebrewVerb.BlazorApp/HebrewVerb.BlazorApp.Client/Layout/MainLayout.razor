@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+@using HebrewVerb.BlazorApp.Client.Components
+
+<ThemeProvider />
+<ComponentProviders />
+
+<MudLayout>
+    <TopAppBar IsAuthorized="isAutorizedUser" ></TopAppBar>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    // TODO Use CurrentUserService 
+    bool isAutorizedUser = true;
+}

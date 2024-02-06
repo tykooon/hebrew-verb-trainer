@@ -9,11 +9,11 @@ public class Imperative : BaseEntity<int>, IConjugation
 {
     public static readonly Imperative Empty = new();
 
-    public WordForm MS { get; private set; } = WordForm.Default;
-    public WordForm FS { get; private set; } = WordForm.Default;
-    public WordForm MP { get; private set; } = WordForm.Default;
+    public WordForm? MS { get; private set; }
+    public WordForm? FS { get; private set; }
+    public WordForm? MP { get; private set; }
 
-    public WordForm FP => MP;
+    public WordForm? FP => MP;
 
     private Imperative () {}
 
@@ -31,7 +31,7 @@ public class Imperative : BaseEntity<int>, IConjugation
             : details.Gender == Gender.Male ? MS : FS;
     }
 
-    public Imperative(WordForm mS, WordForm fS, WordForm mP)
+    public Imperative(WordForm? mS, WordForm? fS, WordForm? mP)
     {
         MS = mS;
         FS = fS;

@@ -16,6 +16,9 @@ public interface IAppDbContext
     public DbSet<Past> Pasts { get; }
     public DbSet<Present> Presents { get; }
     public DbSet<Future> Futures { get; }
+    public DbSet<Translation> Translations { get; }
+    public DbSet<Preposition> Prepositions { get; }
+
     public DbSet<FilterSnapshot> FilterSnapshots { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);

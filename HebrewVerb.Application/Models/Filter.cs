@@ -4,29 +4,27 @@ namespace HebrewVerb.Application.Models;
 
 public class Filter
 {
+    public static readonly Filter Empty = new();
     public static readonly JsonSerializerOptions SerializerOptions = new() { };
 
-    public IEnumerable<string> Binyans { get; internal set; } = [];
-    public IEnumerable<string> Gizras { get; internal set; } = [];
-    public IEnumerable<string> VerbModels { get; internal set; } = [];
-    public IEnumerable<string> Tenses { get; internal set; } = [];
+    public IEnumerable<string> Binyans { get; set; } = [];
+    public IEnumerable<string> Gizras { get; set; } = [];
+    public IEnumerable<string> VerbModels { get; set; } = [];
+    public IEnumerable<string> Tenses { get; set; } = [];
 
-    internal Filter() { }
+    public Filter() { }
 
-    public static Filter FromJson(string json)
-    {
-        return JsonSerializer.Deserialize<Filter>(json, SerializerOptions)
-            ?? new();
-    }
+    public static Filter FromJson(string json) => 
+        JsonSerializer.Deserialize<Filter>(json, SerializerOptions) ?? new();
 
     public string ToJson() =>
         JsonSerializer.Serialize(this, SerializerOptions);
 
     public static Filter FromParams(
         IEnumerable<string> binyans,
-        IEnumerable<string> tenses,
         IEnumerable<string> gizras,
-        IEnumerable<string> verbModels)
+        IEnumerable<string> verbModels,
+        IEnumerable<string> tenses)
     {
         return new Filter()
         {
@@ -36,5 +34,4 @@ public class Filter
             VerbModels = verbModels
         };
     }
-
 }

@@ -1,0 +1,39 @@
+﻿<CascadingValue Value=false Name="UsePopoverProvider">
+    <MudThemeProvider Theme="MyTheme"></MudThemeProvider>
+</CascadingValue>
+
+@code {
+    public static MudTheme MyTheme => new()
+        {
+            Palette = new PaletteLight()
+            {
+                Primary = "#4477ff",
+                AppbarBackground = "#3366ff",
+                Success = "#348d0d",
+                Tertiary = "#7ebbfc",
+                
+            },
+            PaletteDark = new PaletteDark()
+            {
+                Primary = "#1340c8",
+                AppbarBackground = "#1340c8",
+                Success = "#348d0d",
+                Tertiary = "#7ebbfc",
+            },
+            // Typography = new Typography()
+            // {
+            //     Default = new Default()
+            //     {
+            //         FontFamily = new[] { "Poppins", "Helvetica", "Arial", "sans-serif" }
+            //     },
+                // H6 = new H6()
+                // {
+                //     FontFamily = new[] { "Roboto", "Helvetica", "Arial", "sans-serif" },
+                //     FontSize = "1.25rem",
+                //     FontWeight = 500,
+                //     LineHeight = 1.6,
+                //     LetterSpacing = ".0075em"
+                // }
+            // }
+        };
+}

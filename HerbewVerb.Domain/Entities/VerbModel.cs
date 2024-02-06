@@ -6,7 +6,6 @@ namespace HebrewVerb.Domain.Entities;
 
 public class VerbModel : BaseEntity<int>
 {
-    [Key]
     [Required]
     public string Name { get; private set; } = String.Empty;
 
@@ -14,4 +13,13 @@ public class VerbModel : BaseEntity<int>
 
     [JsonIgnore]
     public ICollection<Verb> Verbs { get; } = [];
+
+    public VerbModel(string name, string description)
+    {
+        Name = name;
+        Description = description;
+    }
+
+    private VerbModel() { }
+
 }

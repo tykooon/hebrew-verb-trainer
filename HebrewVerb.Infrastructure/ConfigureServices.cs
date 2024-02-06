@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using HebrewVerb.Infrastructure.AppUserServices;
+using HebrewVerb.WebApp.Models;
 
 namespace HebrewVerb.Infrastructure;
 
@@ -17,7 +18,14 @@ public static class DependencyInjection
     {
         //var assembly = typeof(DependencyInjection).Assembly;
 
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("MySqlConnection");
+        var connectionData = configuration.GetSection("HebrewVerb")
+            .GetSection("Connections").GetSection("MySql").GetSection("Admin").Get<ConnectionSettings>();
+        connectionString = connectionString?.Replace("{SERVER}", connectionData?.Server);
+        connectionString = connectionString?.Replace("{PORT}", connectionData?.Port.ToString());
+        connectionString = connectionString?.Replace("{UID}", connectionData?.Uid);
+        connectionString = connectionString?.Replace("{PWD}", connectionData?.Password);
+
         Guard.Against.Null(connectionString, message: "Connection string 'DefaultConnection' not found.");
         
         services.AddScoped<IAppDbContext, AppDbContext>();
@@ -26,10 +34,12 @@ public static class DependencyInjection
 
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlite(
-                connectionString
-                //,b => b.MigrationsAssembly("SimpleAuthClean.WebApp"
-                );
+            options.UseMySQL(connectionString);
+
+            //options.UseSqlite(
+            //    connectionString
+            //    //,b => b.MigrationsAssembly("SimpleAuthClean.WebApp"
+            //    );
         });
 
         services.AddIdentity<AppUser, IdentityRole<int>>()

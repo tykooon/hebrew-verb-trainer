@@ -11,11 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HebrewVerb.Domain", "Herbew
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HebrewVerb.Domain.Console", "HebrewVerb.Domain.Console\HebrewVerb.Domain.Console.csproj", "{FFDE920C-688D-4AAE-AD16-C2E193092C2D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HebrewVerb.PealimParser", "HebrewVerb.PealimParser\HebrewVerb.PealimParser.csproj", "{1DFAD63C-D78B-40F3-AC03-0DDB3E9E2754}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HebrewVerb.Domain.UnitTests", "HebrewVerb.Domain.UnitTests\HebrewVerb.Domain.UnitTests.csproj", "{AAA6060A-DA74-4F09-86D3-625FCC4C6A14}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HebrewVerb.WebApp", "HebrewVerb.WebApp\HebrewVerb.WebApp.csproj", "{B719151F-8FC0-4253-8E80-CA3D2C848EE5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HebrewVerb.BlazorApp", "HebrewVerb.BlazorApp\HebrewVerb.BlazorApp\HebrewVerb.BlazorApp.csproj", "{B4F6357D-3C09-4E0B-80E3-A7AE73277EF2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HebrewVerb.BlazorApp.Client", "HebrewVerb.BlazorApp\HebrewVerb.BlazorApp.Client\HebrewVerb.BlazorApp.Client.csproj", "{CCFC7210-1B5B-4BBC-AA14-69FBF11D7126}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +41,6 @@ Global
 		{FFDE920C-688D-4AAE-AD16-C2E193092C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFDE920C-688D-4AAE-AD16-C2E193092C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFDE920C-688D-4AAE-AD16-C2E193092C2D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1DFAD63C-D78B-40F3-AC03-0DDB3E9E2754}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1DFAD63C-D78B-40F3-AC03-0DDB3E9E2754}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1DFAD63C-D78B-40F3-AC03-0DDB3E9E2754}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1DFAD63C-D78B-40F3-AC03-0DDB3E9E2754}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AAA6060A-DA74-4F09-86D3-625FCC4C6A14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AAA6060A-DA74-4F09-86D3-625FCC4C6A14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAA6060A-DA74-4F09-86D3-625FCC4C6A14}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +49,14 @@ Global
 		{B719151F-8FC0-4253-8E80-CA3D2C848EE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B719151F-8FC0-4253-8E80-CA3D2C848EE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B719151F-8FC0-4253-8E80-CA3D2C848EE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4F6357D-3C09-4E0B-80E3-A7AE73277EF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4F6357D-3C09-4E0B-80E3-A7AE73277EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4F6357D-3C09-4E0B-80E3-A7AE73277EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4F6357D-3C09-4E0B-80E3-A7AE73277EF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCFC7210-1B5B-4BBC-AA14-69FBF11D7126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCFC7210-1B5B-4BBC-AA14-69FBF11D7126}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCFC7210-1B5B-4BBC-AA14-69FBF11D7126}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCFC7210-1B5B-4BBC-AA14-69FBF11D7126}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

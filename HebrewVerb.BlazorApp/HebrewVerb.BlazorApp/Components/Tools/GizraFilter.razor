@@ -1,0 +1,28 @@
+﻿@using HebrewVerb.Application.Feature.Gizras.Queries
+@using HebrewVerb.Application.Models
+@using HebrewVerb.Application.Services
+@rendermode InteractiveServer
+
+<MudSelect T="GizraDto" AnchorOrigin="Origin.BottomCenter" MultiSelection="true"
+    SelectedValuesChanged="OptionsChanged" SelectedValues="Options" Label="Гизра:">
+        @foreach (var gizra in GizraList)
+        {
+            <MudSelectItem T="GizraDto" Value="@gizra">
+                <MudTooltip Duration="1000" Text="@gizra.Description">
+                    @gizra.Name
+                </MudTooltip>
+            </MudSelectItem>
+
+        }
+    </MudSelect>
+
+@code {
+    [Parameter]
+    public IEnumerable<GizraDto> Options { get; set; } = new HashSet<GizraDto>();
+
+    [Parameter]
+    public IEnumerable<GizraDto> GizraList { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<IEnumerable<GizraDto>> OptionsChanged { get; set; }
+}

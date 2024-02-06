@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using HebrewVerb.Application.Models;
+using MediatR;
 
 namespace HebrewVerb.Application.Feature.Gizras.Queries;
 

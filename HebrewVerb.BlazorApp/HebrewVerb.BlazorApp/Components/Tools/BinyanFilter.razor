@@ -1,0 +1,26 @@
+﻿@using HebrewVerb.Application.Models
+@rendermode InteractiveAuto
+
+<MudSelect T="BinyanDto" AnchorOrigin="Origin.BottomCenter"
+    MultiSelection="true" Label="Биньян:"
+    SelectedValuesChanged="OptionsChanged" SelectedValues="Options">
+
+    @foreach (var binyan in BinyanList)
+    {
+        <MudSelectItem T="BinyanDto" Value="@binyan">
+            @binyan.NameLocal (@binyan.NameHebrew)
+        </MudSelectItem>
+    }
+
+</MudSelect>
+
+@code {
+    [Parameter]
+    public IEnumerable<BinyanDto> Options { get; set; } = new HashSet<BinyanDto>();
+
+    [Parameter]
+    public IEnumerable<BinyanDto> BinyanList { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<IEnumerable<BinyanDto>> OptionsChanged { get; set; }
+}

@@ -24,6 +24,7 @@
     <Folder Include="Feature\Authentication\Commands\SignInWithGoogle\" />
     <Folder Include="Feature\Authentication\Queries\" />
     <Folder Include="Feature\Filters\Commands\" />
+    <Folder Include="Feature\Shoreshes\Commands\" />
   </ItemGroup>
 
 </Project>

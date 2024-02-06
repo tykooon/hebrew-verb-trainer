@@ -4,4 +4,5 @@ public enum Lang
 {
     Russian,
     English,
+    Hebrew,
 }

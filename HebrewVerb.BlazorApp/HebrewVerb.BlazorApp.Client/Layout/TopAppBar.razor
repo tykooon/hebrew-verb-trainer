@@ -1,0 +1,34 @@
+﻿<MudAppBar Elevation="0">
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+    <a class="navbar-brand" href="#"><img style="height:3rem" src="Logo-100.svg" /></a>
+    <MudSpacer />
+    @if (IsAuthorized)
+    {
+        <MudAvatar Color="Color.Secondary">AT</MudAvatar>
+    }
+    else
+    {
+        <MudButton Variant="@Variant.Filled" Color="Color.Success">Log In</MudButton>
+    }
+    @* <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/MudBlazor/MudBlazor/" Target="_blank" /> *@
+</MudAppBar>
+
+<MudDrawer Width="300px" Color="@Color.Tertiary" @bind-Open="_drawerOpen" Variant="DrawerVariant.Temporary" Elevation="1">
+    <MudDrawerHeader>
+        <MudText Style="margin: 0.3em 1em;" Typo="Typo.h5">Hebrew Verbs</MudText>
+    </MudDrawerHeader>
+    <NavMenu />
+</MudDrawer>
+
+
+@code {
+    [Parameter]
+    public bool IsAuthorized { get; set; }
+
+    bool _drawerOpen = false;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

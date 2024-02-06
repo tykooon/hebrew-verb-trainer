@@ -15,15 +15,17 @@ namespace HebrewVerb.Infrastructure.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("GizraShoresh", b =>
                 {
                     b.Property<int>("GizrasId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("ShoreshesId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("GizrasId", "ShoreshesId");
 
@@ -36,57 +38,57 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -104,10 +106,10 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("AppUserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -121,17 +123,17 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("AppUserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("FilterJson")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("FilterName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -144,28 +146,28 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("FS2Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MP1Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MP2Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MP3Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MS1Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MS2Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MS3Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -190,14 +192,14 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -211,16 +213,16 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
-                    b.Property<int>("FSId")
-                        .HasColumnType("INTEGER");
+                    b.Property<int?>("FSId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("MPId")
-                        .HasColumnType("INTEGER");
+                    b.Property<int?>("MPId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("MSId")
-                        .HasColumnType("INTEGER");
+                    b.Property<int?>("MSId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -237,34 +239,34 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("FP2Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("FS2Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("FS3Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MP1Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MP2Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MP3Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MS1Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MS2Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MS3Id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -289,23 +291,94 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.ToTable("Pasts");
                 });
 
+            modelBuilder.Entity("HebrewVerb.Domain.Entities.Preposition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("BaseFormId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FP2Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FP3Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FS2Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FS3Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MP1Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MP2Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MP3Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MS1Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MS2Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MS3Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TranslationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BaseFormId");
+
+                    b.HasIndex("FP2Id");
+
+                    b.HasIndex("FP3Id");
+
+                    b.HasIndex("FS2Id");
+
+                    b.HasIndex("FS3Id");
+
+                    b.HasIndex("MP1Id");
+
+                    b.HasIndex("MP2Id");
+
+                    b.HasIndex("MP3Id");
+
+                    b.HasIndex("MS1Id");
+
+                    b.HasIndex("MS2Id");
+
+                    b.HasIndex("MS3Id");
+
+                    b.HasIndex("TranslationId");
+
+                    b.ToTable("Prepositions");
+                });
+
             modelBuilder.Entity("HebrewVerb.Domain.Entities.Present", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("FPId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("FSId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MPId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MSId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -324,11 +397,11 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("Short")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -338,50 +411,77 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.ToTable("Shoreshes");
                 });
 
+            modelBuilder.Entity("HebrewVerb.Domain.Entities.Translation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("English")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EnglishShort")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Russian")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RussianShort")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Translations");
+                });
+
             modelBuilder.Entity("HebrewVerb.Domain.Entities.Verb", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("Binyan")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("ExtraInfo")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("FutureId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("ImperativeId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("InfinitiveId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsArchaic")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsLiterary")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsSlang")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("PastId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("PresentId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("ShoreshId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
-                    b.Property<string>("Translate")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TranslationId")
+                        .HasColumnType("int");
 
                     b.Property<int>("UseFrequency")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -397,21 +497,25 @@ namespace HebrewVerb.Infrastructure.Migrations
 
                     b.HasIndex("ShoreshId");
 
+                    b.HasIndex("TranslationId");
+
                     b.ToTable("Verbs");
                 });
 
             modelBuilder.Entity("HebrewVerb.Domain.Entities.VerbModel", b =>
                 {
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
-                    b.HasKey("Name");
+                    b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -419,30 +523,57 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.ToTable("VerbModels");
                 });
 
+            modelBuilder.Entity("HebrewVerb.Domain.Entities.VerbPreposition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrepositionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TranslationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VerbId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrepositionId");
+
+                    b.HasIndex("TranslationId");
+
+                    b.HasIndex("VerbId", "PrepositionId")
+                        .IsUnique();
+
+                    b.ToTable("VerbPreposition");
+                });
+
             modelBuilder.Entity("HebrewVerb.Domain.Entities.WordForm", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("Hebrew")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("HebrewNiqqud")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("StressLetterEng")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("StressLetterRus")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("TranscriptionEng")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("TranscriptionRus")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -453,19 +584,19 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -480,16 +611,16 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -502,16 +633,16 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -523,16 +654,16 @@ namespace HebrewVerb.Infrastructure.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -544,10 +675,10 @@ namespace HebrewVerb.Infrastructure.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -559,16 +690,16 @@ namespace HebrewVerb.Infrastructure.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Value")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -577,13 +708,13 @@ namespace HebrewVerb.Infrastructure.Migrations
 
             modelBuilder.Entity("VerbVerbModel", b =>
                 {
-                    b.Property<string>("VerbModelsName")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("VerbModelsId")
+                        .HasColumnType("int");
 
                     b.Property<int>("VerbsId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
-                    b.HasKey("VerbModelsName", "VerbsId");
+                    b.HasKey("VerbModelsId", "VerbsId");
 
                     b.HasIndex("VerbsId");
 
@@ -690,21 +821,15 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.HasOne("HebrewVerb.Domain.Entities.WordForm", "FS")
                         .WithMany()
-                        .HasForeignKey("FSId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FSId");
 
                     b.HasOne("HebrewVerb.Domain.Entities.WordForm", "MP")
                         .WithMany()
-                        .HasForeignKey("MPId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MPId");
 
                     b.HasOne("HebrewVerb.Domain.Entities.WordForm", "MS")
                         .WithMany()
-                        .HasForeignKey("MSId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MSId");
 
                     b.Navigation("FS");
 
@@ -788,6 +913,105 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.Navigation("MS3");
                 });
 
+            modelBuilder.Entity("HebrewVerb.Domain.Entities.Preposition", b =>
+                {
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "BaseForm")
+                        .WithMany()
+                        .HasForeignKey("BaseFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "FP2")
+                        .WithMany()
+                        .HasForeignKey("FP2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "FP3")
+                        .WithMany()
+                        .HasForeignKey("FP3Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "FS2")
+                        .WithMany()
+                        .HasForeignKey("FS2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "FS3")
+                        .WithMany()
+                        .HasForeignKey("FS3Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "MP1")
+                        .WithMany()
+                        .HasForeignKey("MP1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "MP2")
+                        .WithMany()
+                        .HasForeignKey("MP2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "MP3")
+                        .WithMany()
+                        .HasForeignKey("MP3Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "MS1")
+                        .WithMany()
+                        .HasForeignKey("MS1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "MS2")
+                        .WithMany()
+                        .HasForeignKey("MS2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.WordForm", "MS3")
+                        .WithMany()
+                        .HasForeignKey("MS3Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.Translation", "Translation")
+                        .WithMany()
+                        .HasForeignKey("TranslationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BaseForm");
+
+                    b.Navigation("FP2");
+
+                    b.Navigation("FP3");
+
+                    b.Navigation("FS2");
+
+                    b.Navigation("FS3");
+
+                    b.Navigation("MP1");
+
+                    b.Navigation("MP2");
+
+                    b.Navigation("MP3");
+
+                    b.Navigation("MS1");
+
+                    b.Navigation("MS2");
+
+                    b.Navigation("MS3");
+
+                    b.Navigation("Translation");
+                });
+
             modelBuilder.Entity("HebrewVerb.Domain.Entities.Present", b =>
                 {
                     b.HasOne("HebrewVerb.Domain.Entities.WordForm", "FP")
@@ -861,6 +1085,12 @@ namespace HebrewVerb.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HebrewVerb.Domain.Entities.Translation", "Translation")
+                        .WithMany()
+                        .HasForeignKey("TranslationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Future");
 
                     b.Navigation("Imperative");
@@ -872,6 +1102,31 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.Navigation("Present");
 
                     b.Navigation("Shoresh");
+
+                    b.Navigation("Translation");
+                });
+
+            modelBuilder.Entity("HebrewVerb.Domain.Entities.VerbPreposition", b =>
+                {
+                    b.HasOne("HebrewVerb.Domain.Entities.Preposition", null)
+                        .WithMany()
+                        .HasForeignKey("PrepositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.Translation", "Translation")
+                        .WithMany()
+                        .HasForeignKey("TranslationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HebrewVerb.Domain.Entities.Verb", null)
+                        .WithMany()
+                        .HasForeignKey("VerbId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Translation");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -929,7 +1184,7 @@ namespace HebrewVerb.Infrastructure.Migrations
                 {
                     b.HasOne("HebrewVerb.Domain.Entities.VerbModel", null)
                         .WithMany()
-                        .HasForeignKey("VerbModelsName")
+                        .HasForeignKey("VerbModelsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

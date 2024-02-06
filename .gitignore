@@ -365,3 +365,4 @@ HomeTask*.zip
 # Trainer Solutions
 Solutions/
 
+/HebrewVerb.WebApp/secrets.json

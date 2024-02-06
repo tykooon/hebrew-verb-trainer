@@ -1,4 +1,5 @@
-﻿using HebrewVerb.Domain.Enums;
+﻿using HebrewVerb.Application.Common.Enums;
+using HebrewVerb.Domain.Enums;
 using HtmlAgilityPack;
 
 namespace HebrewVerb.Application.Common.Helpers;
@@ -7,18 +8,21 @@ internal static class ParseHelpers
 {
     const string UNDEFINED = "undefined";
 
-    internal static bool TryGetLanguage(string lang, out Lang res)
+    internal static bool TryGetLanguage(string lang, out AppLanguage res)
     {
-        switch (lang)
+        switch (lang.ToLower())
         {
             case "ru":
-                res = Lang.Russian;
+                res = AppLanguage.Russian;
                 return true;
             case "en":
-                res = Lang.English;
+                res = AppLanguage.English;
+                return true;
+            case "he":
+                res = AppLanguage.Hebrew;
                 return true;
             default:
-                res = Lang.English;
+                res = AppLanguage.English;
                 return false;
         } 
     }

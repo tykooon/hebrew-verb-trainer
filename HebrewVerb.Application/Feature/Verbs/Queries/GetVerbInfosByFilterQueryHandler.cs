@@ -1,4 +1,5 @@
-﻿using HebrewVerb.Application.Interfaces;
+﻿using HebrewVerb.Application.Common.Mappers;
+using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Application.Models;
 using HebrewVerb.Domain.Enums;
 using MediatR;
@@ -40,6 +41,6 @@ public class GetVerbInfosByFilterQueryHandler :
             allVerbs = allVerbs.Where(v => v.VerbModels.Except(verbModels).Any());
         }
 
-        return Task.FromResult(allVerbs.Select(v => new VerbInfo(v.Id, v.Infinitive.Hebrew)));
+        return Task.FromResult(allVerbs.Select(v => v.ToVerbInfo()));
     }
 }

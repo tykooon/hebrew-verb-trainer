@@ -1,0 +1,13 @@
+﻿<span class="mobile-hide">@Intro &nbsp;</span> @Main <span class="mobile-hide">&nbsp;@Outtro</span>
+
+@code
+{
+    [Parameter]
+    public string Intro { get; set; } = "";
+
+    [Parameter]
+    public string Main { get; set; } = "";
+
+    [Parameter]
+    public string Outtro { get; set; } = "";
+}

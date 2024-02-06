@@ -1,0 +1,159 @@
+﻿@page "/verbadmin"
+
+@inject ISnackbar Snackbar
+@using HebrewVerb.Application.Feature.Gizras.Commands
+@using HebrewVerb.Application.Feature.Verbs.Commands
+@using HebrewVerb.Application.Feature.Verbs.Queries
+@using HebrewVerb.BlazorApp.ViewModels
+@using HebrewVerb.Application.Models
+@using Microsoft.Extensions.Caching.Distributed
+@inject IMediator _mediator
+@inject IDistributedCache _cache
+@rendermode InteractiveAuto
+
+<PageTitle>Verb Data Editing</PageTitle>
+
+<FilterBar @ref="_filterBar" @bind-CurrentFilter="Filter" SearchRequested="SearchFromFilter"
+    ShowSearchPanel="true" @bind-SearchString="_filterSearchString">
+</FilterBar>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="justify-content-center mt-2">
+    <MudGrid Justify="Justify.Center">
+        <MudItem>
+            <MudButton Variant="Variant.Filled" FullWidth Class="mx-3" Color="Color.Secondary"
+                        StartIcon="@Icons.Material.Filled.Add" OnClick="ToggleAddVerbOpen">
+                 <TextHider Intro="Add" Main="Verb"></TextHider>
+             </MudButton>
+        </MudItem>
+        <AddVerbPopover @bind-IsOpen=@_addVerbIsOpen></AddVerbPopover>
+
+        <MudItem>
+             <MudButton Variant="Variant.Filled" FullWidth Class="mx-3" Color="Color.Secondary"
+                        StartIcon="@Icons.Material.Filled.Add" OnClick="ToggleAddGizraOpen">
+                 <TextHider Intro="Add" Main="Gizra"></TextHider>
+             </MudButton>
+        </MudItem>
+        <AddGizraPopover @bind-IsOpen=@_addGizraIsOpen NewGizraCreated="FilterBarRefresh"></AddGizraPopover>
+
+        <MudItem>
+             <MudButton Variant="Variant.Filled" FullWidth Class="mx-3" Color="Color.Secondary"
+                        StartIcon="@Icons.Material.Filled.Add" OnClick="ToggleAddModelOpen">
+                 <TextHider Intro="Add" Main="Verb Model"></TextHider>
+             </MudButton>
+        </MudItem>
+        <AddVerbModelPopover @bind-IsOpen=@_addModelIsOpen NewVerbModelCreated="FilterBarRefresh"></AddVerbModelPopover>
+
+        <MudItem>
+             <MudButton Variant="Variant.Filled" FullWidth Class="mx-3" Color="Color.Primary"
+                        StartIcon="@Icons.Material.Filled.Download">
+                 <TextHider Main="Load" Outtro="filtered"></TextHider>
+             </MudButton>
+        </MudItem>
+    </MudGrid>
+
+    <VerbTableFull></VerbTableFull>
+
+</MudContainer>
+
+    @code {
+    private FilterViewModel Filter = new() { Binyans = new List<BinyanDto>() { new() { Name="Paal", NameHebrew="פעל", NameLocal="пааль" } } };
+
+    private FilterBar _filterBar = new();
+
+    private string _filterSearchString = "";
+
+    private string testString = "";
+
+    private void SearchFromFilter()
+    {
+        testString = "Started search for " + _filterSearchString;
+        Snackbar.Add(testString, Severity.Success);
+    }
+
+    private bool _addVerbIsOpen;
+    private bool _addGizraIsOpen;
+    private bool _addModelIsOpen;
+
+    public void ToggleAddVerbOpen()
+    {
+        _addVerbIsOpen = !_addVerbIsOpen;
+        _addGizraIsOpen = false;
+        _addModelIsOpen = false;
+    }
+
+    public void ToggleAddGizraOpen()
+    {
+        _addGizraIsOpen = !_addGizraIsOpen;
+        _addVerbIsOpen = false;
+        _addModelIsOpen = false;
+    }
+
+    public void ToggleAddModelOpen()
+    {
+        _addVerbIsOpen = false;
+        _addGizraIsOpen = false;
+        _addModelIsOpen = !_addModelIsOpen;
+    }
+
+    private Task FilterBarRefresh()
+    {
+        _cache.Remove(Constants.GizraList);
+        return _filterBar.RefreshFilter();
+    }
+
+
+    private CardViewModel[] Cards = [
+    new CardViewModel()
+        {
+            Zman = "הווה",
+            Infinitive = "לעשות",
+            Guf = "היא",
+            VerbForm = "עושה",
+            VerbFormTranslit = "осэ",
+            VerbFormStress = 2,
+            Binyan = "פעל",
+            Gizras = ["ל''ה/י", "פ''ע"],
+            Models = ["исключение", "лит."],
+            Translation = "делать"
+        },
+        new CardViewModel()
+            {
+                Zman = "עבר",
+                Infinitive = "לעבוד",
+                Guf = "אנחנו",
+                VerbForm = "עבדנו",
+                VerbFormTranslit = "авадну",
+                VerbFormStress = 2,
+                Binyan = "פעל",
+                Gizras = ["פ''ע"],
+                Models = [],
+                Translation = "работать"
+            },
+        new CardViewModel()
+            {
+                Zman = "עתיד",
+                Infinitive = "לחשוב",
+                Guf = "אתמ",
+                VerbForm = "תחשבו",
+                VerbFormTranslit = "тахшеву",
+                VerbFormStress = 6,
+                Binyan = "פעל",
+                Gizras = ["פ''ח"],
+                Models = [],
+                Translation = "думать"
+            },
+        new CardViewModel()
+            {
+                Zman = "ציווי",
+                Infinitive = "לחשוב",
+                Guf = "אתמ",
+                VerbForm = "תחשבו",
+                VerbFormTranslit = "тахшеву",
+                VerbFormStress = 6,
+                Binyan = "פעל",
+                Gizras = ["פ''ח"],
+                Models = [],
+                Translation = "думать"
+            },
+    ];
+}

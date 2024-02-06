@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HebrewVerb.Infrastructure;
 
-// TODO IDisposable
 public class UnitOfWork : IUnitOfWork
 {
     private bool _isDisposed;
@@ -18,10 +17,7 @@ public class UnitOfWork : IUnitOfWork
     private IVerbModelRepository? _verbModelRepo;
     private IWordFormRepository? _wordFormRepo;
     private IFilterSnapshotRepository? _filterSnapshotRepo;
-    //private IPastRepository? _pastRepo;
-    //private IPresentRepository? _presentRepo;
-    //private IFutureRepository? _futureRepo;
-    //private IImperativeRepository? _imperativeRepo;
+    private IPrepositionRepository? _prepositionRepo;
 
     private AppDbContext Context => _context ??= new AppDbContext();
 
@@ -31,11 +27,7 @@ public class UnitOfWork : IUnitOfWork
     public IVerbModelRepository VerbModelRepository => _verbModelRepo ??= new VerbModelRepository(Context);
     public IWordFormRepository WordFormRepository => _wordFormRepo ??= new WordFormRepository(Context);
     public IFilterSnapshotRepository FilterSnapshotRepository => _filterSnapshotRepo ??= new FilterSnapshotRepository(Context);
-    //public IPastRepository PastRepository => _pastRepo ??= new PastRepository(Context);
-    //public IPresentRepository PresentRepository => _presentRepo ??= new PresentRepository(Context);
-    //public IFutureRepository FutureRepository => _futureRepo ??= new FutureRepository(Context);
-    //public IImperativeRepository ImperativeRepository => _imperativeRepo ??= new ImperativeRepository(Context);
-
+    public IPrepositionRepository PrepositionRepository => _prepositionRepo ??= new PrepositionRepository(Context);
 
     public UnitOfWork(AppDbContext context)
     {

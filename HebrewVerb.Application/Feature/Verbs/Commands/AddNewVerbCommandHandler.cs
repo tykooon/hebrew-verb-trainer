@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using HebrewVerb.Application.Common.Enums;
 using HebrewVerb.Application.Common.Helpers;
 using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Domain.Entities;
@@ -15,15 +16,16 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
     public AddNewVerbCommandHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+
     }
 
     public async Task<Result> Handle(AddNewVerbCommand request, CancellationToken cancellationToken)
     {
         var dto = request.VerbDto;
 
-        if (!ParseHelpers.TryGetLanguage(dto.LangId, out Lang lang))
+        if (!ParseHelpers.TryGetLanguage(dto.LangId, out AppLanguage lang))
         {
-            return Result.Invalid(new ValidationError("Unknown language identifier. Must be in {'ru', 'en'}."));
+            return Result.Invalid(new ValidationError("Unknown language identifier. Must be in {'ru', 'en', 'he'}."));
         }
 
         if (!Binyan.TryFromName(dto.Binyan, true, out Binyan binyan))
@@ -78,7 +80,7 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
             dto.PastMp3?.FromDto(lang) ?? WordForm.Default);
 
         var future = new Future(
-            dto.FutureMs1?.FromDto(lang),
+            dto.FutureMs1?.FromDto(lang) ?? WordForm.Default,
             dto.FutureMp1?.FromDto(lang) ?? WordForm.Default,
             dto.FutureMs2?.FromDto(lang) ?? WordForm.Default,
             dto.FutureFs2?.FromDto(lang) ?? WordForm.Default,
@@ -88,13 +90,16 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
 
         Imperative imperative = Imperative.Empty;
 
-        if(binyan != Binyan.Hufal && binyan != Binyan.Pual)
+        if(!binyan.IsPassive)
         {
             imperative = new Imperative(
-                dto.ImperativeMs?.FromDto(lang) ?? WordForm.Default,
-                dto.ImperativeFs?.FromDto(lang) ?? WordForm.Default,
-                dto.ImperativeMp?.FromDto(lang) ?? WordForm.Default);
+                dto.ImperativeMs?.FromDto(lang),
+                dto.ImperativeFs?.FromDto(lang),
+                dto.ImperativeMp?.FromDto(lang));
         }
+
+        var translation = new Translation();
+        translation.Set(dto.Translate, (Lang)lang);
 
         var result = new Verb(
             binyan,
@@ -104,13 +109,13 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
             present,
             future,
             imperative,
+            translation,
             // TODO  Convertion from int to UseFrequency
             UseFrequency.Undefined,
-            dto.Translate,
             dto.ExtraInfo,
             dto.IsArchaic,
             dto.IsLiterary,
-            dto.IsSlang);
+            dto.IsSlang); ;
 
         _unitOfWork.VerbRepository.Add(result);
         await _unitOfWork.CommitAsync();

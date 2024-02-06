@@ -8,6 +8,6 @@ public class VerbModelConfiguration : IEntityTypeConfiguration<VerbModel>
 {
     public void Configure(EntityTypeBuilder<VerbModel> builder)
     {
-        builder.HasIndex(sh => sh.Name).IsUnique();
+        builder.HasIndex(vm => vm.Name).IsUnique();
     }
 }

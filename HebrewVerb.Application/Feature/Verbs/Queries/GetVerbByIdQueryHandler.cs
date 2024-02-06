@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using HebrewVerb.Application.Common.Enums;
 using HebrewVerb.Application.Common.Mappers;
 using HebrewVerb.Application.Feature.Abstractions;
 using HebrewVerb.Application.Interfaces;
@@ -26,7 +27,8 @@ public class GetVerbByIdQueryHandler(IUnitOfWork unitOfWork) : BaseRequestHandle
         var future = _unitOfWork.VerbRepository.GetTenseByVerbId(verb.Id, Zman.Future) as Future;
         var imperative = _unitOfWork.VerbRepository.GetTenseByVerbId(verb.Id, Zman.Imperative) as Imperative;
 
-        var dto = verb.ToDto(Lang.Russian, shoresh, past, present, future, imperative);
+        // TODO Multi Language case
+        var dto = verb.ToDto(AppLanguage.Russian, shoresh, past, present, future, imperative);
         return Task.FromResult(Result.Success(dto));
     }
 }

@@ -9,6 +9,8 @@ public class Verb : BaseEntity<int>
 {
     public static readonly Verb Empty = new();
 
+    #region Properties
+
     public WordForm Infinitive { get; private set; } = WordForm.Default;
 
     public Binyan Binyan { get; private set; } = Binyan.Undefined;
@@ -39,15 +41,23 @@ public class Verb : BaseEntity<int>
 
     public Imperative Imperative { get; private set; } = Imperative.Empty;
 
+    [ForeignKey("Translation")]
+    public int TranslationId { get; private set; }
+
+    public Translation Translation { get; private set; } = Translation.Default;
+
     public UseFrequency UseFrequency { get; private set; }
 
-    public string? Translate { get; private set; }
     public string? ExtraInfo { get; private set; }
     public bool IsArchaic { get; private set; } = false;
     public bool IsLiterary { get; private set; } = false;
     public bool IsSlang { get; private set; } = false;
 
     public ICollection<VerbModel> VerbModels { get; } = [];
+
+    public ICollection<Preposition> Prepositions { get; } = [];
+
+    #endregion Properties
 
     public IConjugation? Tense(Zman zman) => zman.Name switch
     {
@@ -60,7 +70,7 @@ public class Verb : BaseEntity<int>
 
     public WordForm? GetForm(Zman zman, Guf guf) => Tense(zman)?.Conjugate(guf);
 
-    //public static WordForm? GetForm(IConjugation tense, Guf guf) => tense.Conjugate(guf);
+    #region Constructors
 
     private Verb() { }
 
@@ -72,9 +82,9 @@ public class Verb : BaseEntity<int>
         Present present,
         Future future,
         Imperative imperative,
+        Translation translation,
         UseFrequency useFrequency = UseFrequency.Undefined,
-        string translate = "",
-        string extraInfo ="",
+        string? extraInfo = null,
         bool isArchaic = false,
         bool isLiterary = false,
         bool isSlang = false)
@@ -87,10 +97,12 @@ public class Verb : BaseEntity<int>
         Future = future;
         Imperative = imperative;
         UseFrequency = useFrequency;
-        Translate = translate;
+        Translation = translation;
         ExtraInfo = extraInfo;
         IsArchaic = isArchaic;
         IsLiterary = isLiterary;
         IsSlang = isSlang;
     }
+
+    #endregion Constructors
 }

@@ -1,0 +1,85 @@
+﻿@using HebrewVerb.Application.Models
+@using HebrewVerb.Application.Feature.Verbs.Queries;
+@inject IMediator mediator
+
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<VerbInfo>>>(ServerReload))"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Verbs</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="id_field" T="VerbInfo">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="inf_field" T="VerbInfo">Infinitive</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="bin_field" T="VerbInfo">Binyan</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="tran_field" T="VerbInfo">Translation</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="giz_field" T="VerbInfo">Gizra</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.VerbId</MudTd>
+            <MudTd DataLabel="Infunitive">@context.Infinitive</MudTd>
+            <MudTd DataLabel="Binyan">@context.Binyan</MudTd>
+            <MudTd DataLabel="Translation">@context.Translate</MudTd>
+            <MudTd DataLabel="Gizras">@string.Join(" | ", @context.Gizras)</MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    @code {
+    private IEnumerable<VerbInfo> pagedData;
+    private MudTable<VerbInfo> table;
+
+    private int totalItems;
+    private string searchString = null;
+
+    /// <summary>
+    /// Here we simulate getting the paged, filtered and ordered data from the server
+    /// </summary>
+    private async Task<TableData<VerbInfo>> ServerReload(TableState state)
+    {
+        var query = new GetVerbInfosByFilterQuery(Filter.Empty);
+        IEnumerable<VerbInfo> data = await mediator.Send(query);
+        data = data.Where(element =>
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.Infinitive.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }).ToArray();
+        totalItems = data.Count();
+        switch (state.SortLabel)
+        {
+            case "id_field":
+                data = data.OrderByDirection(state.SortDirection, o => o.VerbId);
+                break;
+            case "inf_field":
+                data = data.OrderByDirection(state.SortDirection, o => o.Infinitive);
+                break;
+            case "bin_field":
+                data = data.OrderByDirection(state.SortDirection, o => o.Binyan);
+                break;
+        }
+
+        pagedData = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        return new TableData<VerbInfo>() { TotalItems = totalItems, Items = pagedData };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+}
+

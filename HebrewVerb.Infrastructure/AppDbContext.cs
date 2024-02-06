@@ -1,7 +1,6 @@
 ﻿using HebrewVerb.Application.Entities;
 using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Domain.Entities;
-using HebrewVerb.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +19,8 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>, 
     public DbSet<Future> Futures { get; set; }
     public DbSet<Imperative> Imperatives { get; set; }
     public DbSet<FilterSnapshot> FilterSnapshots { get; set; }
+    public DbSet<Translation> Translations { get; set; }
+    public DbSet<Preposition> Prepositions { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     { }
@@ -35,6 +36,6 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>, 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=appDb.db");
+        optionsBuilder.UseMySQL();
     }
 }

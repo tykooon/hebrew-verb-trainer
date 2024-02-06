@@ -1,0 +1,61 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>@pageTitle</PageTitle>
+
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudPaper Class="ma-3 pa-3">
+        <MudText Align="Align.Center" Typo="Typo.h4">Добро пожаловать / ברוכימ הבאים</MudText>
+        <MudText Align="Align.Start" Typo="Typo.h6">
+            Проект HebVerb - тренажёр спряжения глаголов иврита, с помощью которого
+            легко совершенствовать свои навыки в спряжении глаголов разных групп.
+        </MudText>
+        <MudDivider Class="m-1"></MudDivider>
+        <MudText Align="Align.Start" Typo="Typo.body1">
+            <b>Важно!</b> Задачей тренажёра не является помощь в заучивании их перевода (хотя посмотреть
+            перевод неизвестного глагола здесь вполне возможно). Основная цель именно в доведении
+            до автоматизма постановки предложенного глагола в нужную форму. И для такой отработки
+            у накс есть несколько опций:
+        </MudText>
+        <MudList>
+            <MudListItem Icon="@Icons.Material.Filled.ArrowRight">
+                <MudText Align="Align.Start" Typo="Typo.body1">
+                    Тренировка с произвольными глаголами, подобранными с учётом фильтра (можно указать
+                    биньян, гизру, модель и время глагола). В этом случае будут предложены карточки 
+                    случайных глаголов, правильные формы которых будут скрыты
+                    (по умолчанию - 10 глаголов, но число можно настраивать).
+                <MudIconButton Icon="@Icons.Material.Filled.FastForward" Variant="Variant.Text" Color="Color.Secondary" Size="Size.Small" Href="\training"/>
+            </MudText>
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.ArrowRight">
+                <MudText Align="Align.Start" Typo="Typo.body1">
+                    Тренировка с набором глаголов выбранных инживидуально. Те же карточки, но набор
+                    глаголов именно тот, с которым хочется поработать отдельно. Наборы, как и фильтры
+                    из предыдущего пункта можно сохранять в своём аккаунте (при условии входа на сайт).
+                    <MudIconButton Icon="@Icons.Material.Filled.FastForward" Variant="Variant.Text" Color="Color.Secondary" Size="Size.Small" Href="\verbsets" />
+                </MudText>
+
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.ArrowRight">
+                <MudText Align="Align.Start" Typo="Typo.body1">
+                    В перспективе планируется добавить ещё один вид тренировки для отработки
+                    употребляемых с глаголом предлогов. Это ещё один из аспектов иврита, который 
+                    хочется доводить до автоматизма. И в этом случае интенсивная практика - самый
+                    надёжный способ. 
+                    <MudIconButton Icon="@Icons.Material.Filled.FastForward" Variant="Variant.Text" Color="Color.Default" Size="Size.Small" Href="#" />
+                </MudText>
+            </MudListItem>
+         </MudList>
+         <MudText Align="Align.Center" Typo="Typo.h6" Class="my-2">
+            Вот и всё. Не теряем время. Выбираем нужные настройки и запускаем тренировку. Удачи!
+         </MudText>
+    </MudPaper>
+    <div class="d-flex justify-content-center">
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large">Начнём</MudButton>
+    </div>
+</MudContainer>
+
+@code{
+    private string pageTitle = "Let's start!";
+}
