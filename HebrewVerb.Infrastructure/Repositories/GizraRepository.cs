@@ -11,6 +11,6 @@ public class GizraRepository : Repository<Gizra, int>, IGizraRepository
 
     protected override IQueryable<Gizra> MakeInclusions()
     {
-        return base.MakeInclusions().Include(g => g.Shoreshes);
+        return base.MakeInclusions();
     }
 }

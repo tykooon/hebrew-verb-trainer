@@ -1,5 +1,5 @@
 ﻿using HebrewVerb.Domain.Entities;
-using HebrewVerb.Domain.Enums;
+using HebrewVerb.SharedKernel.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

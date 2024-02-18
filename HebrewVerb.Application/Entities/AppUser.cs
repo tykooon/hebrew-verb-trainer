@@ -1,6 +1,5 @@
 ﻿using HebrewVerb.Application.Common.Enums;
 using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HebrewVerb.Application.Entities;
 
@@ -12,5 +11,5 @@ public class AppUser : IdentityUser<int>
 
     public AppUserSettings Settings { get; set; } = AppUserSettings.Default;
 
-    public ICollection<FilterSnapshot> FilterSnapshots { get; set; } = [];
+    public ICollection<AppFilter> Filters { get; set; } = [];
 }

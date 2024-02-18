@@ -1,7 +1,7 @@
 ﻿using Ardalis.GuardClauses;
-using HebrewVerb.Domain.Common;
-using HebrewVerb.Domain.Enums;
 using HebrewVerb.Domain.Interfaces;
+using HebrewVerb.SharedKernel.Abstractions;
+using HebrewVerb.SharedKernel.Enums;
 
 namespace HebrewVerb.Domain.Entities;
 
@@ -9,15 +9,15 @@ public class Past : BaseEntity<int>, IConjugation
 {
     public static readonly Past Empty = new();
 
-    public WordForm MS1 { get; private set; } = WordForm.Default;
-    public WordForm MP1 { get; private set; } = WordForm.Default;
-    public WordForm MS2 { get; private set; } = WordForm.Default;
-    public WordForm FS2 { get; private set; } = WordForm.Default;
-    public WordForm MP2 { get; private set; } = WordForm.Default;
-    public WordForm FP2 { get; private set; } = WordForm.Default;
-    public WordForm MS3 { get; private set; } = WordForm.Default;
-    public WordForm FS3 { get; private set; } = WordForm.Default;
-    public WordForm MP3 { get; private set; } = WordForm.Default;
+    public WordForm MS1 { get; set; } = WordForm.Default;
+    public WordForm MP1 { get; set; } = WordForm.Default;
+    public WordForm MS2 { get; set; } = WordForm.Default;
+    public WordForm FS2 { get; set; } = WordForm.Default;
+    public WordForm MP2 { get; set; } = WordForm.Default;
+    public WordForm FP2 { get; set; } = WordForm.Default;
+    public WordForm MS3 { get; set; } = WordForm.Default;
+    public WordForm FS3 { get; set; } = WordForm.Default;
+    public WordForm MP3 { get; set; } = WordForm.Default;
 
     public WordForm FS1 => MS1;
     public WordForm FP1 => MP1;

@@ -1,4 +1,4 @@
-﻿<span class="mobile-hide">@Intro &nbsp;</span> @Main <span class="mobile-hide">&nbsp;@Outtro</span>
+﻿<span class="mobile-hide">@Intro &nbsp;</span> @ChildContent <span class="mobile-hide">&nbsp;@Outtro</span>
 
 @code
 {
@@ -6,7 +6,7 @@
     public string Intro { get; set; } = "";
 
     [Parameter]
-    public string Main { get; set; } = "";
+    public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
     public string Outtro { get; set; } = "";

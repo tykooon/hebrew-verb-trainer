@@ -1,0 +1,30 @@
+﻿<MudCard Outlined Square=false Class="my-2">
+    <MudCardHeader  Style="background-color:aliceblue" Class="py-2 ps-4 pe-1 d-flex justify-content-between">
+         <MudText Typo="Typo.h6">@HeaderText</MudText>
+         <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" Color="Color.Success" Href=@Href />
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText Typo="Typo.body1" Color="Color.Secondary">@SubtitleText</MudText>
+        <MudText Typo="Typo.body2">
+            @ChildContent
+        </MudText>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public string HeaderText { get; set; } = "";
+
+    [Parameter]
+    public string SubtitleText { get; set; } = "";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string Href { get; set; } = "#";
+
+
+
+    
+}

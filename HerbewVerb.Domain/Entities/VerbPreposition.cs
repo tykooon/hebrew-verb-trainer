@@ -1,6 +1,6 @@
-﻿using HebrewVerb.Domain.Common;
+﻿using HebrewVerb.SharedKernel.Abstractions;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices;
+
 
 namespace HebrewVerb.Domain.Entities;
 

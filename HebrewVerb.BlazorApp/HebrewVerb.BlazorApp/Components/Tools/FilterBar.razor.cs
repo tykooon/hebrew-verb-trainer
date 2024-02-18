@@ -1,26 +1,34 @@
 ﻿using HebrewVerb.Application.Models;
+using HebrewVerb.Application.Common.Enums;
 using HebrewVerb.BlazorApp.Services;
+using HebrewVerb.SharedKernel.Extensions;
+
 
 namespace HebrewVerb.BlazorApp.Components.Tools;
 
 public partial class FilterBar
 {
-    private IEnumerable<BinyanDto> BinyanList { get; set; } = [];
-    private IEnumerable<GizraDto> GizraList { get; set; } = [];
-    private IEnumerable<VerbModelDto> VerbModelList { get; set; } = [];
-    private IEnumerable<ZmanDto> ZmanList { get; set; } = [];
-
-    public async Task RefreshFilter()
+    public async Task RefreshFilter(bool firstRender = false)
     {
-        GizraList = await _cache.GetGizraList(_mediator) ?? [];
-        Gizras = GizraList.Where(g => CurrentFilter.Gizras.Contains(g));
+        AllowedGizras = await _cache.GetGizraList(_mediator) ?? [];
+        AllowedVerbModels = await _cache.GetVerbModelList(_mediator) ?? [];
 
-        VerbModelList = await _cache.GetVerbModelList(_mediator) ?? [];
-        VerbModels = VerbModelList.Where(vm => CurrentFilter.VerbModels.Contains(vm));
-        StateHasChanged();
+        var currentBinyans = CurrentFilter.Binyans.GetBinyanNames();
+        if (currentBinyans.Any())
+        {
+            AllowedGizras = AllowedGizras.Where(g => currentBinyans.Intersect(g.Binyans).Any());
+            AllowedVerbModels = AllowedVerbModels.Where(vm => currentBinyans.Intersect(vm.Binyans).Any());
+        }
+        CurrentFilter.Gizras = CurrentFilter.Gizras.Intersect(AllowedGizras).ToHashSet();
+        CurrentFilter.VerbModels = CurrentFilter.VerbModels.Intersect(AllowedVerbModels).ToHashSet();
+
+        if (!firstRender)
+        {
+            StateHasChanged();
+        }
     }
 
-    private async Task ExpandedChanged(bool newVal)
+    public async Task ExpandedChanged(bool newVal)
     {
         if (newVal)
         {
@@ -36,18 +44,15 @@ public partial class FilterBar
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await RefreshFilter(true);
 
-        BinyanList = _cache.GetBinyanList() ?? [];
-        Binyans = BinyanList.Where(b => CurrentFilter.Binyans.Select(x => x.Name).Contains(b.Name));
+        // TODO GetCurrentUserDetails from injected service
+        _currentUserDetails = new(0, "testuser", "test@hebverb.info", [""])
+        {
+            Status = AppUserStatus.Basic
+        };
+        // TODO Get NameList of UserFilters if possible
 
-        ZmanList = _cache.GetZmanList() ?? []; ;
-        Zmans = ZmanList.Where(z => CurrentFilter.Zmans.Contains(z));
-
-        GizraList = await _cache.GetGizraList(_mediator) ?? [];
-        Gizras = GizraList.Where(g => CurrentFilter.Gizras.Contains(g));
-
-        VerbModelList = await _cache.GetVerbModelList(_mediator) ?? [];
-        VerbModels = VerbModelList.Where(vm => CurrentFilter.VerbModels.Contains(vm));
     }
 }
 

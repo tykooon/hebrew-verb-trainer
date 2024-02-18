@@ -12,7 +12,6 @@ public static class ShoreshMapper
         Id = shoresh.Id,
         ShortName = shoresh.Short,
         NameWithDots = shoresh.WithDots,
-        Gizras = shoresh.Gizras.Select(x => x.Name),
         VerbIds = shoresh.Verbs.Select(v => v.Id)
     };
 }

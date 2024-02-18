@@ -68,6 +68,24 @@ public class VerbController : BaseApiController
         return addRes.IsSuccess ? Ok(addRes) : BadRequest(string.Join(", ", addRes.Errors));
     }
 
+    [HttpPost]
+    [Route("updateFromUri")]
+    public async Task<IActionResult> UpdateFromUri([FromBody] AddVerbFromUriRequest request)
+    {
+        var query = new GetVerbFromUriQuery(request.Url, request.IsPassive);
+        var res = await _mediator.Send(query);
+
+        if (res == null)
+        {
+            return BadRequest("Unable to get verb forms from URL");
+        }
+
+        var command = new UpdateVerbCommand(res);
+        var updateRes = await _mediator.Send(command);
+
+        return updateRes.IsSuccess ? Ok(updateRes) : BadRequest(string.Join(", ", updateRes.Errors));
+    }
+
     [HttpGet]
     [Route("getCards")]
     public async Task<IActionResult> GetFilteredVerbCards(
@@ -77,8 +95,8 @@ public class VerbController : BaseApiController
         [FromQuery] IEnumerable<string> gizras,
         [FromQuery] IEnumerable<string> verbModels)
     {
-        var filter = Filter.FromParams(binyans, gizras, verbModels, zmans);
-        var query = new GetTrainingSetByFilterQuery(filter, take);
+        var filter = Filter.FromParams("", binyans, gizras, verbModels, zmans, take);
+        var query = new GetTrainingSetByFilterQuery(filter);
         var res = await _mediator.Send(query);
 
         return Ok(res);

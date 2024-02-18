@@ -1,5 +1,5 @@
-﻿using HebrewVerb.Domain.Common;
-using HebrewVerb.Domain.Enums;
+﻿using HebrewVerb.SharedKernel.Abstractions;
+using HebrewVerb.SharedKernel.Enums;
 
 namespace HebrewVerb.Domain.Entities;
 
@@ -12,11 +12,11 @@ public class Translation : BaseEntity<int>
     public string RussianShort { get; private set; } = "";
     public string EnglishShort { get; private set; } = "";
 
-    public string Get(Lang lang = Lang.Russian, bool isShort = false) =>
+    public string Get(Language lang = Language.Russian, bool isShort = false) =>
         lang switch
         {
-            Lang.Russian => isShort ? RussianShort : Russian,
-            Lang.English => isShort ? EnglishShort : English,
+            Language.Russian => isShort ? RussianShort : Russian,
+            Language.English => isShort ? EnglishShort : English,
             _ => isShort ? RussianShort : Russian,
         };
 
@@ -30,11 +30,11 @@ public class Translation : BaseEntity<int>
 
     public Translation() { }
 
-    public void Set(string value, Lang lang = Lang.Russian, bool isShort = false)
+    public void Set(string value, Language lang = Language.Russian, bool isShort = false)
     {
         switch (lang)
         {
-            case Lang.Russian:
+            case Language.Russian:
                 if(isShort)
                 {
                     RussianShort = value;
@@ -44,7 +44,7 @@ public class Translation : BaseEntity<int>
                     Russian = value;
                 }
                 break;
-            case Lang.English:
+            case Language.English:
                 if (isShort)
                 {
                     EnglishShort = value;

@@ -1,73 +1,103 @@
-﻿using HebrewVerb.Application.Common.Enums;
-using HebrewVerb.Domain.Enums;
+﻿using HebrewVerb.SharedKernel.Enums;
 using HtmlAgilityPack;
 
 namespace HebrewVerb.Application.Common.Helpers;
 
 internal static class ParseHelpers
 {
-    const string UNDEFINED = "undefined";
+    internal const string Undefined = nameof(Undefined);
+    internal const string Shoresh = nameof(Shoresh);
+    internal const string Translation = nameof(Translation);
+    internal const string Binyan = nameof(Binyan);
 
-    internal static bool TryGetLanguage(string lang, out AppLanguage res)
+    internal static bool TryGetLanguage(string lang, out Language res)
     {
-        switch (lang.ToLower())
+        return lang.ToLower() switch
         {
-            case "ru":
-                res = AppLanguage.Russian;
-                return true;
-            case "en":
-                res = AppLanguage.English;
-                return true;
-            case "he":
-                res = AppLanguage.Hebrew;
-                return true;
-            default:
-                res = AppLanguage.English;
-                return false;
-        } 
-    }
-
-    internal static string? GetBinyan(this HtmlDocument doc)
-    {
-        var node = doc.DocumentNode.SelectNodes("//h2/following::p/b")?.FirstOrDefault();
-        return node != null ? node.InnerText : UNDEFINED;
-    }
-
-    internal static string? GetTranslation(this HtmlDocument doc)
-    {
-        var node = doc.DocumentNode.SelectNodes("//h3/following::div")?.FirstOrDefault();
-        return node != null ? node.InnerText : UNDEFINED;
-    }
-
-    internal static string? GetShoresh(this HtmlDocument doc)
-    {
-        var node = doc.DocumentNode.SelectNodes("//h2/following::a")?.FirstOrDefault();
-        return node != null ? node.InnerText : UNDEFINED;
-    }
-
-    // TODO Clear from possible html. Filter to only hebrew symbols
-    internal static string? GetVerbForm(this HtmlDocument doc, string form)
-    {
-        var node = doc.DocumentNode.SelectNodes("//*[@id=\""+form+"\"]//span[@class='menukad']")?.FirstOrDefault();
-        return node != null ? node.InnerText : UNDEFINED;
-    }
-
-    internal static string? GetVerbFormTranscript(this HtmlDocument doc, string form)
-    {
-        var node = form switch
-        {
-            "PERF-2mp" or 
-            "PERF-2fp" or 
-            "IMPF-2fp" or
-            "IMPF-3fp" or
-            "IMP-2fp"  or
-            "passive-PERF-2mp" or
-            "passive-PERF-2fp" or
-            "passive-IMPF-2fp" or
-            "passive-IMPF-3fp" or
-            "passive-IMP-2fp" => doc.DocumentNode.SelectNodes("//*[@id=\"" + form + "\"]/div[@class='aux-forms hidden']//span[@class='transcription']")?.FirstOrDefault(),
-            _ => doc.DocumentNode.SelectNodes("//*[@id=\"" + form + "\"]//div[@class='transcription']")?.FirstOrDefault()
+            "ru" => (res = Language.Russian) == res,
+            "en" => (res = Language.English) == res,
+            "he" => (res = Language.Hebrew) == res,
+            "es" => (res = Language.Spanish) == res,
+            _ => (res = Language.English) != res
         };
-        return node != null ? node.InnerHtml : UNDEFINED;
+    }
+
+    internal static string GetLangAttribute(this HtmlDocument doc)
+    {
+        var lang = doc.DocumentNode.SelectSingleNode("//html").Attributes["lang"].Value;
+        return lang;
+    }
+
+    internal static string GetInfo(this HtmlDocument doc, string InfoName, Language lang = Language.Russian)
+    {
+        var xpath = lang switch
+        {   // At now it's equivalent for all languages
+            _ => InfoName switch
+            {
+                Binyan => "//h2/following::p/b",
+                Shoresh => "//h2/following::a",
+                Translation => "//h3/following::div",
+                _ => ""
+            }
+        };
+        return doc.ExtractFromNode(xpath);
+    }
+
+    internal static string GetVerbForm(this HtmlDocument doc, string form, bool includeNikkud = true, Language lang = Language.Russian)
+    {
+        var classname = includeNikkud ? "menukad" : "chaser";
+        var xpath = lang switch
+        {
+            _ => string.Format("//*[@id=\"{0}\"]//span[@class='{1}']", form, classname)
+        };
+        return doc.ExtractFromNode(xpath).RemoveNonHebrew(includeNikkud);
+    }
+
+    internal static string GetVerbFormTranscript(this HtmlDocument doc, string form, Language lang = Language.Russian)
+    {
+        var xpath = lang switch
+        {
+            // At now it's equivalent for all languages
+            _ => form switch
+            {
+                "PERF-2mp" or "PERF-2fp" or
+                "IMPF-2fp" or "IMPF-3fp" or "IMP-2fp" or
+                "passive-PERF-2mp" or "passive-PERF-2fp" or
+                "passive-IMPF-2fp" or "passive-IMPF-3fp" or
+                "passive-IMP-2fp" => "//*[@id=\"" + form + "\"]/div[@class='aux-forms hidden']//span[@class='transcription']",
+                _ => "//*[@id=\"" + form + "\"]//div[@class='transcription']"
+            }
+        };
+        return doc.ExtractFromNode(xpath, true);
+    }
+
+    private static string ExtractFromNode(this HtmlDocument doc, string xpath, bool withHtml = false)
+    {
+        var node = doc.DocumentNode.SelectNodes(xpath)?.FirstOrDefault();
+        return node != null
+            ? (withHtml ? node.InnerHtml : node.InnerText)
+            : Undefined;
+    }
+
+    internal static HashSet<char> HebrewAlphabet =
+        ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'כ', 'ך', 'ל', 'מ', 'ם',
+            'נ', 'ן', 'ס', 'ע', 'פ', 'ף', 'צ', 'ץ', 'ק', 'ר', 'ש', 'ת', '\'', '־'];
+
+    internal static HashSet<char> HebrewNikkud =
+    ['ְ', 'ֱ', 'ֲ', 'ֳ', 'ִ', 'ֵ', 'ֶ', 'ַ', 'ָ', 'ׂ', 'ׁ', 'ֹ', 'ּ', 'ֻ'];
+
+    public static string RemoveNonHebrew(this string word, bool nikkudAllowed = true)
+    {
+        char[] buffer = new char[word.Length];
+        int index = 0;
+        foreach (char c in word)
+        {
+            if (HebrewAlphabet.Contains(c) || (nikkudAllowed && HebrewNikkud.Contains(c)))
+            {
+                buffer[index] = c;
+                index++;
+            }
+        }
+        return new string(buffer, 0, index);
     }
 }

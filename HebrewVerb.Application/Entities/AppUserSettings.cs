@@ -1,6 +1,6 @@
-﻿using HebrewVerb.Domain.Common;
+﻿using HebrewVerb.SharedKernel.Abstractions;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace HebrewVerb.Application.Entities;
 
@@ -15,6 +15,6 @@ public class AppUserSettings : BaseEntity<int>
     [ForeignKey("AppUser")]
     public int AppUserId { get; private set; }
 
-    //[InverseProperty("AppUserSettings")]
+    [JsonIgnore]
     public AppUser AppUser { get; private set; } = new();
 }

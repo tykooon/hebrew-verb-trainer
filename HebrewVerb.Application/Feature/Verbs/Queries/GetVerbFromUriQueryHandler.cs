@@ -6,15 +6,15 @@ namespace HebrewVerb.Application.Feature.Verbs.Queries;
 public class GetVerbFromUriQueryHandler :
     IRequestHandler<GetVerbFromUriQuery, VerbDto>
 {
-    public Task<VerbDto> Handle(GetVerbFromUriQuery request, CancellationToken cancellationToken)
+    public async Task<VerbDto> Handle(GetVerbFromUriQuery request, CancellationToken cancellationToken)
     {
-        var result = VerbParser.FromUri(request.url, request.passive);
+        var result = await VerbParser.FromUri(request.url, request.passive);
 
         if (!result.IsSuccess)
         {
-            return Task.FromResult(new VerbDto());
+            return new VerbDto();
         }
 
-        return Task.FromResult(result.Value);
+        return result.Value;
     }
 }

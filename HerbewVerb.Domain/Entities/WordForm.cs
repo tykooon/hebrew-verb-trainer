@@ -1,4 +1,4 @@
-﻿using HebrewVerb.Domain.Common;
+﻿using HebrewVerb.SharedKernel.Abstractions;
 
 namespace HebrewVerb.Domain.Entities;
 
@@ -6,22 +6,22 @@ public class WordForm : BaseEntity<int>
 {
     public static readonly WordForm Default = new();
 
-    public string Hebrew { get; private set; } = String.Empty;
+    public string Hebrew { get; set; } = String.Empty;
 
-    public string? HebrewNiqqud { get; private set; }
+    public string HebrewNiqqud { get; set; } = String.Empty;
 
-    public string? TranscriptionRus { get; private set; }
+    public string? TranscriptionRus { get; set; }
 
-    public int StressLetterRus { get; private set; }
+    public int StressLetterRus { get; set; }
 
-    public string? TranscriptionEng {  get; private set; }
+    public string? TranscriptionEng {  get; set; }
 
-    public int StressLetterEng { get; private set; }
+    public int StressLetterEng { get; set; }
 
     private WordForm() { }
 
     public WordForm(string hebrew,
-        string? hebrewNiqqud = null,
+        string hebrewNiqqud,
         string? transcriptionRus = null,
         int stressLetterRus = 0,
         string? transcriptionEng = null,
@@ -46,5 +46,4 @@ public class WordForm : BaseEntity<int>
         TranscriptionEng = transcriptionEng;
         StressLetterEng = stressEng;
     }
-
 }

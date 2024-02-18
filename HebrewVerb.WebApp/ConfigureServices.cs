@@ -11,7 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddJwtTokenOptions(this IServiceCollection services, IConfiguration configuration)
     {
         // Add Jwt Token Options
-        var jwtSettings = Guard.Against.Null(configuration.GetSection("JwtOptions"));
+        var jwtSettings = configuration.GetSection("JwtOptions");
         var secret = Guard.Against.NullOrEmpty(jwtSettings.GetValue<string>("Secret"));
         var issuer = Guard.Against.NullOrEmpty(jwtSettings.GetValue<string>("Issuer"));
         var audience = Guard.Against.NullOrEmpty(jwtSettings.GetValue<string>("Audience"));

@@ -1,6 +1,5 @@
 ﻿using HebrewVerb.Application.Interfaces.Repositories;
 using HebrewVerb.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace HebrewVerb.Infrastructure.Repositories;
 

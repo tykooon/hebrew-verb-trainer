@@ -1,7 +1,7 @@
 ﻿using HebrewVerb.Application.Models;
 using HebrewVerb.Domain.Entities;
-using HebrewVerb.Domain.Enums;
 using HebrewVerb.Domain.Interfaces;
+using HebrewVerb.SharedKernel.Enums;
 
 namespace HebrewVerb.Application.Interfaces.Repositories;
 

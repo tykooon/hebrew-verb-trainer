@@ -10,3 +10,228 @@ Accept-Language: en-US,en;q=0.5
 {
   "url": "https://www.pealim.com/ru/dict/2092-leheratzeach/"
 }
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/700-lachshov/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/1-lichtov/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/2-ledaber/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/2-ledaber/",
+  "isPassive" : true
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/2091-lirtzoach/"
+}
+
+###
+
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/3-laasot/"
+}
+
+###
+
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/7-lalechet/"
+}
+
+###
+
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/51-laavod/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/724-lehitchaten/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/877-lechabed/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/877-lechabed/",
+  "isPassive": true
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/918-lehikanes/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/1356-lesaken/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/1356-lesaken/",
+  "isPassive": true
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/67-leehov/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/4-lagur/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/454-lihyot/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/9-lashevet/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/1850-lekabel/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/1850-lekabel/",
+  "isPassive": true
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/55-lomar/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/1285-latet/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/39-lishol/"
+}
+
+###
+POST https://{{host}}/api/Verb/addFromUri
+Content-Type: application/json
+Accept-Language: en-US,en;q=0.5
+
+{
+  "url": "https://www.pealim.com/ru/dict/40-laanot/"
+}
+
+###

@@ -2,6 +2,7 @@
 using HebrewVerb.Application.Feature.Abstractions;
 using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Domain.Entities;
+using HebrewVerb.SharedKernel.Enums;
 using MediatR;
 
 namespace HebrewVerb.Application.Feature.VerbModels.Commands;
@@ -17,7 +18,8 @@ public class AddNewVerbModelCommandHandler(IUnitOfWork unitOfWork) : BaseRequest
             return Result.Unavailable($"Verb Model with name {request.Name} already exists.");
         }
 
-        var verbModel = new VerbModel(request.Name, request.Description);
+        var binyans = request.Binyans.Select(n => Binyan.FromName(n, true));
+        var verbModel = new VerbModel(request.Name, request.Description, [.. binyans]);
         _unitOfWork.VerbModelRepository.Add(verbModel);
         await _unitOfWork.CommitAsync();
         return Result.Success();

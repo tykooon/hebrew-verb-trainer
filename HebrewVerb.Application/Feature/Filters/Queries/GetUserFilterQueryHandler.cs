@@ -14,14 +14,12 @@ public class GetUserFilterQueryHandler(IUnitOfWork unitOfWork) :
         CancellationToken cancellationToken)
     {
         var result = _unitOfWork
-            .FilterSnapshotRepository
-            .FindAllBy(x => x.AppUser.Id == request.UserId);
+            .FilterRepository
+            .FindAllBy(x => x.AppUser.Id == request.UserId && x.FilterName == request.FilterName)
+            .SingleOrDefault();
 
-        if (result == null || !result.Any())
-        {
-            return Task.FromResult(new Filter());
-        }
-
-        return Task.FromResult(Filter.FromJson(result.First().FilterJson));
+        return result == null 
+            ? Task.FromResult(new Filter()) 
+            : Task.FromResult(result.Filter);
     }
 }

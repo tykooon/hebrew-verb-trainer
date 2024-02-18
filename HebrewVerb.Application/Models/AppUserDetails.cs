@@ -1,4 +1,6 @@
 ﻿
+using HebrewVerb.Application.Common.Enums;
+
 namespace HebrewVerb.Application.Models;
 
 public class AppUserDetails
@@ -16,6 +18,8 @@ public class AppUserDetails
     public string Username { get; set; } = string.Empty;
 
     public string Email { get; set; } = string.Empty;
+
+    public AppUserStatus Status { get; set; } = AppUserStatus.Basic;
 
     public List<string> Roles { get; set; } = [];
 

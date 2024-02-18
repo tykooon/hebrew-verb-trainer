@@ -1,10 +1,9 @@
 ﻿using Ardalis.Result;
-using HebrewVerb.Application.Common.Enums;
 using HebrewVerb.Application.Common.Mappers;
 using HebrewVerb.Application.Feature.Abstractions;
 using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Domain.Entities;
-using HebrewVerb.Domain.Enums;
+using HebrewVerb.SharedKernel.Enums;
 using MediatR;
 
 namespace HebrewVerb.Application.Feature.Verbs.Queries;
@@ -28,7 +27,7 @@ public class GetVerbByIdQueryHandler(IUnitOfWork unitOfWork) : BaseRequestHandle
         var imperative = _unitOfWork.VerbRepository.GetTenseByVerbId(verb.Id, Zman.Imperative) as Imperative;
 
         // TODO Multi Language case
-        var dto = verb.ToDto(AppLanguage.Russian, shoresh, past, present, future, imperative);
+        var dto = verb.ToDto(Language.Russian, shoresh, past, present, future, imperative);
         return Task.FromResult(Result.Success(dto));
     }
 }

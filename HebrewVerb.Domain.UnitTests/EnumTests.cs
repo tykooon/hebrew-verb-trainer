@@ -1,4 +1,4 @@
-using HebrewVerb.Domain.Enums;
+using HebrewVerb.SharedKernel.Enums;
 
 namespace HebrewVerb.DomainUnitTests;
 

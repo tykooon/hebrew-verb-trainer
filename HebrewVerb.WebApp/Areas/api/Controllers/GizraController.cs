@@ -24,9 +24,9 @@ public class GizraController : BaseApiController
 
     [HttpPost]
     [Route("addNew")]
-    public async Task<IActionResult> AddNew(string name, string description)
+    public async Task<IActionResult> AddNew(string name, string description, params string[] binyanNames)
     {
-        var command = new AddNewGizraCommand(name, description);
+        var command = new AddNewGizraCommand(name, description, binyanNames);
         var res = await _mediator.Send(command);
         return res.IsSuccess ? Created() : BadRequest(string.Join(", ", res.Errors));
     }

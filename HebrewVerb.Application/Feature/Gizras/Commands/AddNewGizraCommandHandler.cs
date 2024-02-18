@@ -2,6 +2,7 @@
 using HebrewVerb.Application.Feature.Abstractions;
 using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Domain.Entities;
+using HebrewVerb.SharedKernel.Enums;
 using MediatR;
 
 namespace HebrewVerb.Application.Feature.Gizras.Commands;
@@ -17,7 +18,8 @@ public class AddNewGizraCommandHandler(IUnitOfWork unitOfWork) : BaseRequestHand
             return Result.Unavailable($"Gizra with name {request.Name} already exists.");
         }
 
-        var gizra = new Gizra(request.Name, request.Description);
+        var binyans = request.Binyans.Select(n => Binyan.FromName(n, true));
+        var gizra = new Gizra(request.Name, request.Description, [.. binyans]);
         _unitOfWork.GizraRepository.Add(gizra);
         await _unitOfWork.CommitAsync();
         return Result.Success();

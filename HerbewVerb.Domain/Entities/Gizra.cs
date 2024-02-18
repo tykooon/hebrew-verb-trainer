@@ -1,4 +1,5 @@
-﻿using HebrewVerb.Domain.Common;
+﻿using HebrewVerb.SharedKernel.Abstractions;
+using HebrewVerb.SharedKernel.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -12,14 +13,17 @@ public class Gizra : BaseEntity<int>
 
     public string? Description { get; private set; }
 
+    public ICollection<Binyan> Binyans { get; private set; } = [];
+
     [JsonIgnore]
     [InverseProperty("Gizras")]
-    public ICollection<Shoresh> Shoreshes { get; } = [];
+    public ICollection<Verb> Verbs { get; } = [];
 
-    public Gizra(string name, string description)
+    public Gizra(string name, string description, params Binyan[] binyans)
     {
         Name = name;
         Description = description;
+        Binyans = binyans;
     }
 
     private Gizra() { }

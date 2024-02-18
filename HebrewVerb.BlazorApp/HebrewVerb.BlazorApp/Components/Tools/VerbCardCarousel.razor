@@ -1,0 +1,94 @@
+﻿@using HebrewVerb.Application.Entities
+@using HebrewVerb.Application.Feature.VerbCards.Queries
+@using Application.Common.Mappers;
+@using HebrewVerb.Application.Models
+@inject IMediator _mediator
+
+<div id="carouselExample" class="carousel slide">
+    <div class="d-block">
+                <div class ="carousel-inner">
+                @foreach (var card in Cards)
+                {
+                    <div class="carousel-item @activeClass()">
+                        <VerbFormCard CardViewModel="@card"></VerbFormCard>
+                    </div>
+                }
+                </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev" onclick=@HideFilter>
+                <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Default"></MudIcon>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next" onclick=@HideFilter>
+                <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Color="Color.Default"></MudIcon>
+                <span class="visually-hidden">Next</span>
+            </button>
+    </div>
+</div>
+
+
+@code{
+    [Parameter]
+    public FilterViewModel FilterViewModel { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnRestart { get; set; }
+
+    [Parameter]
+    public EventCallback HideFilter { get; set; }
+
+    private bool _firstActive = true;
+
+    private string activeClass()
+    {
+        if (_firstActive)
+        {
+            _firstActive = false;
+            return "active";
+        }
+        return "";
+    }
+
+    private TrainingSet _trainingSet = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var filter = FilterViewModel.ToFilter();
+        var query = new GetTrainingSetByFilterQuery(filter);
+        var res = await _mediator.Send(query);
+        if(res != null)
+        {
+            _trainingSet = res;
+        }
+        MakeCards();
+    }
+
+    private void MakeCards()
+    {
+        foreach (var item in _trainingSet.FormCards)
+        {
+            var verb = _trainingSet.Verbs[item.VerbId];
+            var card = new CardViewModel(item, verb);
+            Cards.Add(card);
+        }
+        Cards = ShuffleCards(Cards);
+    }
+
+    private List<CardViewModel> Cards = [];
+
+    private static readonly Random _rand = new(DateTime.UtcNow.Millisecond);
+
+    private List<CardViewModel> ShuffleCards(List<CardViewModel> listToShuffle)
+    {
+        for (int i = listToShuffle.Count - 1; i > 0; i--)
+        {
+            var k = _rand.Next(i + 1);
+            var value = listToShuffle[k];
+            listToShuffle[k] = listToShuffle[i];
+            listToShuffle[i] = value;
+        }
+
+        return listToShuffle;
+    }
+}

@@ -16,8 +16,9 @@ public class UnitOfWork : IUnitOfWork
     private IGizraRepository? _gizraRepo;
     private IVerbModelRepository? _verbModelRepo;
     private IWordFormRepository? _wordFormRepo;
-    private IFilterSnapshotRepository? _filterSnapshotRepo;
+    private IFilterRepository? _filterRepo;
     private IPrepositionRepository? _prepositionRepo;
+    private ITranslationRepository? _translationRepo;
 
     private AppDbContext Context => _context ??= new AppDbContext();
 
@@ -26,8 +27,9 @@ public class UnitOfWork : IUnitOfWork
     public IGizraRepository GizraRepository => _gizraRepo ??= new GizraRepository(Context);
     public IVerbModelRepository VerbModelRepository => _verbModelRepo ??= new VerbModelRepository(Context);
     public IWordFormRepository WordFormRepository => _wordFormRepo ??= new WordFormRepository(Context);
-    public IFilterSnapshotRepository FilterSnapshotRepository => _filterSnapshotRepo ??= new FilterSnapshotRepository(Context);
+    public IFilterRepository FilterRepository => _filterRepo ??= new FilterRepository(Context);
     public IPrepositionRepository PrepositionRepository => _prepositionRepo ??= new PrepositionRepository(Context);
+    public ITranslationRepository TranslationRepository => _translationRepo ??= new TranslationRepository(Context);
 
     public UnitOfWork(AppDbContext context)
     {

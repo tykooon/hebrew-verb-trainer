@@ -1,6 +1,6 @@
 ﻿@using HebrewVerb.BlazorApp.ViewModels
 
-<div class="card border-@CardViewModel.CardColor.ToDescriptionString() m-3 p-0" style="max-width: 24rem; border-width:medium">
+<div class="card border-@CardViewModel.CardColor.ToDescriptionString() my-3 mx-auto p-0" style="max-width: 24rem; border-width:medium">
     <div class="card-header d-flex justify-content-between align-items-center">
         <div class="d-inline-block">
             @if (CardViewModel.Zman == "עבר")
@@ -22,7 +22,7 @@
             </MudTooltip>
         </div>
     </div>
-    <div class="card-body">
+    <div class="card-body d-flex-inline text-center">
         <MudText Color="@CardViewModel.CardColor" Typo="Typo.h5">@CardViewModel.Guf</MudText>
             @if (CardViewModel.IsAnswered)
         {
@@ -31,13 +31,13 @@
         }
         else
         {
-            <MudButton Variant="Variant.Text" Color="CardViewModel.CardColor" OnClick="ShowAnswer"><b>.....</b></MudButton>
+            <MudButton Variant="Variant.Text" Class="py-5" Color="CardViewModel.CardColor" OnClick="ShowAnswer"><b>..?..</b></MudButton>
         }
     </div>
     <div class="card-footer text-body-secondary">
         <div class="d-flex justify-content-start">
             <MudChip Variant="Variant.Filled" Color="Color.Dark" Size="Size.Medium">@CardViewModel.Binyan</MudChip>
-            @foreach (var giz in CardViewModel.Gizras)
+                @foreach (var giz in CardViewModel.Gizras)
             {
                 <MudChip Variant="Variant.Filled" Color="Color.Default" Size="Size.Medium">@giz</MudChip>
             }
@@ -48,9 +48,7 @@
 
         </div>
     </div>
-
 </div>
-
 
 @code {
     [Parameter]

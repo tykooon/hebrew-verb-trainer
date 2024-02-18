@@ -11,6 +11,6 @@ public class ShoreshRepository : Repository<Shoresh, int>, IShoreshRepository
 
     protected override IQueryable<Shoresh> MakeInclusions()
     {
-        return base.MakeInclusions().Include(sh => sh.Gizras).Include(sh => sh.Verbs);
+        return base.MakeInclusions().Include(sh => sh.Verbs);
     }
 }

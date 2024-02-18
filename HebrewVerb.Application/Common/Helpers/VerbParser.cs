@@ -1,7 +1,6 @@
 ﻿using Ardalis.Result;
-using HebrewVerb.Application.Common.Enums;
 using HebrewVerb.Application.Feature.Verbs;
-using HebrewVerb.Domain.Enums;
+using HebrewVerb.SharedKernel.Enums;
 using HtmlAgilityPack;
 
 using static HebrewVerb.Application.Common.Constants.PealimVerbFormIds;
@@ -10,28 +9,37 @@ namespace HebrewVerb.Application.Common.Helpers;
 
 public static class VerbParser
 {
-    public static Result<VerbDto> FromUri(string url, bool passive = false)
+    public static async Task<Result<VerbDto>> FromUri(string url, bool passive = false)
     {
         var html = new HtmlWeb();
 
-        var document = html.Load(url);
+        var document = await html.LoadFromWebAsync(url);
 
         if (document == null)
         {
             return Result.Error($"No data retrieved from url: {url}");
         }
 
-        // TODO Check if content from pealim?
+        if (!document.CheckMetaData("author", "pealim.com"))
+        {
+            return Result.Error($"Unable to parse data from this url: {url}");
+        }
 
-        var verb = document.ParseToVerb(passive);
+        var docLang = document.GetLangAttribute();
+        if (!ParseHelpers.TryGetLanguage(docLang, out var lang))
+        {
+            return Result.Error($"Unknown language of html. Unable to parse data");
+        }
+
+        var verb = document.ParseToVerb(lang, passive);
 
         return Result.Success(verb);
     }
 
 
-    internal static VerbDto ParseToVerb(this HtmlDocument doc, bool passive = false)
+    internal static VerbDto ParseToVerb(this HtmlDocument doc,
+        Language lang = Language.Russian, bool passive = false)
     {
-
         #region Infinitive 
 
         var infinitive = doc.GetWordFormDto(Infinitive);
@@ -40,16 +48,14 @@ public static class VerbParser
 
         #region Binyan
 
-        var binyanRu = doc.GetBinyan();
-        var binyan = binyanRu switch
+        var binyanLocal = doc.GetInfo(ParseHelpers.Binyan);
+        var binyan = binyanLocal switch
         {
-            "ПААЛЬ" => "Paal",
-            "ПИЭЛЬ" => "Piel",
-            "НИФЪАЛЬ" => "Nifal",
-            "hИФЪИЛЬ" => "Hifil",
-            "hИТПАЭЛЬ" => "Hitpael",
-            "hУФЪАЛЬ" => "Hufal",
-            "ПУАЛЬ" => "Pual",
+            "ПААЛЬ" or "PA'AL" or "פָּעַל" => "Paal",
+            "ПИЭЛЬ" or "PI'EL" or "פִּעֵל" => "Piel",
+            "НИФЪАЛЬ" or "NIF'AL" or "נִפְעַל" => "Nifal",
+            "hИФЪИЛЬ" or "HIF'IL" or "הִפְעִיל" => "Hifil",
+            "hИТПАЭЛЬ" or "HITPA'EL" or "הִתְפַּעֵל" => "Hitpael",
             _ => "Undefined",
         };
 
@@ -68,12 +74,12 @@ public static class VerbParser
         {
             Infinitive = infinitive,
             Binyan = binyan,
-            LangId = doc.DocumentNode.SelectSingleNode("/html").GetAttributeValue("lang", "ru")
+            LangId = (int)lang
         };
 
         #region Shoresh
 
-        var shoreshStr = doc.GetShoresh() ?? "";
+        var shoreshStr = doc.GetInfo(ParseHelpers.Shoresh).RemoveNonHebrew(false);
         shoreshStr = string.Concat(shoreshStr.Where(c => c != ' ' && c != '-'));
         verbResult.Shoresh = shoreshStr;
 
@@ -162,7 +168,7 @@ public static class VerbParser
 
         #endregion Imperative
 
-        verbResult.Translate = doc.GetTranslation() ?? "";
+        verbResult.Translate = doc.GetInfo(ParseHelpers.Translation);
 
         return verbResult;
     }
@@ -174,6 +180,7 @@ public static class VerbParser
         {
             return (str, -1);
         }
+
         var chunk1 = str[..stressIndex];
         var chunk2 = str[stressIndex+3];
         var chunk3 = str[(stressIndex+8)..];
@@ -181,13 +188,25 @@ public static class VerbParser
         return (String.Concat(chunk1, chunk2, chunk3), stressIndex);
     }
 
-    private static WordFormDto GetWordFormDto(this HtmlDocument doc, string idStr, AppLanguage lang = AppLanguage.Russian)
+    private static WordFormDto GetWordFormDto(this HtmlDocument doc, string idStr)
     {
-        //TODO: Other language support 
-        var hebrewStr = doc.GetVerbForm(idStr) ?? "";
-        var translateStr = doc.GetVerbFormTranscript(idStr) ?? "";
-        (translateStr, int ind) = ExtractStress(translateStr);
+        var hebrewStr = doc.GetVerbForm(idStr, false);
+        var hebrewNikkudStr = doc.GetVerbForm(idStr, true);
+        var transcriptStr = doc.GetVerbFormTranscript(idStr);
+        (transcriptStr, int ind) = ExtractStress(transcriptStr);
+        if (string.IsNullOrWhiteSpace(hebrewStr))
+        {
+            hebrewStr = hebrewNikkudStr.RemoveNonHebrew(nikkudAllowed: false);
+        }
 
-        return new(hebrewStr, translateStr, ind);
+        return new(hebrewStr, hebrewNikkudStr, transcriptStr, ind);
+    }
+
+    private static bool CheckMetaData(this HtmlDocument htmlDocument, string name, string content)
+    {
+        var metaNode = htmlDocument.DocumentNode.SelectSingleNode($"//meta[@name='{name}']");
+        var metaContent = metaNode?.GetAttributeValue("content", null);
+
+        return metaContent == content;
     }
 }

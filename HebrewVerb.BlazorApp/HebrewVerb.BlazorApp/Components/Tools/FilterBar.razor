@@ -6,52 +6,67 @@
 @inject IDistributedCache _cache
 @inject IMediator _mediator
 @inject ILogger<FilterBar> _logger
+@inject ISnackbar _snackbar
+@* IsExpandedChanged="ExpandedChanged" *@
 
 @rendermode InteractiveAuto
 
 <MudExpansionPanels Class="mb-5">
-    <MudExpansionPanel Class="mt-0 pt-0 bg-light" Text=@filterSummary MaxHeight="600" IsInitiallyExpanded="true" IsExpandedChanged="ExpandedChanged">
-        <MudGrid>
-            <MudItem xs="10" sm="5">
-                <BinyanFilter @bind-Options=@Binyans BinyanList="BinyanList"></BinyanFilter>
-            </MudItem>
-            <MudItem xs="10" sm="5">
-                <GizraFilter @bind-Options="Gizras" GizraList="GizraList"></GizraFilter>
-            </MudItem>
-            <MudItem xs="2" sm="2">
-                <MudSelect T="int" Label="Количество" Value="5">
-                    <MudSelectItem Value="1" />
-                    <MudSelectItem Value="3" />
-                    <MudSelectItem Value="5" />
-                    <MudSelectItem Value="10" />
-                </MudSelect>
-            </MudItem>
-            <MudItem xs="10" sm="5">
-                <VerbModelFilter @bind-Options="VerbModels" VerbModelList="VerbModelList"></VerbModelFilter>
-            </MudItem>
+    <MudExpansionPanel @ref=_filterPanel Class="mt-0 pt-0 bg-light" Text=@filterSummary MaxHeight="600" IsInitiallyExpanded="true">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col col-lg-5">
+                    <BinyanFilter Options=@CurrentFilter.Binyans OptionsChanged="OnBinyanChanged"></BinyanFilter>
+                </div>
+                <div class="col-md-auto">
+                </div>
+                <div class="col col-lg-5">
+                    <GizraFilter Options="@CurrentFilter.Gizras" OptionsChanged="OnGizraChanged" GizraList="AllowedGizras"></GizraFilter>
+                </div>
+            </div>
+            <div class="row justify-content-md-center">
+                <div class="col col-lg-5">
+                    <VerbModelFilter Options="CurrentFilter.VerbModels" OptionsChanged="OnVerbModelChanged" VerbModelList="AllowedVerbModels"></VerbModelFilter>
+                </div>
+                <div class="col-md-auto">
+                </div>
+                <div class="col col-lg-5">
+                    <ZmanFilter Disabled=@ZmanDisabled Options="CurrentFilter.Zmans" OptionsChanged="OnZmanChanged"></ZmanFilter>
+                </div>
+            </div>
+            <div class="row justify-content-md-center align-baseline">
+                <div class="col col-lg-2">
+                        <MudSelect T="int" Label="Количество" Value="CurrentFilter.VerbLimit" ValueChanged="OnLimitChanged">
+                            <MudSelectItem Value="1" />
+                            <MudSelectItem Value="3" />
+                            <MudSelectItem Value="5" />
+                            <MudSelectItem Value="10" />
+                        </MudSelect>
+                </div>
+                <div class="col col-lg-3">
+                </div>
+                <div class="col col-lg-2">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth>
+                        <TextHider Outtro="ЗАГРУЗИТЬ">
+                            <MudIcon Icon="@Icons.Material.Filled.FolderOpen" Title="Load Filter"></MudIcon>
+                        </TextHider>
+                    </MudButton>
+                </div>
+                <div class="col col-lg-2">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth>
+                        <TextHider Outtro="СОХРАНИТЬ">
+                            <MudIcon Icon="@Icons.Material.Filled.Save" Title="Save Filter"></MudIcon>
+                        </TextHider>
+                    </MudButton>
+                </div>
+            </div>
+        </div>
 
-            @if (ShowSearchPanel)
-            {
-                <MudItem xs="10" sm="5">
-                    <MudTextField Value="SearchString" Label="Search" Variant="Variant.Outlined"
-                    Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
-                    ValueChanged="SearchStringChanged" OnAdornmentClick="SearchRequested"/>
-                </MudItem>
-            }
-            else
-            {
-                <MudItem xs="10" sm="5">
-                    <ZmanFilter @bind-Options="Zmans" ZmanList="ZmanList"></ZmanFilter>
-                </MudItem>
-            }
-
-            <MudItem xs="2" sm="2">
-                <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth>
-                    <MudIcon Icon="@Icons.Material.Filled.Save" Title="Save Filter"></MudIcon>
-                    <MudText Class="mobile-hide">СОХРАНИТЬ</MudText>
-                </MudButton>
-            </MudItem>
-        </MudGrid>
+@*           <MudItem xs="10" sm="5">
+                <MudTextField Value="SearchString" Label="Search" Variant="Variant.Outlined"
+                              Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
+                              ValueChanged="SearchStringChanged" OnAdornmentClick="SearchRequested" />
+            </MudItem> *@
     </MudExpansionPanel>
 </MudExpansionPanels>
 
@@ -63,47 +78,46 @@
     public EventCallback<FilterViewModel> CurrentFilterChanged { get; set; }
 
     [Parameter]
-    public bool ShowSearchPanel { get; set; } = false;
+    public bool ZmanDisabled { get; set; } = false;
 
-    [Parameter]
-    public string SearchString { get; set; } = "";
+    public MudExpansionPanel? _filterPanel;
 
-    [Parameter]
-    public EventCallback<string> SearchStringChanged { get; set; }
-
-    [Parameter]
-    public EventCallback SearchRequested { get; set; }
+    private AppUserDetails? _currentUserDetails;
 
     private string filterSummary => string.Format("Filter: биньяны: {0} гизры: {1} модели: {2} времена: {3}",
         CurrentFilter.Binyans.Count(), CurrentFilter.Gizras.Count(), CurrentFilter.VerbModels.Count(), CurrentFilter.Zmans.Count());
 
-    private IEnumerable<BinyanDto> Binyans { get; set; } = [ ];
-    private IEnumerable<ZmanDto> Zmans { get; set; } = [];
-    private IEnumerable<GizraDto> Gizras { get; set; } = [];
-    private IEnumerable<VerbModelDto> VerbModels { get; set; } = [];
+    private IEnumerable<GizraDto> AllowedGizras { get; set; } = [];
+    private IEnumerable<VerbModelDto> AllowedVerbModels { get; set; } = [];
 
-
-
-
-
-    private void OnFilterChanged((string Type, object? ValueList) args)
+    private async Task OnBinyanChanged(IEnumerable<Binyan> binyans)
     {
-        switch (args.Item1)
-        {
-            case "Zman":
-                CurrentFilter.Zmans = (args.ValueList as IEnumerable<ZmanDto>) ?? [];
-                break;
-            case "Binyan":
-                CurrentFilter.Binyans = (args.ValueList as IEnumerable<BinyanDto>) ?? [];
-                break;
-            case "Gizra":
-                CurrentFilter.Gizras = (args.ValueList as IEnumerable<GizraDto>) ?? [];
-                break;
-            case "VerbModel":
-                CurrentFilter.VerbModels = (args.ValueList as IEnumerable<VerbModelDto>) ?? [];
-                break;
-            default:
-                break;
-        }
+        CurrentFilter.Binyans = binyans.ToHashSet();
+        await RefreshFilter();
+        await CurrentFilterChanged.InvokeAsync(CurrentFilter);
+    }
+
+    private async Task OnZmanChanged(IEnumerable<Zman> zmans)
+    {
+        CurrentFilter.Zmans = zmans.ToHashSet();
+        await CurrentFilterChanged.InvokeAsync(CurrentFilter);
+    }
+
+    private async Task OnGizraChanged(IEnumerable<GizraDto> gizras)
+    {
+        CurrentFilter.Gizras = gizras.ToHashSet();
+        await CurrentFilterChanged.InvokeAsync(CurrentFilter);
+    }
+
+    private async Task OnVerbModelChanged(IEnumerable<VerbModelDto> verbModels)
+    {
+        CurrentFilter.VerbModels = verbModels.ToHashSet();
+        await CurrentFilterChanged.InvokeAsync(CurrentFilter);
+    }
+
+    private async Task OnLimitChanged(int limit)
+    {
+        CurrentFilter.VerbLimit = limit;
+        await CurrentFilterChanged.InvokeAsync(CurrentFilter);
     }
 }

@@ -1,5 +1,5 @@
-﻿using HebrewVerb.Domain.Common;
-using HebrewVerb.Domain.Enums;
+﻿using HebrewVerb.SharedKernel.Abstractions;
+using HebrewVerb.SharedKernel.Enums;
 
 namespace HebrewVerb.Domain.Entities;
 

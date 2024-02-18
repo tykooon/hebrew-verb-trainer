@@ -1,6 +1,7 @@
 ﻿using HebrewVerb.Application.Feature.VerbModels.Commands;
 using HebrewVerb.Application.Feature.VerbModels.Queries;
 using HebrewVerb.Application.Interfaces;
+using HebrewVerb.SharedKernel.Enums;
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -24,9 +25,9 @@ public class VerbModelController : BaseApiController
 
     [HttpPost]
     [Route("addNew")]
-    public async Task<IActionResult> AddNew(string name, string description)
+    public async Task<IActionResult> AddNew(string name, string description, params string[] binyanNames)
     {
-        var command = new AddNewVerbModelCommand(name, description);
+        var command = new AddNewVerbModelCommand(name, description, binyanNames);
         var res = await _mediator.Send(command);
         return res.IsSuccess ? Created() : BadRequest(string.Join(", ", res.Errors));
     }

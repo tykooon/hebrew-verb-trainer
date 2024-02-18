@@ -1,6 +1,7 @@
-﻿using HebrewVerb.Domain.Common;
-using HebrewVerb.Domain.Enums;
-using HebrewVerb.Domain.Interfaces;
+﻿using HebrewVerb.Domain.Interfaces;
+using HebrewVerb.SharedKernel.Abstractions;
+using HebrewVerb.SharedKernel.Enums;
+using HebrewVerb.SharedKernel.Constants;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HebrewVerb.Domain.Entities;
@@ -22,38 +23,40 @@ public class Verb : BaseEntity<int>
     public Shoresh Shoresh { get; set; } = Shoresh.Empty;
 
     [ForeignKey("Present")]
-    public int PresentId { get; private set; }
+    public int? PresentId { get; private set; }
 
-    public Present Present { get; private set; } = Present.Empty;
+    public Present? Present { get; set; }
 
     [ForeignKey("Past")]
-    public int PastId { get; private set; }
+    public int? PastId { get; private set; }
 
-    public Past Past { get; private set; } = Past.Empty;
+    public Past? Past { get; set; }
 
     [ForeignKey("Future")]
-    public int FutureId { get; private set; }
+    public int? FutureId { get; private set; }
 
-    public Future Future { get; private set; } = Future.Empty;
+    public Future? Future { get; set; }
 
     [ForeignKey("Imperative")]
-    public int ImperativeId { get; private set; }
+    public int? ImperativeId { get; private set; }
 
-    public Imperative Imperative { get; private set; } = Imperative.Empty;
+    public Imperative? Imperative { get; set; }
 
     [ForeignKey("Translation")]
-    public int TranslationId { get; private set; }
+    public int? TranslationId { get; private set; }
 
-    public Translation Translation { get; private set; } = Translation.Default;
+    public Translation? Translation { get; set; } = Translation.Default;
 
-    public UseFrequency UseFrequency { get; private set; }
+    public UseFrequency UseFrequency { get; set; }
 
-    public string? ExtraInfo { get; private set; }
-    public bool IsArchaic { get; private set; } = false;
-    public bool IsLiterary { get; private set; } = false;
-    public bool IsSlang { get; private set; } = false;
+    public string? ExtraInfo { get; set; }
+    public bool IsArchaic { get; set; } = false;
+    public bool IsLiterary { get; set; } = false;
+    public bool IsSlang { get; set; } = false;
 
     public ICollection<VerbModel> VerbModels { get; } = [];
+
+    public ICollection<Gizra> Gizras { get; } = [];
 
     public ICollection<Preposition> Prepositions { get; } = [];
 
@@ -61,10 +64,10 @@ public class Verb : BaseEntity<int>
 
     public IConjugation? Tense(Zman zman) => zman.Name switch
     {
-        Constants.Past => Past,
-        Constants.Present => Present,
-        Constants.Future => Future,
-        Constants.Imperative => Imperative,
+        TenseName.Past => Past,
+        TenseName.Present => Present,
+        TenseName.Future => Future,
+        TenseName.Imperative => Imperative,
         _ => null
     };
 
@@ -78,11 +81,11 @@ public class Verb : BaseEntity<int>
         Binyan binyan,
         Shoresh shoresh,
         WordForm infinitive,
-        Past past,
-        Present present,
-        Future future,
-        Imperative imperative,
-        Translation translation,
+        Past? past,
+        Present? present,
+        Future? future,
+        Imperative? imperative,
+        Translation? translation,
         UseFrequency useFrequency = UseFrequency.Undefined,
         string? extraInfo = null,
         bool isArchaic = false,

@@ -1,7 +1,7 @@
 ﻿using Ardalis.GuardClauses;
-using HebrewVerb.Domain.Common;
-using HebrewVerb.Domain.Enums;
 using HebrewVerb.Domain.Interfaces;
+using HebrewVerb.SharedKernel.Abstractions;
+using HebrewVerb.SharedKernel.Enums;
 
 namespace HebrewVerb.Domain.Entities;
 

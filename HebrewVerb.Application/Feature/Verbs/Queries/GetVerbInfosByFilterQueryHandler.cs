@@ -1,7 +1,7 @@
 ﻿using HebrewVerb.Application.Common.Mappers;
 using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Application.Models;
-using HebrewVerb.Domain.Enums;
+using HebrewVerb.SharedKernel.Enums;
 using MediatR;
 
 namespace HebrewVerb.Application.Feature.Verbs.Queries;
@@ -30,7 +30,7 @@ public class GetVerbInfosByFilterQueryHandler :
         {
             var gizras = _unitOfWork.GizraRepository
                 .FindAllBy(g => request.Filter.Gizras.Contains(g.Name));
-            allVerbs = allVerbs.Where(v => v.Shoresh.Gizras.Except(gizras).Any());
+            allVerbs = allVerbs.Where(v => v.Gizras.Except(gizras).Any());
         }
 
         if (request.Filter.VerbModels.Any())

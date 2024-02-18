@@ -1,6 +1,7 @@
 ﻿using static System.Console;
 using HebrewVerb.Domain.Entities;
-using HebrewVerb.Domain.Enums;
+using HebrewVerb.Domain.Common;
+using HebrewVerb.SharedKernel.Enums;
 
 internal partial class Program
 {

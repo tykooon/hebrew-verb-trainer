@@ -1,5 +1,5 @@
 ﻿using HebrewVerb.Domain.Entities;
-using HebrewVerb.Domain.Enums;
+using HebrewVerb.SharedKernel.Enums;
 
 namespace HebrewVerb.Domain.Interfaces;
 

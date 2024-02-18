@@ -1,10 +1,10 @@
-﻿using HebrewVerb.Application.Common.Enums;
-using HebrewVerb.Application.Common.Mappers;
+﻿using HebrewVerb.Application.Common.Mappers;
 using HebrewVerb.Application.Feature.Abstractions;
 using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Application.Models;
 using HebrewVerb.Domain.Entities;
-using HebrewVerb.Domain.Enums;
+using HebrewVerb.SharedKernel.Enums;
+using HebrewVerb.SharedKernel.Extensions;
 using MediatR;
 
 namespace HebrewVerb.Application.Feature.VerbCards.Queries;
@@ -16,12 +16,12 @@ public class GetTrainingSetByFilterQueryHandler(IUnitOfWork unitOfWork) :
     public Task<TrainingSet> Handle(GetTrainingSetByFilterQuery request, CancellationToken cancellationToken)
     {
         var filter = request.Filter;
-        var zmans = filter.Tenses.ToZmanList();
-        var filteredVerbs = _unitOfWork.VerbRepository.GetFilteredVerbs(filter, request.Limit);
+        var zmans = filter.Zmans.GetZmans();
+        var filteredVerbs = _unitOfWork.VerbRepository.GetFilteredVerbs(filter, request.Filter.VerbLimit);
 
         var result = new TrainingSet()
         {
-            MaxLimit = request.Limit,
+            MaxLimit = request.Filter.VerbLimit,
             Filter = filter,
             Verbs = filteredVerbs.ToDictionary(v => v.Id, v => v.ToVerbInfo(request.Lang)),
             FormCards = GetAllVerbForms(filteredVerbs, zmans, request.Lang)
@@ -30,14 +30,14 @@ public class GetTrainingSetByFilterQueryHandler(IUnitOfWork unitOfWork) :
         return Task.FromResult(result);
     }
 
-    private List<VerbFormCard> GetAllVerbForms(IEnumerable<Verb> verbs, IEnumerable<Zman> zmans, AppLanguage lang = AppLanguage.Russian)
+    private List<VerbFormCard> GetAllVerbForms(IEnumerable<Verb> verbs, IEnumerable<Zman> zmans, Language lang = Language.Russian)
     {
         var list = new List<VerbFormCard>();
         foreach (Verb verb in verbs)
         {
             var infinitive = verb.Infinitive.HebrewNiqqud;
-            var translate = verb.Translation.Get((Lang)lang);
-            var gizras = verb.Shoresh.Gizras.Select(g => g.Name);
+            var translate = verb.Translation?.Get(lang);
+            var gizras = verb.Gizras.Select(g => g.Name);
             var verbModels = verb.VerbModels.Select(vm => vm.Name);
 
             if (!zmans.Any())

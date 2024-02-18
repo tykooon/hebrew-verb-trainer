@@ -37,11 +37,11 @@
     </MudTable>
 
     @code {
-    private IEnumerable<VerbInfo> pagedData;
+    private IEnumerable<VerbInfo> pagedData = [];
     private MudTable<VerbInfo> table;
 
     private int totalItems;
-    private string searchString = null;
+    private string searchString = "";
 
     /// <summary>
     /// Here we simulate getting the paged, filtered and ordered data from the server

@@ -8,91 +8,57 @@
 
 <PageTitle>Training</PageTitle>
 
-<FilterBar @bind-CurrentFilter="FilterObj"></FilterBar>
+<FilterBar @ref=_filterBar @bind-CurrentFilter="FilterData"/>
 
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="justify-content-center">
 
-<div class="d-flex justify-content-center ma-4 invisible">
-    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="pa-5">
-        <MudText Typo="Typo.h5"> НАЧНЁМ </MudText>
-    </MudButton>
-</div>
-
-
-<div class="container text-center">
-        <div class="row justify-content-center">
-           <VerbFormCard CardViewModel="@Cards[0]"></VerbFormCard>
+    @if(!_trainingStarted)
+    {
+        <div class="container d-grid justify-content-center">
+                <MudText Typo=@Typo.h6>
+                    Если настройки фильтра выбраны - можем приступать к тренировке!
+                </MudText>
+            <div class="row justify-content-center">
+                <div class="col-3">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="pa-5" OnClick="StartTraining">
+                        <MudText Typo="Typo.h5"> НАЧНЁМ </MudText>
+                    </MudButton>
+                </div>
+            </div>
         </div>
-        <div class="row justify-content-center">
-            <VerbFormCard CardViewModel="@Cards[1]"></VerbFormCard>
-        </div>
-        <div class="row justify-content-center">
-            <VerbFormCard CardViewModel="@Cards[2]"></VerbFormCard>
-        </div>
-        <div class="row justify-content-center">
-            <VerbFormCard CardViewModel="@Cards[3]"></VerbFormCard>
-        </div>
-</div>
+    }
+    else
+    {
+        <VerbCardCarousel FilterViewModel ="FilterData" OnRestart="RestartTraining" HideFilter="HideFilter" />
+    }
 </MudContainer>
 
 @code {
-    //private Filter Filter = Filter.FromParams(["Paal", "Nifal"], ["ל''ה/י"], ["Efol"], ["Past"]);
+    private FilterViewModel FilterData = new();
 
-    private FilterViewModel FilterObj = new() { Binyans = new List<BinyanDto>() { new() { Name="Paal", NameHebrew="פעל", NameLocal="пааль" } } };
+    private FilterBar? _filterBar;
 
-    private CardViewModel[] Cards = [
-    new CardViewModel()
+    private bool _trainingStarted = false;
+
+    private void StartTraining()
+    {
+        _trainingStarted = true;
+        HideFilter();
+        StateHasChanged();
+    }
+
+    private void HideFilter()
+    {
+        if (_filterBar?._filterPanel?.IsExpanded ?? false)
         {
-            Zman = "הווה",
-            Infinitive = "לעשות",
-            Guf = "היא",
-            VerbForm = "עושה",
-            VerbFormTranslit = "осэ",
-            VerbFormStress = 2,
-            Binyan = "פעל",
-            Gizras = ["ל''ה/י", "פ''ע"],
-            Models = ["исключение", "лит."],
-            Translation = "делать"
-        },
-        new CardViewModel()
-            {
-                Zman = "עבר",
-                Infinitive = "לעבוד",
-                Guf = "אנחנו",
-                VerbForm = "עבדנו",
-                VerbFormTranslit = "авадну",
-                VerbFormStress = 2,
-                Binyan = "פעל",
-                Gizras = ["פ''ע"],
-                Models = [],
-                Translation = "работать"
-            },
-        new CardViewModel()
-            {
-                Zman = "עתיד",
-                Infinitive = "לחשוב",
-                Guf = "אתמ",
-                VerbForm = "תחשבו",
-                VerbFormTranslit = "тахшеву",
-                VerbFormStress = 6,
-                Binyan = "פעל",
-                Gizras = ["פ''ח"],
-                Models = [],
-                Translation = "думать"
-            },
-        new CardViewModel()
-            {
-                Zman = "ציווי",
-                Infinitive = "לחשוב",
-                Guf = "אתמ",
-                VerbForm = "תחשבו",
-                VerbFormTranslit = "тахшеву",
-                VerbFormStress = 6,
-                Binyan = "פעל",
-                Gizras = ["פ''ח"],
-                Models = [],
-                Translation = "думать"
-            },
-    ];
+            _filterBar._filterPanel.Collapse();
+        }
+    } 
+    
+
+    private void RestartTraining()
+    {
+        // TODO: Implement restart
+    }
 }

@@ -1,5 +1,4 @@
-﻿using HebrewVerb.Domain.Enums;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 internal partial class Program
 {

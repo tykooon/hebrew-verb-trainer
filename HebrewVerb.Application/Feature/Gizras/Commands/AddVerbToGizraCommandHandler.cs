@@ -22,18 +22,12 @@ public class AddVerbToGizraCommandHandler(IUnitOfWork unitOfWork) :
             return Result.NotFound($"Gizra with name {request.GizraName} not found");
         }
 
-        var shoresh = _unitOfWork.ShoreshRepository.GetById(verb.ShoreshId);
-        if (shoresh == null)
-        {
-            return Result.CriticalError($"Can not retrieve shoresh for verb with id {request.VerbId}");
-        }
-
-        if (shoresh.Gizras.Select(g => g.Name).Contains(request.GizraName))
+        if (verb.Gizras.Select(g => g.Name).Contains(request.GizraName))
         {
             return Result.SuccessWithMessage($"Verb already has gizra {request.GizraName}");
         }
 
-        shoresh.Gizras.Add(gizra);
+        verb.Gizras.Add(gizra);
         await _unitOfWork.CommitAsync();
         return Result.Success();
     }

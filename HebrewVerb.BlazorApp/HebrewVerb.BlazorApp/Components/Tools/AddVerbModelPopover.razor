@@ -13,6 +13,7 @@
         <MudText>Add new Verb Model data</MudText>
         <MudInput @bind-Value="@_addVerbModelName" Placeholder="input name of Verb Model here" Label="Verb Model Name"></MudInput>
         <MudInput @bind-Value="@_addVerbModelDescription" Placeholder="input short description of VerbModel here" Label="Verb Model Description"></MudInput>
+        <BinyanFilter @bind-Options="@_addVerbModelBinyans"></BinyanFilter>
         <MudButton OnClick="@AddNewVerbModel" Variant="Variant.Filled" Class="ml-auto mr-2 my-2" Color="Color.Primary">Load</MudButton>
         </div>
 </MudPopover>
@@ -35,10 +36,11 @@
 
     private string _addVerbModelName = "";
     private string _addVerbModelDescription = "";
+    private IEnumerable<Binyan> _addVerbModelBinyans = [];
 
     public async Task AddNewVerbModel()
     {
-        var command = new AddNewVerbModelCommand(_addVerbModelName, _addVerbModelDescription);
+        var command = new AddNewVerbModelCommand(_addVerbModelName, _addVerbModelDescription, _addVerbModelBinyans.Select(b => b.Name));
         var addRes = await mediator.Send(command);
 
         if (!addRes.IsSuccess)

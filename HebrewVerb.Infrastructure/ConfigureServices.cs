@@ -17,29 +17,29 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         //var assembly = typeof(DependencyInjection).Assembly;
+        //var connectionString = configuration.GetConnectionString("MySqlConnection");
+        //var connectionData = configuration
+        //    .GetSection("HebrewVerb")
+        //    .GetSection("Connections")
+        //    .GetSection("MySql")
+        //    .GetSection("Admin")
+        //    .Get<MySqlConnectionSettings>();
+        //connectionString = connectionData?.UpdateConnectionString(connectionString);
 
-        var connectionString = configuration.GetConnectionString("MySqlConnection");
-        var connectionData = configuration.GetSection("HebrewVerb")
-            .GetSection("Connections").GetSection("MySql").GetSection("Admin").Get<ConnectionSettings>();
-        connectionString = connectionString?.Replace("{SERVER}", connectionData?.Server);
-        connectionString = connectionString?.Replace("{PORT}", connectionData?.Port.ToString());
-        connectionString = connectionString?.Replace("{UID}", connectionData?.Uid);
-        connectionString = connectionString?.Replace("{PWD}", connectionData?.Password);
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         Guard.Against.Null(connectionString, message: "Connection string 'DefaultConnection' not found.");
         
         services.AddScoped<IAppDbContext, AppDbContext>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseMySQL(connectionString);
+            //options.UseMySQL(connectionString);
 
-            //options.UseSqlite(
-            //    connectionString
-            //    //,b => b.MigrationsAssembly("SimpleAuthClean.WebApp"
-            //    );
+            options.UseSqlite(
+                connectionString
+                //,b => b.MigrationsAssembly("SimpleAuthClean.WebApp"
+                );
         });
 
         services.AddIdentity<AppUser, IdentityRole<int>>()

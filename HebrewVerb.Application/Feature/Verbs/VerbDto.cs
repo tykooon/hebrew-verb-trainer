@@ -1,14 +1,16 @@
 ﻿
+using HebrewVerb.SharedKernel.Enums;
+
 namespace HebrewVerb.Application.Feature.Verbs;
 
 public class VerbDto
 {
     public int Id { get; set; }
-    public WordFormDto? Infinitive { get; set; }
+    public WordFormDto Infinitive { get; set; } = WordFormDto.Default;
     public string Binyan { get; set; } = "Undefined";
     public string Shoresh { get; set; } = string.Empty;
     public string Translate { get; set; } = string.Empty;
-    public string LangId { get; set; } = "ru";
+    public int LangId { get; set; } = (int)Language.Russian;
 
     public WordFormDto? PresentMs { get; set; }
     public WordFormDto? PresentFs { get; set; }
@@ -44,6 +46,7 @@ public class VerbDto
     public bool IsSlang { get; set; } = false;
 
     public List<string> VerbModels { get; set; } = [];
+    public List<string> Gizras { get; set; } = [];
 
     public VerbDto()
     {

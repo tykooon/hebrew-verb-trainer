@@ -19,7 +19,7 @@ public interface IAppDbContext
     public DbSet<Translation> Translations { get; }
     public DbSet<Preposition> Prepositions { get; }
 
-    public DbSet<FilterSnapshot> FilterSnapshots { get; }
+    public DbSet<AppFilter> FilterSnapshots { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

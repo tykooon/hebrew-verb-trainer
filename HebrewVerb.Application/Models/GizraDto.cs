@@ -1,10 +1,15 @@
-﻿namespace HebrewVerb.Application.Models;
+﻿using HebrewVerb.SharedKernel.Enums;
+using Ardalis.SmartEnum.SystemTextJson;
+using System.Text.Json.Serialization;
+
+namespace HebrewVerb.Application.Models;
 
 public class GizraDto
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public IEnumerable<string> Binyans { get; set; } = [];
 
     public override string ToString() => Name;
 

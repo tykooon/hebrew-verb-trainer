@@ -16,5 +16,4 @@ public static class Constants
     public const string GizraList = nameof(GizraList);
     public const string VerbModelList = nameof(VerbModelList);
 
-
 }

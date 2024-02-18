@@ -1,7 +1,7 @@
-﻿using HebrewVerb.Domain.Common;
-using HebrewVerb.Application.Interfaces.Repositories;
+﻿using HebrewVerb.Application.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using HebrewVerb.SharedKernel.Abstractions;
 
 namespace HebrewVerb.Infrastructure.Repositories;
 

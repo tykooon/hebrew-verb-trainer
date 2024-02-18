@@ -26,7 +26,7 @@ public class AppUserService : IAppUserService
 
     public async Task<AppUserDetails> GetUserDetailsByUserIdAsync(int userId)
     {
-        var user = await _userManager.Users.Include(u => u.FilterSnapshots).FirstOrDefaultAsync(x => x.Id == userId)
+        var user = await _userManager.Users.Include(u => u.Filters).FirstOrDefaultAsync(x => x.Id == userId)
             ?? throw new Exception("User not found");
         var roles = await _userManager.GetRolesAsync(user);
 

@@ -23,6 +23,7 @@
   <ItemGroup>
     <Folder Include="Areas\admin\Controllers\" />
     <Folder Include="Controllers\" />
+    <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
 </Project>

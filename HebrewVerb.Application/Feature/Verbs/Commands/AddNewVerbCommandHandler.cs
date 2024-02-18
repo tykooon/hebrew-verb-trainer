@@ -1,9 +1,8 @@
 ﻿using Ardalis.Result;
-using HebrewVerb.Application.Common.Enums;
-using HebrewVerb.Application.Common.Helpers;
+using HebrewVerb.Application.Common.Extensions;
 using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Domain.Entities;
-using HebrewVerb.Domain.Enums;
+using HebrewVerb.SharedKernel.Enums;
 using MediatR;
 using static HebrewVerb.Application.Common.Mappers.WordFormMapper;
 
@@ -16,16 +15,16 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
     public AddNewVerbCommandHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-
     }
 
     public async Task<Result> Handle(AddNewVerbCommand request, CancellationToken cancellationToken)
     {
         var dto = request.VerbDto;
+        Language lang;
 
-        if (!ParseHelpers.TryGetLanguage(dto.LangId, out AppLanguage lang))
+        if (!Enum.IsDefined(lang = (Language)dto.LangId))
         {
-            return Result.Invalid(new ValidationError("Unknown language identifier. Must be in {'ru', 'en', 'he'}."));
+            return Result.Invalid(new ValidationError("Unknown language identifier."));
         }
 
         if (!Binyan.TryFromName(dto.Binyan, true, out Binyan binyan))
@@ -33,18 +32,14 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
             binyan = Binyan.Undefined;
         }
 
-        var infinitive = dto.Infinitive?.FromDto(lang);
-        if (infinitive == null)
-        {
-            return Result.Invalid(new ValidationError("Can not add verb with no infinitive."));
-        }
+        WordForm infinitive = dto.Infinitive.FromDto(lang);
 
         var sameInfinitive = _unitOfWork.VerbRepository
             .FindAllBy(v => v.Infinitive.HebrewNiqqud == infinitive.HebrewNiqqud);
 
         if (sameInfinitive.Any() && sameInfinitive.Select(v => v.Binyan).Contains(binyan))
         {
-            return Result.Error("Not added. Verb already exists");        
+            return Result.Error("Not added. Verb already exists. To change it use update method");        
         }
 
         if (sameInfinitive.Any())
@@ -62,44 +57,47 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
             shoresh = sameShoresh.First().Shoresh;
         }
 
-        var present = new Present(
-            dto.PresentMs?.FromDto(lang) ?? WordForm.Default,
-            dto.PresentFs?.FromDto(lang) ?? WordForm.Default,
-            dto.PresentMp?.FromDto(lang) ?? WordForm.Default,
-            dto.PresentFp?.FromDto(lang) ?? WordForm.Default);
+        var present = dto.HasPresent()
+            ? new Present(
+                dto.PresentMs?.FromDto(lang) ?? WordForm.Default,
+                dto.PresentFs?.FromDto(lang) ?? WordForm.Default,
+                dto.PresentMp?.FromDto(lang) ?? WordForm.Default,
+                dto.PresentFp?.FromDto(lang) ?? WordForm.Default)
+            : null;
 
-        var past = new Past(
-            dto.PastMs1?.FromDto(lang) ?? WordForm.Default,
-            dto.PastMp1?.FromDto(lang) ?? WordForm.Default,
-            dto.PastMs2?.FromDto(lang) ?? WordForm.Default,
-            dto.PastFs2?.FromDto(lang) ?? WordForm.Default,
-            dto.PastMp2?.FromDto(lang) ?? WordForm.Default,
-            dto.PastFp2?.FromDto(lang) ?? WordForm.Default,
-            dto.PastMs3?.FromDto(lang) ?? WordForm.Default,
-            dto.PastFs3?.FromDto(lang) ?? WordForm.Default,
-            dto.PastMp3?.FromDto(lang) ?? WordForm.Default);
+        var past = dto.HasPast()
+            ? new Past(
+                dto.PastMs1?.FromDto(lang) ?? WordForm.Default,
+                dto.PastMp1?.FromDto(lang) ?? WordForm.Default,
+                dto.PastMs2?.FromDto(lang) ?? WordForm.Default,
+                dto.PastFs2?.FromDto(lang) ?? WordForm.Default,
+                dto.PastMp2?.FromDto(lang) ?? WordForm.Default,
+                dto.PastFp2?.FromDto(lang) ?? WordForm.Default,
+                dto.PastMs3?.FromDto(lang) ?? WordForm.Default,
+                dto.PastFs3?.FromDto(lang) ?? WordForm.Default,
+                dto.PastMp3?.FromDto(lang) ?? WordForm.Default)
+            : null;
 
-        var future = new Future(
-            dto.FutureMs1?.FromDto(lang) ?? WordForm.Default,
-            dto.FutureMp1?.FromDto(lang) ?? WordForm.Default,
-            dto.FutureMs2?.FromDto(lang) ?? WordForm.Default,
-            dto.FutureFs2?.FromDto(lang) ?? WordForm.Default,
-            dto.FutureMp2?.FromDto(lang) ?? WordForm.Default,
-            dto.FutureMs3?.FromDto(lang) ?? WordForm.Default,
-            dto.FutureMp3?.FromDto(lang) ?? WordForm.Default);
+        var future = dto.HasFuture()
+            ? new Future(
+                dto.FutureMs1?.FromDto(lang) ?? WordForm.Default,
+                dto.FutureMp1?.FromDto(lang) ?? WordForm.Default,
+                dto.FutureMs2?.FromDto(lang) ?? WordForm.Default,
+                dto.FutureFs2?.FromDto(lang) ?? WordForm.Default,
+                dto.FutureMp2?.FromDto(lang) ?? WordForm.Default,
+                dto.FutureMs3?.FromDto(lang) ?? WordForm.Default,
+                dto.FutureMp3?.FromDto(lang) ?? WordForm.Default)
+            : null;
 
-        Imperative imperative = Imperative.Empty;
-
-        if(!binyan.IsPassive)
-        {
-            imperative = new Imperative(
+        var imperative = (!binyan.IsPassive && dto.HasImperative())
+            ? new Imperative(
                 dto.ImperativeMs?.FromDto(lang),
                 dto.ImperativeFs?.FromDto(lang),
-                dto.ImperativeMp?.FromDto(lang));
-        }
+                dto.ImperativeMp?.FromDto(lang))
+            : null;
 
         var translation = new Translation();
-        translation.Set(dto.Translate, (Lang)lang);
+        translation.Set(dto.Translate, lang);
 
         var result = new Verb(
             binyan,

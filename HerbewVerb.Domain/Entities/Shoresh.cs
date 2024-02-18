@@ -1,7 +1,6 @@
 ﻿using Ardalis.GuardClauses;
-using HebrewVerb.Domain.Common;
+using HebrewVerb.SharedKernel.Abstractions;
 using HebrewVerb.Domain.Exceptions;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -41,8 +40,4 @@ public class Shoresh : BaseEntity<int>
 
         Short = shortForm;
     }
-
-    [InverseProperty("Shoreshes")]
-    public ICollection<Gizra> Gizras { get; } = [];
-
 }

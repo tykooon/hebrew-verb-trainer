@@ -1,4 +1,4 @@
-﻿using HebrewVerb.Domain.Common;
+﻿using HebrewVerb.SharedKernel.Abstractions;
 using System.Linq.Expressions;
 
 namespace HebrewVerb.Application.Interfaces.Repositories;

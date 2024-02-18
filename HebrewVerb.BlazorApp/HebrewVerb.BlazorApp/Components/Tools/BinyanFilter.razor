@@ -1,14 +1,15 @@
 ﻿@using HebrewVerb.Application.Models
+@using HebrewVerb.Application.Services
 @rendermode InteractiveAuto
 
-<MudSelect T="BinyanDto" AnchorOrigin="Origin.BottomCenter"
+<MudSelect T="Binyan" AnchorOrigin="Origin.BottomCenter"
     MultiSelection="true" Label="Биньян:"
-    SelectedValuesChanged="OptionsChanged" SelectedValues="Options">
+    SelectedValuesChanged="OptionsChanged" ToStringFunc="TextFormat" SelectedValues="Options">
 
     @foreach (var binyan in BinyanList)
     {
-        <MudSelectItem T="BinyanDto" Value="@binyan">
-            @binyan.NameLocal (@binyan.NameHebrew)
+        <MudSelectItem T="Binyan" Value="@binyan">
+            @binyan.ToString(Language.Russian) (@binyan.NameHebrew)
         </MudSelectItem>
     }
 
@@ -16,11 +17,13 @@
 
 @code {
     [Parameter]
-    public IEnumerable<BinyanDto> Options { get; set; } = new HashSet<BinyanDto>();
+    public IEnumerable<Binyan> Options { get; set; } = new HashSet<Binyan>();
 
     [Parameter]
-    public IEnumerable<BinyanDto> BinyanList { get; set; } = [];
+    public EventCallback<IEnumerable<Binyan>> OptionsChanged { get; set; }
 
-    [Parameter]
-    public EventCallback<IEnumerable<BinyanDto>> OptionsChanged { get; set; }
+    private IEnumerable<Binyan> BinyanList { get; set; } = FilterService.BinyanOptions;
+
+    private string TextFormat(Binyan b) => b.ToString(Language.Russian);
+
 }

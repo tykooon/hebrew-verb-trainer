@@ -18,7 +18,7 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>, 
     public DbSet<Present> Presents { get; set; }
     public DbSet<Future> Futures { get; set; }
     public DbSet<Imperative> Imperatives { get; set; }
-    public DbSet<FilterSnapshot> FilterSnapshots { get; set; }
+    public DbSet<AppFilter> FilterSnapshots { get; set; }
     public DbSet<Translation> Translations { get; set; }
     public DbSet<Preposition> Prepositions { get; set; }
 
@@ -36,6 +36,9 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>, 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySQL();
+        //optionsBuilder.UseMySQL(opt => 
+        //    opt.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+
+        optionsBuilder.UseSqlite();
     }
 }

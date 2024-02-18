@@ -1,26 +1,27 @@
 ﻿@using HebrewVerb.Application.Models
 @using HebrewVerb.Application.Services
-@using HebrewVerb.Domain.Enums;
 @rendermode InteractiveServer
 
 <div>
-    <MudSelect T="ZmanDto"  MultiSelection="true" AnchorOrigin="Origin.BottomCenter"
-        SelectedValuesChanged="OptionsChanged" SelectedValues="Options" Label="Время:">
+    <MudSelect T="Zman" MultiSelection="true" AnchorOrigin="Origin.BottomCenter" ToStringFunc="TextFormat"
+               SelectedValuesChanged="OptionsChanged" SelectedValues="Options" Label="Время:" Disabled="Disabled">
 
-        @foreach (var zman in ZmanList)
+        @foreach (var zman in FilterService.ZmanOptions)
         {
-            <MudSelectItem T="ZmanDto" Value="@zman">@zman.NameLocal (@zman.NameHebrew)</MudSelectItem>
+            <MudSelectItem T="Zman" Value="@zman">@zman.ToString(Language.Russian) (@zman.NameHebrew)</MudSelectItem>
         }
     </MudSelect>
 </div>
 
 @code {
     [Parameter]
-    public IEnumerable<ZmanDto> Options { get; set; } = new HashSet<ZmanDto>();
+    public IEnumerable<Zman> Options { get; set; } = new HashSet<Zman>();
 
     [Parameter]
-    public IEnumerable<ZmanDto> ZmanList { get; set; } = new HashSet<ZmanDto>();
+    public bool Disabled { get; set; } = false;
 
     [Parameter]
-    public EventCallback<IEnumerable<ZmanDto>> OptionsChanged { get; set; }
+    public EventCallback<IEnumerable<Zman>> OptionsChanged { get; set; }
+
+    private string TextFormat(Zman z) => z.ToString(Language.Russian);
 }
