@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result;
-using HebrewVerb.Application.Feature.Verbs;
+using HebrewVerb.Application.Models;
 using HebrewVerb.SharedKernel.Enums;
 using HtmlAgilityPack;
 

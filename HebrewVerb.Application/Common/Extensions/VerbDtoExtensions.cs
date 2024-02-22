@@ -1,4 +1,4 @@
-﻿using HebrewVerb.Application.Feature.Verbs;
+﻿using HebrewVerb.Application.Models;
 using HebrewVerb.SharedKernel.Enums;
 
 namespace HebrewVerb.Application.Common.Extensions;
@@ -17,14 +17,14 @@ public static class VerbDtoExtensions
             return verbDto.Infinitive;
         }
 
-        if (zman == Zman.Past)
+        if (zman == Zman.Present)
         {
             return guf.Details() switch
             {
                 (_, Number.Single, Gender.Male) => verbDto.PresentMs,
-                (_, Number.Plural, Gender.Male) => verbDto.PresentMs,
-                (_, Number.Single, Gender.Female) => verbDto.PresentMs,
-                (_, Number.Plural, Gender.Female) => verbDto.PresentMs,
+                (_, Number.Plural, Gender.Male) => verbDto.PresentMp,
+                (_, Number.Single, Gender.Female) => verbDto.PresentFs,
+                (_, Number.Plural, Gender.Female) => verbDto.PresentFp,
                 _ => null
             };
         }

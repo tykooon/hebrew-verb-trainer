@@ -21,10 +21,15 @@ public class Gizra : BaseEntity<int>
 
     public Gizra(string name, string description, params Binyan[] binyans)
     {
+        Update(name, description, binyans);
+    }
+
+    private Gizra() { }
+
+    public void Update(string name, string description, params Binyan[] binyans)
+    {
         Name = name;
         Description = description;
         Binyans = binyans;
     }
-
-    private Gizra() { }
 }

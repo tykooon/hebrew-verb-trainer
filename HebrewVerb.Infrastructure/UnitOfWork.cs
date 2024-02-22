@@ -36,11 +36,11 @@ public class UnitOfWork : IUnitOfWork
         _context = context;
     }
 
-    public Task CommitAsync()
+    public async Task CommitAsync()
     {
         if (_context is null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         if (_isDisposed)
@@ -50,7 +50,7 @@ public class UnitOfWork : IUnitOfWork
 
         try
         {
-            return Context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException ex)
         {

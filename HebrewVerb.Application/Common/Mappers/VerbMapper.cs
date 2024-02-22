@@ -1,5 +1,4 @@
-﻿using HebrewVerb.Application.Feature.Verbs;
-using HebrewVerb.Application.Models;
+﻿using HebrewVerb.Application.Models;
 using HebrewVerb.Domain.Entities;
 using HebrewVerb.SharedKernel.Enums;
 
@@ -64,10 +63,14 @@ public static class VerbMapper
         var result = new VerbInfo(
             verb.Id,
             verb.Infinitive.Hebrew,
-            verb.Binyan.ToString(lang),
+            verb.Binyan.Value,
+            verb.Shoresh.WithDots,
             verb.Translation?.Get(lang) ?? "",
             verb.Gizras.Select(g => g.Name),
-            verb.VerbModels.Select(vm => vm.Name));
+            verb.VerbModels.Select(vm => vm.Name),
+            verb.IsArchaic,
+            verb.IsLiterary,
+            verb.IsSlang);
         return result;
     }
 }

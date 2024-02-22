@@ -1,0 +1,120 @@
+﻿@page "/admin/verbmodels"
+@using HebrewVerb.Application.Feature.VerbModels.Queries
+@using HebrewVerb.Application.Models
+@inject ISnackbar Snackbar
+@inject IMediator Mediator
+@inject IDialogService DialogService
+@rendermode InteractiveAuto
+
+<PageTitle>Verb Model Data Editing</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<VerbModelDto>>>(ServerReload))"
+              Dense="false" Hover="true" @ref="table">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Gizras</MudText>
+            <MudButton Variant="Variant.Filled" Class="mx-3" Color="Color.Secondary" OnClick=@(()=> EditVerbModel(0, true))>
+                <TextHider Outtro="Создать новую"> <MudIcon Icon="@Icons.Material.Filled.Add" /></TextHider>
+            </MudButton>
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortLabel="id_field" T="VerbModelDto">Id</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="name_field" T="VerbModelDto">Название</MudTableSortLabel></MudTh>
+            <MudTh>Биньяны</MudTh>
+            <MudTh>Действия</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+                <MudTd DataLabel="Name">
+                    <MudTooltip Text="@context.Description" Placement="Placement.Right">
+                        <MudText Typo="Typo.h6">@context.Name</MudText>
+                    </MudTooltip>
+                </MudTd>
+                <MudTd DataLabel="Binyans">@string.Join(", ", @context.Binyans.GetBinyans().Select(b => b.NameRussian))</MudTd>
+                <MudTd DataLabel="Gizras">
+                    <MudButton Size=Size.Medium Color="Color.Primary" IconClass="mx-auto" StartIcon="@Icons.Material.Filled.Edit"
+                            OnClick=@(()=> EditVerbModel(context.Id)) />
+                    <MudButton Size=Size.Medium Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete"
+                            OnClick=@(()=> DeleteVerbModel(context.Id, context.Name)) />
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No matching records found</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+</MudContainer>
+
+
+
+@code {
+    private IEnumerable<VerbModelDto> pagedData = [];
+    private MudTable<VerbModelDto> table;
+
+    private int totalItems;
+    private string searchString = "";
+
+    private void EditVerbModel(int verbModelId, bool isNew = false)
+    {
+        DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
+        var parameters = new DialogParameters<EditVerbModelDialog>();
+        parameters.Add("VerbModelId", verbModelId);
+        parameters.Add("IsNew", isNew);
+        parameters.Add("OnSuccess", new EventCallbackFactory().Create(this, table.ReloadServerData));
+        var title = isNew ? "Создать" : "Редактировать";
+        DialogService.Show<EditVerbModelDialog>(title, parameters, closeOnEscapeKey);
+    }
+
+    private void DeleteVerbModel(int verbModelId, string name)
+    {
+        DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
+        var parameters = new DialogParameters<DeleteVerbModelDialog>();
+        parameters.Add("VerbModelId", verbModelId);
+        parameters.Add("Name", name);
+        parameters.Add("OnSuccess", new EventCallbackFactory().Create(this, table.ReloadServerData));
+        DialogService.Show<DeleteVerbModelDialog>("Удалить", parameters, closeOnEscapeKey);
+    }
+
+
+    // Getting the paged, filtered and ordered data from the server
+    private async Task<TableData<VerbModelDto>> ServerReload(TableState state)
+    {
+        var query = new GetAllVerbModelsQuery();
+        IEnumerable<VerbModelDto> data = await Mediator.Send(query);
+        data = data.Where(element =>
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }).ToArray();
+        totalItems = data.Count();
+        switch (state.SortLabel)
+        {
+            case "id_field":
+                data = data.OrderByDirection(state.SortDirection, o => o.Id);
+                break;
+            case "name_field":
+                data = data.OrderByDirection(state.SortDirection, o => o.Name);
+                break;
+        }
+
+        pagedData = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        return new TableData<VerbModelDto>() { TotalItems = totalItems, Items = pagedData };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+}

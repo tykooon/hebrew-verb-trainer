@@ -1,0 +1,49 @@
+﻿@using HebrewVerb.Application.Feature.Gizras.Commands
+@using HebrewVerb.Application.Models
+@inject IMediator _mediator
+@inject ISnackbar _snackbar
+
+
+<MudDialog Style="min-width:50vw">
+    <DialogContent>
+            <MudText>Удалить гизру @Name из списка гизр?</MudText>
+            <MudText>(Глаголы принадлежащие данной гизре сохранятся в базе)</MudText>
+    </DialogContent>
+    <DialogActions>
+            <MudButton Class="me-6" Variant="Variant.Filled" OnClick="Cancel">ОТМЕНА</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Delete">УДАЛИТЬ</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public int GizraId { get; set; }
+
+    [Parameter]
+    public string Name { get; set; } = "";
+
+    [Parameter]
+    public EventCallback OnSuccess { get;set; }
+
+    void Cancel() => MudDialog.Cancel();
+
+    async Task Delete()
+    {
+        var deleteCommand = new DeleteGizraCommand(GizraId);
+        var res = await _mediator.Send(deleteCommand);
+
+        if (res?.IsSuccess == true)
+        {
+            _snackbar.Add("Gizra Successfully Deleted", Severity.Success);
+            MudDialog.Cancel();
+            await OnSuccess.InvokeAsync();
+        }
+        else
+        {
+            var errorMsg = string.Join(", ", res?.Errors ?? []);
+            _snackbar.Add($"Errors: {errorMsg}", Severity.Error);
+        }
+    }
+}

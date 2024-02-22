@@ -1,4 +1,4 @@
-﻿using HebrewVerb.Application.Feature.Verbs;
+﻿using HebrewVerb.Application.Models;
 using HebrewVerb.Domain.Entities;
 using HebrewVerb.SharedKernel.Enums;
 

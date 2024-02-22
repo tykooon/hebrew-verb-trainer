@@ -1,6 +1,7 @@
 ﻿using HebrewVerb.Application.Models;
 using HebrewVerb.BlazorApp.Common;
 using HebrewVerb.SharedKernel.Enums;
+using HebrewVerb.SharedKernel.Extensions;
 using MudBlazor;
 using static MudBlazor.CategoryTypes;
 namespace HebrewVerb.BlazorApp.ViewModels;
@@ -32,7 +33,7 @@ public class CardViewModel
         VerbForm = card.VerbFormHebrew;
         VerbFormTranslit = card.VerbFormTranslit;
         VerbFormStress = card.TranslitStress;
-        Binyan = verb.Binyan;
+        Binyan = verb.Binyan.ToBinyanName();
         Gizras = verb.Gizras;
         Models = verb.VerbModels;
         Translation = verb.Translate;

@@ -1,0 +1,121 @@
+﻿@using HebrewVerb.Application.Models
+@using HebrewVerb.Application.Services
+@using HebrewVerb.BlazorApp.Common.Extensions
+@using HebrewVerb.BlazorApp.ViewModels
+@using Microsoft.Extensions.Caching.Distributed
+@inject IDistributedCache _cache
+@inject IMediator _mediator
+@inject ILogger<FilterBar> _logger
+@inject ISnackbar _snackbar
+@* IsExpandedChanged="ExpandedChanged" *@
+
+@rendermode InteractiveAuto
+
+<MudExpansionPanels Class="mb-5">
+    <MudExpansionPanel @ref=_filterPanel Class="mt-0 pt-0 bg-light" Text=@filterSummary MaxHeight="600" IsInitiallyExpanded="true">
+        <div class="container" style="max-width:1000px">
+            <div class="row justify-content-md-center">
+                <div class="col-md-6">
+                    <BinyanFilter Options=@CurrentFilter.Binyans OptionsChanged="OnBinyanChanged"></BinyanFilter>
+                </div>
+                <div class="col-md-6">
+                    <GizraFilter Options="@CurrentFilter.Gizras" OptionsChanged="OnGizraChanged" GizraList="AllowedGizras"></GizraFilter>
+                </div>
+            </div>
+            <div class="row justify-content-md-center">
+                <div class="col-md-6">
+                    <VerbModelFilter Options="CurrentFilter.VerbModels" OptionsChanged="OnVerbModelChanged" VerbModelList="AllowedVerbModels"></VerbModelFilter>
+                </div>
+                <div class="col-md-6">
+                    <ZmanFilter Disabled=@ZmanDisabled Options="CurrentFilter.Zmans" OptionsChanged="OnZmanChanged"></ZmanFilter>
+                </div>
+            </div>
+            <div class="row justify-content-md-center align-baseline mx-0 px-0">
+                <div class="col-3">
+                        <MudSelect T="int" Label="Количество" Value="CurrentFilter.VerbLimit" ValueChanged="OnLimitChanged">
+                            <MudSelectItem Value="1" />
+                            <MudSelectItem Value="3" />
+                            <MudSelectItem Value="5" />
+                            <MudSelectItem Value="10" />
+                        </MudSelect>
+                </div>
+                <div class="col-3">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth>
+                        <TextHider Outtro="ЗАГРУЗИТЬ">
+                            <MudIcon Icon="@Icons.Material.Filled.FolderOpen" Title="Load Filter"></MudIcon>
+                        </TextHider>
+                    </MudButton>
+                </div>
+                <div class="col-3">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth>
+                        <TextHider Outtro="СОХРАНИТЬ">
+                            <MudIcon Icon="@Icons.Material.Filled.Save" Title="Save Filter"></MudIcon>
+                        </TextHider>
+                    </MudButton>
+                </div>
+                <div class="col-3">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth OnClick="FilterApplied">
+                        <TextHider Outtro="ПРИМЕНИТЬ">
+                            <MudIcon Icon="@Icons.Material.Filled.Update" Title="Apply Filter"></MudIcon>
+                        </TextHider>
+                    </MudButton>
+                </div>
+            </div>
+        </div>
+    </MudExpansionPanel>
+</MudExpansionPanels>
+
+@code {
+    [Parameter]
+    public FilterViewModel CurrentFilter { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<FilterViewModel> CurrentFilterChanged { get; set; }
+
+    [Parameter]
+    public EventCallback FilterApplied { get; set; }
+
+    [Parameter]
+    public bool ZmanDisabled { get; set; } = false;
+
+    public MudExpansionPanel? _filterPanel;
+
+    private AppUserDetails? _currentUserDetails;
+
+    private string filterSummary => string.Format("Filter: биньяны: {0} гизры: {1} модели: {2} времена: {3}",
+        CurrentFilter.Binyans.Count(), CurrentFilter.Gizras.Count(), CurrentFilter.VerbModels.Count(), CurrentFilter.Zmans.Count());
+
+    private IEnumerable<GizraDto> AllowedGizras { get; set; } = [];
+    private IEnumerable<VerbModelDto> AllowedVerbModels { get; set; } = [];
+
+    private async Task OnBinyanChanged(IEnumerable<Binyan> binyans)
+    {
+        CurrentFilter.Binyans = binyans.ToHashSet();
+        await RefreshFilter();
+        await CurrentFilterChanged.InvokeAsync(CurrentFilter);
+    }
+
+    private async Task OnZmanChanged(IEnumerable<Zman> zmans)
+    {
+        CurrentFilter.Zmans = zmans.ToHashSet();
+        await CurrentFilterChanged.InvokeAsync(CurrentFilter);
+    }
+
+    private async Task OnGizraChanged(IEnumerable<GizraDto> gizras)
+    {
+        CurrentFilter.Gizras = gizras.ToHashSet();
+        await CurrentFilterChanged.InvokeAsync(CurrentFilter);
+    }
+
+    private async Task OnVerbModelChanged(IEnumerable<VerbModelDto> verbModels)
+    {
+        CurrentFilter.VerbModels = verbModels.ToHashSet();
+        await CurrentFilterChanged.InvokeAsync(CurrentFilter);
+    }
+
+    private async Task OnLimitChanged(int limit)
+    {
+        CurrentFilter.VerbLimit = limit;
+        await CurrentFilterChanged.InvokeAsync(CurrentFilter);
+    }
+}

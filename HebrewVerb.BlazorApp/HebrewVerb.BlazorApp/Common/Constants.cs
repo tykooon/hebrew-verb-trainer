@@ -11,8 +11,7 @@ public static class Constants
         [""] = MudBlazor.Color.Default,
     };
 
-    public const string BinyanList = nameof(BinyanList);
-    public const string ZmanList = nameof(ZmanList);
+    // Constants for cache key names
     public const string GizraList = nameof(GizraList);
     public const string VerbModelList = nameof(VerbModelList);
 

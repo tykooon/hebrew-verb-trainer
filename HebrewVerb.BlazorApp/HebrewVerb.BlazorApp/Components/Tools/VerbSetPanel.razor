@@ -1,0 +1,53 @@
+﻿@using HebrewVerb.Application.Models
+@using HebrewVerb.BlazorApp.Common.Extensions
+
+<MudChipSet>
+    @foreach (var value in VerbSet)
+    {
+        <MudTooltip Placement="Placement.Right">
+            <ChildContent>
+                @if (CanClose)
+                {
+                    <MudChip Color="Color.Primary" Value="value.VerbId" Text="@value.InfinitiveFormatted()" OnClose="@Closed"></MudChip>
+                }
+                else
+                {
+                    <MudChip Color="Color.Primary" Value="value.VerbId" Text="@value.InfinitiveFormatted()"></MudChip>
+                }
+            </ChildContent>
+            <TooltipContent>
+                <div style="max-width:150px">
+                    @value.Translate @if (value.IsPassive())
+                    {
+                        <p>(@value.Binyan.ToBinyanName())</p>
+                    }
+                </div>
+            </TooltipContent>
+        </MudTooltip>
+        
+    }
+</MudChipSet>
+@code {
+    [Parameter]
+    public HashSet<VerbInfo> VerbSet { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<VerbInfo> OnVerbDeleted { get; set; }
+
+    [Parameter]
+    public bool CanClose { get; set; }
+
+    private async Task Closed(MudChip chip) 
+    {
+        var deleted = VerbSet.FirstOrDefault(v => v.VerbId == (int)chip.Value);
+        if(deleted != null)
+        {
+            await OnVerbDeleted.InvokeAsync(deleted);
+        }
+    }
+
+    public void Refresh()
+    {
+        this.StateHasChanged();
+    }
+}

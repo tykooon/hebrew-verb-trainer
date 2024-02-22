@@ -1,0 +1,142 @@
+﻿@using HebrewVerb.Application.Feature.VerbModels.Commands
+@using HebrewVerb.Application.Feature.VerbModels.Queries
+@using HebrewVerb.Application.Feature.Verbs
+@using HebrewVerb.Application.Feature.Verbs.Commands
+@using HebrewVerb.Application.Feature.Verbs.Queries
+@using HebrewVerb.Application.Models
+@using HebrewVerb.Application.Models.Validators
+@inject IMediator _mediator
+@inject ISnackbar _snackbar
+@using HebrewVerb.BlazorApp.Common.Extensions
+@using Microsoft.Extensions.Caching.Distributed
+@inject IDistributedCache _cache
+
+
+<MudDialog Style="min-width:50vw">
+    <DialogContent>
+        <MudText Typo="Typo.h6">Глагол: @VerbDtoModel.Infinitive.Hebrew (@VerbDtoModel.Infinitive.HebrewNikkud) </MudText>
+        <MudForm @ref=_form Model="VerbDtoModel" Validation="@(Validator.ValidateValue)">
+            <MudTextField T="string" Value=VerbDtoModel.Shoresh Disabled Label="Корень"></MudTextField>
+            <BinyanSelect Option="VerbDtoModel.Binyan.ToBinyan()" OptionsChanged="OnBinyanChanged"></BinyanSelect>
+            <MudTextField T="string" @bind-Value=VerbDtoModel.Translate Label="Перевод"></MudTextField>
+            <GizraFilter Options="SelectedGizras" OptionsChanged="OnGizraChanged" GizraList="AllowedGizras"></GizraFilter>
+             <VerbModelFilter Options="SelectedVerbModels" OptionsChanged="OnVerbModelChanged" VerbModelList="AllowedVerbModels"></VerbModelFilter>
+            <div class="d-grid">
+                 <MudSwitch Class="col" For="@(() => VerbDtoModel.IsArchaic)" Label="Архаичный" />
+                 <MudSwitch Class="col" For="@(() => VerbDtoModel.IsLiterary)" Label="Литературный" />
+                 <MudSwitch Class="col" For="@(() => VerbDtoModel.IsSlang)" Label="Есть слэнговое значение" />
+            </div>
+
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+            <MudButton Class="me-6" Variant="Variant.Filled" OnClick="Cancel">ОТМЕНА</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">СОХРАНИТЬ</MudButton>
+    </DialogActions>
+</MudDialog>
+
+ @code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+
+    [Parameter]
+    public int VerbId { get; set; }
+
+    [Parameter]
+    public EventCallback OnSuccess { get; set; }
+
+    private MudForm _form;
+    private VerbDtoValidator Validator; 
+
+    private VerbDto VerbDtoModel { get; set; } = new();
+
+
+    private async Task OnBinyanChanged(Binyan binyan)
+    {
+        // Currently Hardcoded NameRussian  -- TODO: depend on Language
+        VerbDtoModel.Binyan = binyan.NameRussian;
+        await RefreshOptions(true);
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+    async Task Submit()
+    {
+        await _form.Validate();
+
+        if (!_form.IsValid)
+        {
+            return;
+        }
+
+        var command = new UpdateVerbCommand(VerbDtoModel);
+        var res = await _mediator.Send(command);
+
+        if (res?.IsSuccess == true)
+        {
+            _snackbar.Add("Verb Successfully Updated", Severity.Success);
+            MudDialog.Cancel();
+            await OnSuccess.InvokeAsync();
+        }
+        else
+        {
+            var errorMsg = string.Join(", ", res?.Errors ?? []);
+            _snackbar.Add($"Errors: {errorMsg}", Severity.Error);
+        }
+    }
+
+    private IEnumerable<GizraDto> AllowedGizras { get; set; } = [];
+    private IEnumerable<VerbModelDto> AllowedVerbModels { get; set; } = [];
+
+    private HashSet<GizraDto> SelectedGizras = [];
+    private HashSet<VerbModelDto> SelectedVerbModels = [];
+
+    private void OnGizraChanged(IEnumerable<GizraDto> gizras)
+    {
+        SelectedGizras = gizras.ToHashSet();
+        VerbDtoModel.Gizras = gizras.Select(g => g.Name).ToList();
+    }
+
+    private void OnVerbModelChanged(IEnumerable<VerbModelDto> verbModels)
+    {
+        SelectedVerbModels = verbModels.ToHashSet();
+        VerbDtoModel.VerbModels = verbModels.Select(g => g.Name).ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var query = new GetVerbByIdQuery(VerbId);
+        var res = await _mediator.Send(query);
+        if (res == null)
+        {
+            MudDialog.Cancel();
+        }
+        else
+        {
+            VerbDtoModel = res;
+        }
+        await RefreshOptions(true);
+        Validator = new(_mediator);
+    }
+
+    public async Task RefreshOptions(bool firstRender = false)
+    {
+        AllowedGizras = await _cache.GetGizraList(_mediator) ?? [];
+        AllowedVerbModels = await _cache.GetVerbModelList(_mediator) ?? [];
+
+        AllowedGizras = AllowedGizras.Where(g => g.Binyans.Contains(VerbDtoModel.Binyan.ToBinyan().Name));
+        AllowedVerbModels = AllowedVerbModels.Where(vm => vm.Binyans.Contains(VerbDtoModel.Binyan.ToBinyan().Name));
+
+        SelectedGizras = SelectedGizras.Intersect(AllowedGizras).ToHashSet();
+        VerbDtoModel.Gizras = SelectedGizras.Select(g => g.Name).ToList();
+
+        SelectedVerbModels = SelectedVerbModels.Intersect(AllowedVerbModels).ToHashSet();
+        VerbDtoModel.VerbModels = SelectedVerbModels.Select(g => g.Name).ToList();
+
+        if (!firstRender)
+        {
+            StateHasChanged();
+        }
+    }
+}

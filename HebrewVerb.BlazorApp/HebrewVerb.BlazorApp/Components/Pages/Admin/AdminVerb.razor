@@ -1,0 +1,48 @@
+﻿@page "/admin/verbs"
+
+@inject ISnackbar Snackbar
+@using HebrewVerb.Application.Feature.Gizras.Commands
+@using HebrewVerb.Application.Feature.Verbs.Commands
+@using HebrewVerb.Application.Feature.Verbs.Queries
+@using HebrewVerb.BlazorApp.Common.Extensions
+@using HebrewVerb.BlazorApp.ViewModels
+@using HebrewVerb.Application.Models
+@using Microsoft.Extensions.Caching.Distributed
+@inject IMediator _mediator
+@inject IDistributedCache _cache
+@rendermode InteractiveAuto
+
+<PageTitle>Verb Data Editing</PageTitle>
+
+<FilterBar @ref="_filterBar" @bind-CurrentFilter="FilterData" 
+    ZmanDisabled="true">
+</FilterBar>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="justify-content-center mt-2">
+
+
+<VerbTableAdmin></VerbTableAdmin>
+
+</MudContainer>
+
+ @code {
+    private FilterViewModel FilterData = new();
+
+    private FilterBar _filterBar = new();
+
+    private async Task FilterBarRefresh(RefreshOption option = RefreshOption.None)
+    {
+        switch (option)
+        {
+            case RefreshOption.GizraFilter:
+                _cache.Remove(Constants.GizraList);
+                break;
+            case RefreshOption.VerbModelFilter:
+                _cache.Remove(Constants.VerbModelList);
+                break;
+            case RefreshOption.None:
+                break;
+        }        
+        await _filterBar.RefreshFilter();
+    }
+}

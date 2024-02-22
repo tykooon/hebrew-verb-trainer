@@ -20,11 +20,15 @@ public class VerbModel : BaseEntity<int>
 
     public VerbModel(string name, string description, params Binyan[] binyans) 
     {
-        Name = name;
-        Description = description;
-        Binyans = binyans;
+        Update(name, description, binyans);
     }
 
     private VerbModel() { }
 
+    public void Update(string name, string description, params Binyan[] binyans)
+    {
+        Name = name;
+        Description = description;
+        Binyans = binyans;
+    }
 }

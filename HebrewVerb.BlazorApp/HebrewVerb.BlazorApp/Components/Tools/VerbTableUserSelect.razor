@@ -1,0 +1,145 @@
+﻿@using HebrewVerb.Application.Models
+@using HebrewVerb.Application.Feature.Verbs.Queries;
+@using HebrewVerb.BlazorApp.Common.Extensions
+@inject IMediator mediator
+@inject IDialogService DialogService
+@inject ILogger<VerbTableUserSelect> _logger
+
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<VerbTableItem>>>(ServerReload))"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Verbs</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudIcon Icon="@Icons.Material.Outlined.Check"></MudIcon></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="inf_field" T="VerbTableItem">Инфинитив</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="shor_field" T="VerbTableItem">Корень</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="bin_field" T="VerbTableItem">Биньян</MudTableSortLabel></MudTh>
+        <MudTh>Гизра</MudTh>
+        <MudTh>Модель</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Enabled">
+            <MudCheckBox T="bool" Value="@context.Selected"
+                ValueChanged="@(async (value) => await OnItemCheck(context, value))">
+            </MudCheckBox>
+        </MudTd>
+        <MudTd DataLabel="Infinitive">
+            <MudTooltip Text="@context.Verb.Translate">
+                @context.Verb.InfinitiveFormatted()
+            </MudTooltip>
+            @if (context.Verb.IsPassive())
+            {
+                <MudTooltip Placement="Placement.Right" Arrow=true>
+                    <ChildContent>
+                        <b style="color:red; font-weight:800">*</b>
+                    </ChildContent>
+                    <TooltipContent>
+                        <div style="max-width:120px">
+                            <p style="font-size:smaller; color:khaki">
+                                Биньян @context.Verb.Binyan.ToBinyanName() не имеет инфинитива.
+                                Инфинитив от @Binyan.FromValue(context.Verb.Binyan).DualBinyan().NameRussian.</p>
+                        </div>
+                    </TooltipContent>
+                </MudTooltip>
+            }
+        </MudTd>
+        <MudTd DataLabel="Shoresh"><span dir="auto">@context.Verb.Shoresh</span></MudTd>
+        <MudTd DataLabel="Binyan">@Binyan.FromValue(context.Verb.Binyan).NameRussian</MudTd>
+            <MudTd DataLabel="Gizras">@string.Join(" | ", @context.Verb.Gizras)</MudTd>
+            <MudTd DataLabel="VerbModels">@string.Join(" | ", @context.Verb.VerbModels)</MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    @code {
+    [Parameter]
+    public HashSet<VerbInfo> SelectedVerbs { get; set; } = new ();
+
+    [Parameter]
+    public EventCallback<HashSet<VerbInfo>> SelectedVerbsChanged { get; set; }
+
+
+    private IEnumerable<VerbTableItem> pagedData = [];
+    private MudTable<VerbTableItem> table;
+    private int totalItems;
+    private string searchString = "";
+
+    /// <summary>
+    /// Here we simulate getting the paged, filtered and ordered data from the server
+    /// </summary>
+    private async Task<TableData<VerbTableItem>> ServerReload(TableState state)
+    {
+        var query = new GetVerbInfosByFilterQuery(Filter.Empty);
+        IEnumerable<VerbInfo> dataInfo = await mediator.Send(query);
+        var data = dataInfo.Select(d => new VerbTableItem() { Verb = d, Selected = SelectedVerbs.Any(v => v.VerbId == d.VerbId)});
+        data = data.Where(element =>
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.Verb.Infinitive.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }).ToArray();
+        totalItems = data.Count();
+        switch (state.SortLabel)
+        {
+            case "id_field":
+                data = data.OrderByDirection(state.SortDirection, o => o.Verb.VerbId);
+                break;
+            case "inf_field":
+                data = data.OrderByDirection(state.SortDirection, o => o.Verb.Infinitive);
+                break;
+            case "bin_field":
+                data = data.OrderByDirection(state.SortDirection, o => o.Verb.Binyan);
+                break;
+        }
+
+        pagedData = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        return new TableData<VerbTableItem>() { TotalItems = totalItems, Items = pagedData };
+    }
+
+    public async Task EditSelectedVerbs(VerbInfo verb, bool value)
+    {
+        if (value)
+        {
+            var res = SelectedVerbs.Add(verb);
+        }
+        else
+        {
+            var verbToDelete = SelectedVerbs.SingleOrDefault(x => x.VerbId == verb.VerbId);
+            if (verbToDelete != null)
+            {
+                var res = SelectedVerbs.Remove(verbToDelete);
+            }
+
+        }
+        await SelectedVerbsChanged.InvokeAsync(SelectedVerbs);
+        await table.ReloadServerData();
+    }
+
+    private async Task OnItemCheck(VerbTableItem item, bool value)
+    {
+        item.Selected = value;
+        await EditSelectedVerbs(item.Verb, value);
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+}
+

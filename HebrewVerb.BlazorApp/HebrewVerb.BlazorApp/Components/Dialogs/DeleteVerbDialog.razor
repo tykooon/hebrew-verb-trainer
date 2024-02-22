@@ -1,0 +1,48 @@
+﻿@using HebrewVerb.Application.Feature.Verbs.Commands
+@using HebrewVerb.Application.Models
+@inject IMediator _mediator
+@inject ISnackbar _snackbar
+
+
+<MudDialog Style="min-width:50vw">
+    <DialogContent>
+            <MudText>Удалить глагол @Infinitive из базы данных?</MudText>
+    </DialogContent>
+    <DialogActions>
+            <MudButton Class="me-6" Variant="Variant.Filled" OnClick="Cancel">ОТМЕНА</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Delete">УДАЛИТЬ</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public int VerbId { get; set; }
+
+    [Parameter]
+    public string Infinitive { get; set; } = "";
+
+    [Parameter]
+    public EventCallback OnSuccess { get;set; }
+
+    void Cancel() => MudDialog.Cancel();
+
+    async Task Delete()
+    {
+        var deleteCommand = new DeleteVerbCommand(VerbId);
+        var res = await _mediator.Send(deleteCommand);
+
+        if (res?.IsSuccess == true)
+        {
+            _snackbar.Add("Verb Successfully Deleted", Severity.Success);
+            MudDialog.Cancel();
+            await OnSuccess.InvokeAsync();
+        }
+        else
+        {
+            var errorMsg = string.Join(", ", res?.Errors ?? []);
+            _snackbar.Add($"Errors: {errorMsg}", Severity.Error);
+        }
+    }
+}

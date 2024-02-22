@@ -6,13 +6,12 @@
 @rendermode InteractiveAuto
 
 
-<PageTitle>Training</PageTitle>
+<PageTitle>Random Verbs Training</PageTitle>
 
-<FilterBar @ref=_filterBar @bind-CurrentFilter="FilterData"/>
+<FilterBar @ref=_filterBar @bind-CurrentFilter="CurrentFilterData" FilterApplied="StartTraining"/>
 
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="justify-content-center">
-
     @if(!_trainingStarted)
     {
         <div class="container d-grid justify-content-center">
@@ -30,35 +29,29 @@
     }
     else
     {
-        <VerbCardCarousel FilterViewModel ="FilterData" OnRestart="RestartTraining" HideFilter="HideFilter" />
+        <VerbCardCarousel @ref=_carousel TrainingFilter="ApplyingFilter" HideFilter="HideFilter" />
     }
 </MudContainer>
 
 @code {
-    private FilterViewModel FilterData = new();
+    private FilterViewModel CurrentFilterData = new();
+
+    private Filter ApplyingFilter = new();
 
     private FilterBar? _filterBar;
+
+    private VerbCardCarousel? _carousel;
 
     private bool _trainingStarted = false;
 
     private void StartTraining()
     {
         _trainingStarted = true;
+        ApplyingFilter = CurrentFilterData.ToFilter();
+        _carousel?.ForceDataReload();
         HideFilter();
         StateHasChanged();
     }
 
-    private void HideFilter()
-    {
-        if (_filterBar?._filterPanel?.IsExpanded ?? false)
-        {
-            _filterBar._filterPanel.Collapse();
-        }
-    } 
-    
-
-    private void RestartTraining()
-    {
-        // TODO: Implement restart
-    }
+    private void HideFilter() => _filterBar?._filterPanel?.Collapse();
 }

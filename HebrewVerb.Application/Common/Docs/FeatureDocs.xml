@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<gizradoc>
+  <class name="AddNewGizraCommand">
+    <summary>
+      Record for adding new Gizra to GizraRepository
+    </summary>
+    <param name="Name">Gizra Name (must be unique)</param>
+    <param name="Description">Gizra Description (may be <c>string.Empty</c>)</param>
+    <param name="Binyans">IEnumerable of <see langword="string" /></param>
+  </class>
+</gizradoc>

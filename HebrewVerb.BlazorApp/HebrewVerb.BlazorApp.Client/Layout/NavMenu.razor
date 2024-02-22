@@ -1,11 +1,17 @@
-﻿<MudNavMenu Margin="Margin.Normal" Style="font-size: 1.5em;">
+﻿<MudNavMenu Margin="Margin.Normal" Style="font-size: 1.2em;">
 
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     <MudNavLink Href="training" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.FitnessCenter">Training</MudNavLink>
     <MudNavLink Href="verbsets" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Topic">Verb Sets</MudNavLink>
 
     @* Admin only *@
-    <MudNavLink Href="verbadmin" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Topic">Verb Edit</MudNavLink>
+    <MudNavGroup Title="Admin" Expanded=true>
+        <MudNavLink Href="admin/verbs" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Topic">Verbs</MudNavLink>
+        <MudNavLink Href="admin/gizras" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Topic">Gizras</MudNavLink>
+        <MudNavLink Href="admin/verbmodels" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Topic">Verb Models</MudNavLink>
+        <MudNavLink Href="admin/prepositions" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Topic">Prepositions</MudNavLink>
+    </MudNavGroup>
+
     
     <MudNavLink Href="settings" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
 

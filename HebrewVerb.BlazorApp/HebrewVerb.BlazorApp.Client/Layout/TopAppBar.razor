@@ -13,10 +13,10 @@
     @* <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/MudBlazor/MudBlazor/" Target="_blank" /> *@
 </MudAppBar>
 
-<MudDrawer Width="300px" Color="@Color.Tertiary" @bind-Open="_drawerOpen" Variant="DrawerVariant.Temporary" Elevation="1">
+<MudDrawer Width="320px" Color="@Color.Tertiary" @bind-Open="_drawerOpen" Variant="DrawerVariant.Temporary" Elevation="1">
     <MudDrawerHeader>
-        <MudText Style="margin: 0.3em 1em;" Typo="Typo.h5">Hebrew Verbs</MudText>
-        <MudIconButton ButtonType="ButtonType.Button" Icon="@Icons.Material.Rounded.Close" OnClick="DrawerToggle"></MudIconButton>
+        <MudText Style="margin: 0.2em 0.8em;" Typo="Typo.h5">Hebrew Verbs</MudText>
+        <MudIconButton ButtonType="ButtonType.Button" Size=Size.Small Icon="@Icons.Material.Rounded.Close" OnClick="DrawerToggle"></MudIconButton>
     </MudDrawerHeader>
     <NavMenu />
 </MudDrawer>

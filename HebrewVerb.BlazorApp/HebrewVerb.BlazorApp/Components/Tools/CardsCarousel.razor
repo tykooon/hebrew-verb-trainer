@@ -1,0 +1,76 @@
+﻿@using HebrewVerb.Application.Entities
+@using HebrewVerb.Application.Feature.VerbCards.Queries
+@using Application.Common.Mappers;
+@using HebrewVerb.Application.Models
+@inject IMediator _mediator
+@inject ISnackbar _snackbar
+
+<div id="cards-carousel" class="carousel slide">
+    <div class="d-block">
+        <div class="carousel-inner">
+            @for (var i = 0; i < Cards.Count; i++)
+            {
+                var itemClass = i == ActiveItem ? "carousel-item active" : "carousel-item";
+                <div class=@itemClass>
+                    <VerbFormCard CardViewModel="@Cards[i]"></VerbFormCard>
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#cards-carousel" data-bs-slide="prev" onclick=@(async () => await SwitchCard(false))>
+            <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Default"></MudIcon>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#cards-carousel" data-bs-slide="next" onclick=@(async () => await SwitchCard(true))>
+            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Color="Color.Default"></MudIcon>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<CardViewModel> Cards { get; set; } = [];
+
+    [Parameter]
+    public int ActiveItem { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ActiveItemChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnCardSwitch { get; set; }
+
+
+    private async Task SwitchCard(bool isForward)
+    {
+        await OnCardSwitch.InvokeAsync();
+        if (Cards.Count == 0)
+        {
+            return;
+        }
+
+        ActiveItem = isForward ? (ActiveItem + 1) % Cards.Count : (ActiveItem - 1) % Cards.Count;
+        await ActiveItemChanged.InvokeAsync(ActiveItem);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Cards = ShuffleCards(Cards);
+    }
+
+    private static readonly Random _rand = new(DateTime.UtcNow.Millisecond);
+
+    private static List<CardViewModel> ShuffleCards(List<CardViewModel> listToShuffle)
+    {
+        for (int i = listToShuffle.Count - 1; i > 0; i--)
+        {
+            var k = _rand.Next(i + 1);
+            var value = listToShuffle[k];
+            listToShuffle[k] = listToShuffle[i];
+            listToShuffle[i] = value;
+        }
+
+        return listToShuffle;
+    }
+}

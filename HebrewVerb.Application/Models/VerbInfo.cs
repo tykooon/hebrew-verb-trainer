@@ -3,8 +3,12 @@
 public record VerbInfo(
     int VerbId,
     string Infinitive,
-    string Binyan,
+    int Binyan,
+    string Shoresh,
     string Translate,
     IEnumerable<string> Gizras,
-    IEnumerable<string> VerbModels)
+    IEnumerable<string> VerbModels,
+    bool IsArchaic,
+    bool IsLiterary,
+    bool IsSlang)
 { }
