@@ -168,32 +168,17 @@ public static class VerbParser
 
         #endregion Imperative
 
-        verbResult.Translate = doc.GetInfo(ParseHelpers.Translation);
+        verbResult.Translation = doc.GetInfo(ParseHelpers.Translation);
 
         return verbResult;
     }
 
-    private static (string, int) ExtractStress(string str)
-    {
-        var stressIndex = str.IndexOf('<');
-        if (stressIndex < 0)
-        {
-            return (str, -1);
-        }
-
-        var chunk1 = str[..stressIndex];
-        var chunk2 = str[stressIndex+3];
-        var chunk3 = str[(stressIndex+8)..];
-
-        return (String.Concat(chunk1, chunk2, chunk3), stressIndex);
-    }
-
-    private static WordFormDto GetWordFormDto(this HtmlDocument doc, string idStr)
+    internal static WordFormDto GetWordFormDto(this HtmlDocument doc, string idStr)
     {
         var hebrewStr = doc.GetVerbForm(idStr, false);
         var hebrewNikkudStr = doc.GetVerbForm(idStr, true);
         var transcriptStr = doc.GetVerbFormTranscript(idStr);
-        (transcriptStr, int ind) = ExtractStress(transcriptStr);
+        (transcriptStr, int ind) = ParseHelpers.ExtractStress(transcriptStr);
         if (string.IsNullOrWhiteSpace(hebrewStr))
         {
             hebrewStr = hebrewNikkudStr.RemoveNonHebrew(nikkudAllowed: false);
@@ -202,7 +187,7 @@ public static class VerbParser
         return new(hebrewStr, hebrewNikkudStr, transcriptStr, ind);
     }
 
-    private static bool CheckMetaData(this HtmlDocument htmlDocument, string name, string content)
+    internal static bool CheckMetaData(this HtmlDocument htmlDocument, string name, string content)
     {
         var metaNode = htmlDocument.DocumentNode.SelectSingleNode($"//meta[@name='{name}']");
         var metaContent = metaNode?.GetAttributeValue("content", null);

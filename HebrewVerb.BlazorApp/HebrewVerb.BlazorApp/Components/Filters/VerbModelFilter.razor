@@ -1,28 +1,37 @@
-﻿@using HebrewVerb.Application.Feature.VerbModels.Queries
-@using HebrewVerb.Application.Models
+﻿@using HebrewVerb.Application.Models
 @using HebrewVerb.Application.Services
-@inject IMediator _mediator
 @rendermode InteractiveServer
 
-<MudSelect T="VerbModelDto" AnchorOrigin="Origin.BottomCenter" MultiSelection="true"
-    SelectedValuesChanged="OptionsChanged" SelectedValues="Options" Label="Модель:">
+<MudSelect T="VerbModel" AnchorOrigin="Origin.BottomCenter" MultiSelection="true" ToStringFunc="@((g) => g.NameHebrew)"
+           SelectedValuesChanged="OptionsChanged" SelectedValues="Options" Label="Модель:">
     @foreach (var verbModel in VerbModelList)
     {
-        <MudSelectItem T="VerbModelDto" Value="@verbModel">
-            <MudTooltip Duration="1000" Text="@verbModel.Description">
-                @verbModel.Name
-            </MudTooltip>
+        <MudSelectItem T="VerbModel" Value="@verbModel">
+            <div style="max-width:300px;" class="d-flex justify-content-between">
+                <MudTooltip>
+                    <ChildContent>
+                        <span class="hebrew-accent">@verbModel.NameHebrew</span>
+                    </ChildContent>
+                    <TooltipContent>
+                        <div style="max-width:180px" class="d-flex flex-wrap">
+                            @verbModel.NameRussian
+                        </div>
+                    </TooltipContent>
+                </MudTooltip>
+                <VerbModelVisual VerbModel="@verbModel"></VerbModelVisual>
+            </div>
         </MudSelectItem>
+
     }
 </MudSelect>
 
 @code {
     [Parameter]
-    public IEnumerable<VerbModelDto> Options { get; set; } = new HashSet<VerbModelDto>();
+    public IEnumerable<VerbModel> Options { get; set; } = new HashSet<VerbModel>();
 
     [Parameter]
-    public IEnumerable<VerbModelDto> VerbModelList { get; set; } = [];
+    public IEnumerable<VerbModel> VerbModelList { get; set; } = [];
 
     [Parameter]
-    public EventCallback<IEnumerable<VerbModelDto>> OptionsChanged { get; set; }
+    public EventCallback<IEnumerable<VerbModel>> OptionsChanged { get; set; }
 }

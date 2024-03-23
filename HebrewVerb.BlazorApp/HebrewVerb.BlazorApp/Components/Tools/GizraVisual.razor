@@ -1,0 +1,87 @@
+﻿<ul class="shoresh-scheme">
+    @if(GizraView.ContainsKey(Gizra))    {
+        @((MarkupString)GizraView[Gizra]);
+    }
+</ul>
+
+@code{
+    [Parameter]
+    public Gizra Gizra { get; set; } = Gizra.Undefined;
+
+    private static Dictionary<Gizra, string> GizraView = new(){
+        [Gizra.Shlemim] = """"
+            <li> </li>
+            <li class="dash">-</li>
+            <li> </li>
+            <li class="dash">-</li>
+            <li> </li>
+        """",
+        [Gizra.Merubaim] = """"
+            <li> </li>
+            <li class="dash">-</li>
+            <li> </li>
+            <li class="dash">-</li>
+            <li> </li>
+            <li class="dash">-</li>
+            <li> </li>
+        """",
+        [Gizra.Khaphan] = """"
+            <li> </li>
+            <li class="dash">-</li>
+            <li> </li>
+            <li class="dash">-</li>
+            <li class="special-letter-haser"><span>נ</span> </li>
+        """",
+        [Gizra.Khaphits] = """"
+            <li> </li>
+            <li class="dash">-</li>
+            <li><span> צ</span></li>
+            <li class="dash">-</li>
+            <li class="special-letter-haser"><span>י</span> </li>
+        """",
+        [Gizra.Napha] = """"
+            <li> </li>
+            <li class="dash">-</li>
+            <li> </li>
+            <li class="dash">-</li>
+            <li class="special-letter-nah"><span>א</span> </li>
+        """",
+        [Gizra.Naphiu] = """"
+            <li> </li>
+            <li class="dash">-</li>
+            <li> </li>
+            <li class="dash">-</li>
+            <li class="special-letter-nah"><span>י/ו</span> </li>
+        """",
+        [Gizra.Nayui] = """"
+            <li> </li>
+            <li class="dash">-</li>
+            <li class="special-letter-nah"><span>ו/י</span> </li>
+            <li class="dash">-</li>
+            <li> </li>
+        """",
+        [Gizra.Nala] = """"
+            <li class="special-letter-nah"><span>א</span> </li>
+            <li class="dash">-</li>
+            <li> </li>
+            <li class="dash">-</li>
+            <li> </li>
+        """",
+        [Gizra.Naliah] = """"
+            <li class="special-letter-nah"><span>י/ה</span> </li>
+            <li class="dash">-</li>
+            <li> </li>
+            <li class="dash">-</li>
+            <li> </li>
+        """",
+        [Gizra.Kfulim] = """"
+            <li class="special-letter-kaful"><span></span> </li>
+            <li class="dash">-</li>
+            <li class="special-letter-kaful"><span></span> </li>
+            <li class="dash">-</li>
+            <li> </li>
+        """",
+
+    };
+}
+

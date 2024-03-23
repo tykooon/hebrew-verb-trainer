@@ -1,4 +1,5 @@
-﻿using HebrewVerb.SharedKernel.Enums;
+﻿using HebrewVerb.Application.Models;
+using HebrewVerb.SharedKernel.Enums;
 using HtmlAgilityPack;
 
 namespace HebrewVerb.Application.Common.Helpers;
@@ -99,5 +100,20 @@ internal static class ParseHelpers
             }
         }
         return new string(buffer, 0, index);
+    }
+
+    internal static (string, int) ExtractStress(string str)
+    {
+        var stressIndex = str.IndexOf('<');
+        if (stressIndex < 0)
+        {
+            return (str, -1);
+        }
+
+        var chunk1 = str[..stressIndex];
+        var chunk2 = str[stressIndex + 3];
+        var chunk3 = str[(stressIndex + 8)..];
+
+        return (string.Concat(chunk1, chunk2, chunk3), stressIndex);
     }
 }

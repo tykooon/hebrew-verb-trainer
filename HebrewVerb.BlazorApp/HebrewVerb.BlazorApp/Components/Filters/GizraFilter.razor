@@ -1,16 +1,25 @@
-﻿@using HebrewVerb.Application.Feature.Gizras.Queries
-@using HebrewVerb.Application.Models
+﻿@using HebrewVerb.Application.Models
 @using HebrewVerb.Application.Services
 @rendermode InteractiveServer
 
-<MudSelect T="GizraDto" AnchorOrigin="Origin.BottomCenter" MultiSelection="true"
+<MudSelect T="Gizra" AnchorOrigin="Origin.BottomCenter" MultiSelection="true" ToStringFunc="@((g) => g.NameHebrew)"
     SelectedValuesChanged="OptionsChanged" SelectedValues="Options" Label="Гизра:">
         @foreach (var gizra in GizraList)
         {
-            <MudSelectItem T="GizraDto" Value="@gizra">
-                <MudTooltip Duration="1000" Text="@gizra.Description">
-                    @gizra.Name
-                </MudTooltip>
+            <MudSelectItem T="Gizra" Value="@gizra">
+            <div style="max-width:300px;" class="d-flex justify-content-between">
+                <MudTooltip>
+                    <ChildContent>
+                        <span class="hebrew-accent">@gizra.NameHebrew</span>
+                    </ChildContent>
+                    <TooltipContent>
+                        <div style="max-width:180px" class="d-flex flex-wrap">
+                            @gizra.NameRussian
+                        </div>
+                    </TooltipContent>
+                </MudTooltip>                
+                <GizraVisual Gizra="@gizra"></GizraVisual>
+            </div>
             </MudSelectItem>
 
         }
@@ -18,11 +27,11 @@
 
 @code {
     [Parameter]
-    public IEnumerable<GizraDto> Options { get; set; } = new HashSet<GizraDto>();
+    public IEnumerable<Gizra> Options { get; set; } = new HashSet<Gizra>();
 
     [Parameter]
-    public IEnumerable<GizraDto> GizraList { get; set; } = [];
+    public IEnumerable<Gizra> GizraList { get; set; } = [];
 
     [Parameter]
-    public EventCallback<IEnumerable<GizraDto>> OptionsChanged { get; set; }
+    public EventCallback<IEnumerable<Gizra>> OptionsChanged { get; set; }
 }

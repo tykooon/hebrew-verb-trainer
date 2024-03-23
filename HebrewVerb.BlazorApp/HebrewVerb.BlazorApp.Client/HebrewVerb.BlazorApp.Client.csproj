@@ -17,8 +17,4 @@
     <ProjectReference Include="..\..\HebrewVerb.Application\HebrewVerb.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\" />
-  </ItemGroup>
-
 </Project>

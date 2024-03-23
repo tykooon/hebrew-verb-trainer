@@ -3,6 +3,7 @@ using HebrewVerb.Application.Feature.Abstractions;
 using HebrewVerb.Application.Interfaces;
 using HebrewVerb.Application.Models;
 using HebrewVerb.Domain.Entities;
+using HebrewVerb.Domain.Interfaces;
 using HebrewVerb.SharedKernel.Enums;
 using HebrewVerb.SharedKernel.Extensions;
 using MediatR;
@@ -10,72 +11,83 @@ using MediatR;
 namespace HebrewVerb.Application.Feature.VerbCards.Queries;
 
 public record GetTrainingSetByFilterQuery(Filter Filter, Language Lang = Language.Russian) :
-    IRequest<TrainingSet>
+    IRequest<TrainingVerbSet>
 {
 }
 
 
 public class GetTrainingSetByFilterQueryHandler(IUnitOfWork unitOfWork) :
     BaseRequestHandler(unitOfWork),
-    IRequestHandler<GetTrainingSetByFilterQuery, TrainingSet>
+    IRequestHandler<GetTrainingSetByFilterQuery, TrainingVerbSet>
 {
-    public Task<TrainingSet> Handle(GetTrainingSetByFilterQuery request, CancellationToken cancellationToken)
+    private readonly Random _random = new(DateTime.UtcNow.Microsecond);
+
+    public async Task<TrainingVerbSet> Handle(GetTrainingSetByFilterQuery request, CancellationToken cancellationToken)
     {
         var filter = request.Filter;
         var zmans = filter.Zmans.GetZmans();
-        var filteredVerbs = _unitOfWork.VerbRepository.GetFilteredVerbs(filter, request.Filter.VerbLimit);
+        var filteredVerbs = await _unitOfWork.VerbRepository.GetFilteredVerbs(filter, request.Filter.VerbLimit);
 
-        var result = new TrainingSet()
+        var result = new TrainingVerbSet()
         {
             MaxLimit = request.Filter.VerbLimit,
             Filter = filter,
             Verbs = filteredVerbs.ToDictionary(v => v.Id, v => v.ToVerbInfo(request.Lang)),
-            FormCards = GetAllVerbForms(filteredVerbs, zmans, request.Lang)
+            FormCards = GetAllVerbForms(filteredVerbs, zmans, request.Lang).OrderBy(x => _random.Next())
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    private List<VerbFormCard> GetAllVerbForms(IEnumerable<Verb> verbs, IEnumerable<Zman> zmans, Language lang = Language.Russian)
+    internal List<VerbFormCard> GetAllVerbForms(IEnumerable<Verb> verbs, IEnumerable<Zman> zmans, Language lang = Language.Russian)
     {
         var list = new List<VerbFormCard>();
+
+        if (!zmans.Any())
+        {
+            zmans = Zman.List;
+        }
+
         foreach (Verb verb in verbs)
         {
-            var infinitive = verb.Infinitive.HebrewNiqqud;
-            var translate = verb.Translation?.Get(lang);
-            var gizras = verb.Gizras.Select(g => g.Name);
-            var verbModels = verb.VerbModels.Select(vm => vm.Name);
-
-            if (!zmans.Any())
-            {
-                zmans = Zman.List;
-            }
-
             foreach (Zman zman in zmans)
             {
                 var tense = _unitOfWork.VerbRepository.GetTenseByVerbId(verb.Id, zman);
                 if (tense != null)
                 {
-                    foreach (Guf guf in Guf.All(zman != Zman.Present))
-                    {
-                        var wf = tense.Conjugate(guf);
-                        if (wf != null)
-                        {
-                            list.Add(new VerbFormCard()
-                            {
-                                VerbId = verb.Id,
-                                Zman = zman.NameHebrew,
-                                Guf = guf.NameHebrew,
-                                VerbFormHebrew = wf?.HebrewNiqqud ?? "",
-                                VerbFormTranslit = wf?.TranscriptionRus ?? "",
-                                TranslitStress = wf?.StressLetterRus ?? 0,
-                            });
-                        }
-                    }
-
+                    var cards = FillVerbFormCards(verb.Id, tense, zman, lang);
+                    list.AddRange(cards);
                 }
             }
         }
         return list;
+    }
+
+    internal static IEnumerable<VerbFormCard> FillVerbFormCards(int verbId, IConjugation tense, Zman zman, Language lang = Language.Russian)
+    {
+        foreach (Guf guf in Guf.All(zman != Zman.Present))
+        {
+            var wf = tense.Conjugate(guf);
+            if (wf != null)
+            {
+                (string Text, int Stress) = lang switch
+                {
+                    Language.Russian => (wf?.TranscriptionRus ?? "", wf?.StressLetterRus ?? 0),
+                    _ => (wf?.TranscriptionEng ?? "", wf?.StressLetterEng ?? 0)
+                };
+
+                yield return new VerbFormCard()
+                {
+                    VerbId = verbId,
+                    Zman = zman.NameHebrew,
+                    Guf = guf.NameHebrew,
+                    VerbFormHebrew = wf?.Hebrew ?? "",
+                    VerbFormHebrewNikkud = wf?.HebrewNikkud ?? "",
+                    VerbFormTranslit = Text,
+                    TranslitStress = Stress,
+                };
+            }
+        }
+
     }
 }

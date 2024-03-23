@@ -1,5 +1,8 @@
-﻿using HebrewVerb.SharedKernel.Abstractions;
-using HebrewVerb.SharedKernel.Enums;
+﻿using HebrewVerb.SharedKernel.Enums;
+using HebrewVerb.SharedKernel.Abstractions;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using System.Text;
 
 namespace HebrewVerb.Domain.Entities;
 
@@ -7,53 +10,84 @@ public class Translation : BaseEntity<int>
 {
     public readonly static Translation Default = new();
 
-    public string Russian { get; private set; } = "";
-    public string English { get; private set; } = "";
-    public string RussianShort { get; private set; } = "";
-    public string EnglishShort { get; private set; } = "";
+    public Language Language { get; private set; } = Language.Russian;
 
-    public string Get(Language lang = Language.Russian, bool isShort = false) =>
-        lang switch
-        {
-            Language.Russian => isShort ? RussianShort : Russian,
-            Language.English => isShort ? EnglishShort : English,
-            _ => isShort ? RussianShort : Russian,
-        };
+    public string Main { get; private set; } = string.Empty;
 
-    public Translation(string russian, string english, string russianShort, string englishShort)
+    public string Auxillare { get; private set; } = string.Empty;
+
+    public ICollection<VerbTag> Tags { get; private set; } = [];
+
+    [ForeignKey("Verb")]
+    public int VerbId { get; private set; }
+
+    [JsonIgnore]
+    public Verb Verb { get; private set; } = Verb.Empty;
+
+    public ICollection<Preposition> Prepositions { get; } = [];
+
+    public Translation(Language language, string main, string aux = "", params Preposition[] prepositions)
     {
-        Russian = russian;
-        English = english;
-        EnglishShort = englishShort;
-        RussianShort = russianShort;
+        Language = language;
+        Main = main;
+        Auxillare = aux;
+        AddRangeOfPrepositions(prepositions);
     }
 
     public Translation() { }
 
-    public void Set(string value, Language lang = Language.Russian, bool isShort = false)
+    public void Update(string? main, string? aux, IEnumerable<Preposition>? prepositions)
     {
-        switch (lang)
+        if (main != null)
         {
-            case Language.Russian:
-                if(isShort)
-                {
-                    RussianShort = value;
-                }
-                else
-                {
-                    Russian = value;
-                }
+            Main = main;
+        }
+
+        if (aux != null)
+        {
+            Auxillare = aux;
+        }
+        
+        if (prepositions != null)
+        {
+            Prepositions.Clear();
+            AddRangeOfPrepositions([..prepositions]);
+        }
+    }
+
+    public void UpdateTags(params VerbTag[] verbTags)
+    {
+        Tags.Clear();        
+        foreach (var tag in verbTags)
+        {
+            Tags.Add(tag);
+        }
+    }
+
+    private void AddRangeOfPrepositions(params Preposition[] preps)
+    {
+        foreach (var prep in preps)
+        {
+            Prepositions.Add(prep);
+        }
+    }
+
+    public string GetWithAuxillary()
+    {
+        var result = new StringBuilder(Main);
+        switch (string.IsNullOrWhiteSpace(Auxillare), Prepositions.Count == 0)
+        {
+            case (false, false):
+                result.Append($" ({Auxillare} - {string.Join(", ", Prepositions.Select(pr => pr.BaseForm.Hebrew))})");
                 break;
-            case Language.English:
-                if (isShort)
-                {
-                    EnglishShort = value;
-                }
-                else
-                {
-                    English = value;
-                }
+            case (false, true):
+                result.Append($" ({Auxillare})");
+                break;
+            case (true, false):
+                result.Append($" ({string.Join(", ", Prepositions.Select(pr => pr.BaseForm.Hebrew))})");
                 break;
         }
+        return result.ToString();
+
     }
 }

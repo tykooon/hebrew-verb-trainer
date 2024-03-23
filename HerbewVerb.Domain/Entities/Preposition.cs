@@ -1,5 +1,6 @@
 ﻿using HebrewVerb.SharedKernel.Abstractions;
 using HebrewVerb.SharedKernel.Enums;
+using System.Text.Json.Serialization;
 
 namespace HebrewVerb.Domain.Entities;
 
@@ -7,23 +8,41 @@ public class Preposition : BaseEntity<int>
 {
     public WordForm BaseForm { get; private set; } = WordForm.Default;
 
-    public Translation Translation { get; set; } = Translation.Default;
+    public string TranslateRus { get; set; } = string.Empty;
+    public string TranslateEng { get; set; } = string.Empty;
 
-    public ICollection<Verb> Verbs { get; private set; } = [];
+    // Verb translations with this preposition !!!
+    [JsonIgnore]
+    public ICollection<Translation> Translations { get; private set; } = [];
 
-    public WordForm MS1 { get; private set; } = WordForm.Default;
-    public WordForm MP1 { get; private set; } = WordForm.Default;
-    public WordForm MS2 { get; private set; } = WordForm.Default;
-    public WordForm MP2 { get; private set; } = WordForm.Default;
-    public WordForm FS2 { get; private set; } = WordForm.Default;
-    public WordForm FP2 { get; private set; } = WordForm.Default;
-    public WordForm MS3 { get; private set; } = WordForm.Default;
-    public WordForm MP3 { get; private set; } = WordForm.Default;
-    public WordForm FS3 { get; private set; } = WordForm.Default;
-    public WordForm FP3 { get; private set; } = WordForm.Default;
+    public WordForm MS1 { get; set; } = WordForm.Default;
+    public WordForm MP1 { get; set; } = WordForm.Default;
+    public WordForm MS2 { get; set; } = WordForm.Default;
+    public WordForm MP2 { get; set; } = WordForm.Default;
+    public WordForm FS2 { get; set; } = WordForm.Default;
+    public WordForm FP2 { get; set; } = WordForm.Default;
+    public WordForm MS3 { get; set; } = WordForm.Default;
+    public WordForm MP3 { get; set; } = WordForm.Default;
+    public WordForm FS3 { get; set; } = WordForm.Default;
+    public WordForm FP3 { get; set; } = WordForm.Default;
 
     public WordForm FS1 => MS1;
     public WordForm FP1 => MP1;
+
+    private Preposition()
+    { }
+
+    public Preposition(WordForm baseForm)
+    {
+        BaseForm = baseForm;
+    }
+
+    public string Translate(Language language = Language.Russian) =>
+        language switch
+        {
+            Language.Russian => TranslateRus,
+            _ => TranslateEng
+        };
 
     public WordForm GetForm(Guf guf) => guf.Details() switch
     {

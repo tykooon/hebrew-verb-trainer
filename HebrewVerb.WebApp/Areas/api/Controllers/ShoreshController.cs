@@ -3,30 +3,60 @@ using HebrewVerb.Application.Interfaces;
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace HebrewVerb.WebApp.Areas.api.Controllers;
 
-[Route("api/[controller]")]
-public class ShoreshController : BaseApiController
+[Route("api/shoreshes")]
+public class ShoreshController(IUnitOfWork unitOfWork, IMediator mediator) :
+    BaseApiController(unitOfWork, mediator)
 {
-    public ShoreshController(IUnitOfWork unitOfWork, IMediator mediator) : base(unitOfWork, mediator)
-    { }
-
     [HttpGet]
-    [Route("getAll")]
+    [Route("")]
     public async Task<IActionResult> GetAll()
     {
-        var query = new GetAllShoreshesQuery();
-        var res = await _mediator.Send(query);
-        return Ok(res);
+        var res = await _mediator.Send(new GetAllShoreshesQuery());
+        return res == null
+            ? NotFound()
+            : Ok(res);
     }
 
     [HttpGet]
-    [Route("{shoreshId:int}")]
-    public async Task<IActionResult> GetById(int shoreshId)
+    [Route("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
     {
-        var command = new GetShoreshByIdQuery(shoreshId);
-        var res = await _mediator.Send(command);
-        return res.IsSuccess ? Ok(res.Value) : NotFound(string.Join(", ", res.Errors));
+        var query = new GetShoreshByIdQuery(id);
+        var res = await _mediator.Send(query);
+        return res.IsSuccess
+            ? Ok(res.Value)
+            : NotFound(string.Join(", ", res.Errors));
+    }
+
+    [HttpGet]
+    [Route("{id:int}/verbs")]
+    public async Task<IActionResult> GetShoreshVerbs(int id)
+    {
+        var query = new GetShoreshVerbsQuery(id);
+        var res = await _mediator.Send(query);
+        if (!res.IsSuccess)
+        {
+            NotFound(string.Join(", ", res.Errors));
+        }
+
+        return string.IsNullOrEmpty(res.SuccessMessage)
+            ? Ok(res.Value)
+            : Ok(new { Errors = res.SuccessMessage, Verbs = res.Value });
+    }
+
+
+    [HttpGet]
+    [Route("{name:regex(^[[אבגדהוזטחיכךמםנןסעפףצץקרשת]]{{3,4}}$)}")]
+    public async Task<IActionResult> GetByName(string name)
+    {
+        var query = new GetShoreshByNameQuery(name);
+        var res = await _mediator.Send(query);
+        return res.IsSuccess
+            ? Ok(res.Value)
+            : NotFound(string.Join(", ", res.Errors));
     }
 }

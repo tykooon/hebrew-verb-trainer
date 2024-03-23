@@ -6,7 +6,7 @@
     <MudSelect T="Zman" MultiSelection="true" AnchorOrigin="Origin.BottomCenter" ToStringFunc="TextFormat"
                SelectedValuesChanged="OptionsChanged" SelectedValues="Options" Label="Время:" Disabled="Disabled">
 
-        @foreach (var zman in FilterService.ZmanOptions)
+        @foreach (var zman in Common.FilterOptions.ZmanOptions)
         {
             <MudSelectItem T="Zman" Value="@zman">@zman.ToString(Language.Russian) (@zman.NameHebrew)</MudSelectItem>
         }

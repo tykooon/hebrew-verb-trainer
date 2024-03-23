@@ -1,14 +1,16 @@
-﻿namespace HebrewVerb.Application.Models;
+﻿using HebrewVerb.SharedKernel.Enums;
+
+namespace HebrewVerb.Application.Models;
 
 public record VerbInfo(
     int VerbId,
     string Infinitive,
-    int Binyan,
+    string InfinitiveNikkud,
+    Binyan Binyan,
     string Shoresh,
-    string Translate,
-    IEnumerable<string> Gizras,
-    IEnumerable<string> VerbModels,
-    bool IsArchaic,
-    bool IsLiterary,
-    bool IsSlang)
+    IEnumerable<string> Translations,
+    IEnumerable<Gizra> Gizras,
+    IEnumerable<VerbModel> VerbModels,
+    IEnumerable<VerbTag> Tags
+)
 { }

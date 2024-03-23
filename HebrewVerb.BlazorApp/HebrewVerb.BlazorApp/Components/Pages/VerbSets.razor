@@ -39,7 +39,9 @@
 
 @if (!_isTrainingActive)
 {
-    <VerbTableUserSelect @ref=_verbTable @bind-SelectedVerbs="VerbSet"></VerbTableUserSelect>
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="justify-content-center mt-2">
+        <VerbTableUserSelect @ref=_verbTable @bind-SelectedVerbs="VerbSet"></VerbTableUserSelect>
+    </MudContainer>
 }
 
 
@@ -61,7 +63,7 @@
 
     private FilterBar _filterBar;
 
-    private TrainingSet _trainingSet = new();
+    private TrainingVerbSet _trainingSet = new();
 
     private bool _isTrainingActive;
 

@@ -1,5 +1,6 @@
 ﻿using HebrewVerb.Application.Entities;
 using HebrewVerb.Application.Interfaces;
+using HebrewVerb.Application.Models;
 using HebrewVerb.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -11,9 +12,7 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>, 
 {
     public DbSet<Verb> Verbs { get; set; }
     public DbSet<Shoresh> Shoreshes { get; set; }
-    public DbSet<VerbModel> VerbModels { get; set; }
     public DbSet<WordForm> WordForms { get; set; }
-    public DbSet<Gizra> Gizras { get; set; }
     public DbSet<Past> Pasts { get; set; }
     public DbSet<Present> Presents { get; set; }
     public DbSet<Future> Futures { get; set; }
@@ -32,6 +31,7 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>, 
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -41,4 +41,5 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>, 
 
         optionsBuilder.UseSqlite();
     }
+
 }

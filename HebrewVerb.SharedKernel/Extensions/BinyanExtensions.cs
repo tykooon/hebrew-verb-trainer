@@ -4,19 +4,6 @@ namespace HebrewVerb.SharedKernel.Extensions;
 
 public static class BinyanExtensions
 {
-
-    public static IEnumerable<Binyan> GetBinyans(this byte number) => 
-        Binyan.List.Where(b => b.IsIncluded(number));
-
-    public static bool IsIncluded(this Binyan binyan, byte number)
-        => (binyan.Value & number) != 0;
-
-    public static IEnumerable<int> GetBinyanIds(this byte number) =>
-        Binyan.List.Where(b => b.IsIncluded(number)).Select(b => b.Value);
-
-    public static byte GetBinyanFlags(this IEnumerable<Binyan> binyans) =>
-        (byte)binyans.Distinct().Select(b => b.Value).Sum();
-
     public static IEnumerable<Binyan> GetBinyans(this IEnumerable<string> list) =>
         Binyan.List.Where(b => list.Contains(b.Name));
 
@@ -29,20 +16,31 @@ public static class BinyanExtensions
     public static Binyan ToBinyan(this string name) =>
         Binyan.List.FirstOrDefault(binyan => binyan.GetNames().Contains(name)) ?? Binyan.Undefined;
 
+    /// <summary>
+    ///  Transforms <paramref name="value"/> to the name of binyan in language of given type <paramref name="lang"/>
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="lang"></param>
+    /// <returns>Name of <see cref="Binyan"/> in the <see cref="Language"/> <paramref name="lang"/> as <see langword="string"/> </returns>
     public static string ToBinyanName(this int value, Language lang = Language.Russian)
     {
-        if(!Binyan.TryFromValue(value, out var binyan))
+        if(!Binyan.TryFromId(value, out var binyan))
         {
             binyan = Binyan.Undefined; 
         }
         return lang switch
         {
-            Language.Russian => binyan.NameRussian,
-            Language.Hebrew => binyan.NameHebrew,
-            _ => binyan.Name,
+            Language.Russian => binyan!.NameRussian,
+            Language.Hebrew => binyan!.NameHebrew,
+            _ => binyan!.Name,
         };
     }
 
+    /// <summary>
+    /// Inverse active binyan to correspondind passive one and vice versa
+    /// </summary>
+    /// <param name="binyan"></param>
+    /// <returns>Corresponing dual <see cref="Binyan"/> </returns>
     public static Binyan DualBinyan(this Binyan binyan) => binyan.Name switch
     {
         nameof(Binyan.Paal) => Binyan.Nifal,

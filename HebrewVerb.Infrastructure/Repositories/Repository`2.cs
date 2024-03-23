@@ -38,4 +38,14 @@ public abstract class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
     }
 
     protected virtual IQueryable<TEntity> MakeInclusions() => DbSet;
+
+    public Task<List<TEntity>> GetAllAsync()
+    {
+        return MakeInclusions().ToListAsync();
+    }
+
+    public Task<TEntity?> GetByIdAsync(TKey key)
+    {
+        return MakeInclusions().FirstOrDefaultAsync(x => x.Id.Equals(key));
+    }
 }

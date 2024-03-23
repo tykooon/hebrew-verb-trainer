@@ -12,7 +12,6 @@ public static class Constants
     };
 
     // Constants for cache key names
-    public const string GizraList = nameof(GizraList);
     public const string VerbModelList = nameof(VerbModelList);
 
 }

@@ -25,7 +25,7 @@ public static class TextContent
         (по умолчанию - 10 глаголов, но число можно настроить).
         """;
 
-    public const string Home_Card2_Title = "Глаголы на выбор";
+    public const string Home_Card2_Title = "Глаголы по выбору";
     public const string Home_Card2_Subtitle = "Создаём свой набор";
     public const string Home_Card2_Text = """
         Тренировка с набором глаголов выбранных индивидуально. Те же карточки, но
@@ -53,7 +53,7 @@ public static class TextContent
 
 
     public const string Home_Card5_Title = "Справочная информация";
-    public const string Home_Card5_Subtitle = "Учтоняем правила:";
+    public const string Home_Card5_Subtitle = "Повторяем правила:";
     public const string Home_Card5_Text = """
         Небольшой набор граматических таблиц для различных биньянов с описанием некоторых
         моделей спряжения, гизры и другие особенности.
@@ -61,7 +61,7 @@ public static class TextContent
 
 
     public const string Home_Card6_Title = "Расширение возможностей";
-    public const string Home_Card6_Subtitle = "Допольнительные функции";
+    public const string Home_Card6_Subtitle = "Дополнительные функции";
     public const string Home_Card6_Text = """
         При регистрации на сайте появляется возможность сохранять свои настройки (фильтры,
         наборы глаголов и пр.), но с определёнными ограничениями по количеству сохранённых опций. 

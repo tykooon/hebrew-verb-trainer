@@ -9,5 +9,5 @@ public static class TextHelpers
         verb.IsPassive() ? $"({verb.Infinitive})" : verb.Infinitive;
 
     public static bool IsPassive(this VerbInfo verb) => 
-        Binyan.FromValue(verb.Binyan).IsPassive;
+        verb.Binyan.IsPassive;
 }

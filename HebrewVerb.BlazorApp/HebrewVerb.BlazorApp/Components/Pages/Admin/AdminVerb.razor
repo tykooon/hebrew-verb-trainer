@@ -1,7 +1,6 @@
 ﻿@page "/admin/verbs"
 
 @inject ISnackbar Snackbar
-@using HebrewVerb.Application.Feature.Gizras.Commands
 @using HebrewVerb.Application.Feature.Verbs.Commands
 @using HebrewVerb.Application.Feature.Verbs.Queries
 @using HebrewVerb.BlazorApp.Common.Extensions
@@ -30,19 +29,8 @@
 
     private FilterBar _filterBar = new();
 
-    private async Task FilterBarRefresh(RefreshOption option = RefreshOption.None)
+    private void FilterBarRefresh()
     {
-        switch (option)
-        {
-            case RefreshOption.GizraFilter:
-                _cache.Remove(Constants.GizraList);
-                break;
-            case RefreshOption.VerbModelFilter:
-                _cache.Remove(Constants.VerbModelList);
-                break;
-            case RefreshOption.None:
-                break;
-        }        
-        await _filterBar.RefreshFilter();
+        _filterBar.RefreshFilter();
     }
 }

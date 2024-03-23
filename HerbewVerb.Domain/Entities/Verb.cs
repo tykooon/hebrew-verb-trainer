@@ -42,36 +42,17 @@ public class Verb : BaseEntity<int>
 
     public Imperative? Imperative { get; set; }
 
-    [ForeignKey("Translation")]
-    public int? TranslationId { get; private set; }
+    public ICollection<VerbTag> Tags { get; set; } = [];
 
-    public Translation? Translation { get; set; } = Translation.Default;
+    public Dictionary<string, string> ExtraInfo { get; set; } = [];
 
-    public UseFrequency UseFrequency { get; set; }
+    public ICollection<VerbModel> VerbModels { get; set; } = [];
 
-    public string? ExtraInfo { get; set; }
-    public bool IsArchaic { get; set; } = false;
-    public bool IsLiterary { get; set; } = false;
-    public bool IsSlang { get; set; } = false;
+    public ICollection<Gizra> Gizras { get; set; } = [];
 
-    public ICollection<VerbModel> VerbModels { get; } = [];
-
-    public ICollection<Gizra> Gizras { get; } = [];
-
-    public ICollection<Preposition> Prepositions { get; } = [];
+    public ICollection<Translation> Translations { get; set; } = [];
 
     #endregion Properties
-
-    public IConjugation? Tense(Zman zman) => zman.Name switch
-    {
-        TenseName.Past => Past,
-        TenseName.Present => Present,
-        TenseName.Future => Future,
-        TenseName.Imperative => Imperative,
-        _ => null
-    };
-
-    public WordForm? GetForm(Zman zman, Guf guf) => Tense(zman)?.Conjugate(guf);
 
     #region Constructors
 
@@ -85,12 +66,9 @@ public class Verb : BaseEntity<int>
         Present? present,
         Future? future,
         Imperative? imperative,
-        Translation? translation,
-        UseFrequency useFrequency = UseFrequency.Undefined,
-        string? extraInfo = null,
-        bool isArchaic = false,
-        bool isLiterary = false,
-        bool isSlang = false)
+        IEnumerable<Translation>? translations = null,
+        IEnumerable<VerbTag>? tags = null,
+        Dictionary<string, string>? extraInfo = null)
     {
         Binyan = binyan;
         Shoresh = shoresh;
@@ -99,13 +77,35 @@ public class Verb : BaseEntity<int>
         Present = present;
         Future = future;
         Imperative = imperative;
-        UseFrequency = useFrequency;
-        Translation = translation;
-        ExtraInfo = extraInfo;
-        IsArchaic = isArchaic;
-        IsLiterary = isLiterary;
-        IsSlang = isSlang;
+        if (translations != null)
+        {
+            Translations = translations.ToList();
+        }
+
+        if (tags != null)
+        { 
+            Tags = tags.ToList();
+        }
+        if(extraInfo != null)
+        {
+            ExtraInfo = extraInfo;
+        };
     }
 
     #endregion Constructors
+
+    public IConjugation? Tense(Zman zman) => zman.Name switch
+    {
+        TenseName.Past => Past,
+        TenseName.Present => Present,
+        TenseName.Future => Future,
+        TenseName.Imperative => Imperative,
+        _ => null
+    };
+
+    public WordForm? GetForm(Zman zman, Guf guf) => Tense(zman)?.Conjugate(guf);
+
+    public string TranslationFull(Language lang) =>
+        string.Join("; ", Translations.Where(tr => tr.Language == lang).Select(tr => tr.GetWithAuxillary()));
+
 }

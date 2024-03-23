@@ -23,7 +23,6 @@ public class UpdateVerbCommandHandler : IRequestHandler<UpdateVerbCommand, Resul
     public UpdateVerbCommandHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-
     }
 
     public async Task<Result> Handle(UpdateVerbCommand request, CancellationToken cancellationToken)
@@ -36,18 +35,12 @@ public class UpdateVerbCommandHandler : IRequestHandler<UpdateVerbCommand, Resul
             return Result.Invalid(new ValidationError("Unknown language identifier."));
         }
 
-        // !!!!!!HARDCODE MUST BE REFACTORED
-        dto.Binyan = dto.Binyan.ToBinyan().Name;
-
-        if (!Binyan.TryFromName(dto.Binyan, true, out Binyan binyan))
-        {
-            binyan = Binyan.Undefined;
-        }
+        Binyan binyan = dto.Binyan.ToBinyan();
 
         WordForm infinitive = dto.Infinitive.FromDto(lang);
 
         var sameInfinitive = _unitOfWork.VerbRepository
-            .FindAllBy(v => v.Infinitive.HebrewNiqqud == infinitive.HebrewNiqqud);
+            .FindAllBy(v => v.Infinitive.HebrewNikkud == infinitive.HebrewNikkud);
 
         var verb = sameInfinitive.Where(v => v.Binyan == binyan).FirstOrDefault();
 
@@ -151,21 +144,25 @@ public class UpdateVerbCommandHandler : IRequestHandler<UpdateVerbCommand, Resul
             }
         }
 
-        if (!string.IsNullOrEmpty(dto.Translate))
+        //if (!string.IsNullOrEmpty(dto.Translation))
+        //{
+        //    var translation = new Translation(lang, dto.Translation);
+        //    verb.Translations.Add(translation);
+        //}
+
+        if(dto.Tags.Count != 0)
         {
-            if (verb.TranslationId == null)
+            verb.Tags = [];
+            foreach (var tag in dto.Tags)
             {
-                verb.Translation = new Translation();
+                verb.Tags.Add(tag);
             }
-            verb.Translation?.Set(dto.Translate, lang);
         }
 
         if (dto.Gizras.Count != 0)
         {
-            var gizras = _unitOfWork.GizraRepository
-                .GetAll()
-                .Where(g => dto.Gizras.Contains(g.Name));
-            foreach (var gizra in gizras)
+            verb.Gizras = [];
+            foreach (var gizra in dto.Gizras)
             {
                 verb.Gizras.Add(gizra);
             }
@@ -173,10 +170,8 @@ public class UpdateVerbCommandHandler : IRequestHandler<UpdateVerbCommand, Resul
 
         if (dto.VerbModels.Count != 0)
         {
-            var verbModels = _unitOfWork.VerbModelRepository
-                .GetAll()
-                .Where(vm => dto.VerbModels.Contains(vm.Name));
-            foreach (var verbModel in verbModels)
+            verb.VerbModels = [];
+            foreach (var verbModel in dto.VerbModels)
             {
                 verb.VerbModels.Add(verbModel);
             }

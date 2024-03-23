@@ -5,7 +5,7 @@ namespace HebrewVerb.Domain.Common;
 
 public static class Randomized
 {
-    private static readonly Random _random = new();
+    private static readonly Random _random = new(DateTime.UtcNow.Millisecond*1000+ DateTime.UtcNow.Microsecond);
 
     public static bool CoinToss => _random.Next(2) == 1;
 

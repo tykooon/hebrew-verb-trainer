@@ -1,5 +1,5 @@
 ﻿using HebrewVerb.Domain.Entities;
-using HebrewVerb.Application.Feature.Shoreshes;
+using HebrewVerb.Application.Models;
 
 namespace HebrewVerb.Application.Common.Mappers;
 

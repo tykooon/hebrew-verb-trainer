@@ -51,6 +51,7 @@
 
         ActiveItem = isForward ? (ActiveItem + 1) % Cards.Count : (ActiveItem - 1) % Cards.Count;
         await ActiveItemChanged.InvokeAsync(ActiveItem);
+        Thread.Sleep(1000);
     }
 
     protected override async Task OnInitializedAsync()

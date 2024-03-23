@@ -1,32 +1,37 @@
 using HebrewVerb.Application;
+using HebrewVerb.Application.Entities;
 using HebrewVerb.Infrastructure;
 using HebrewVerb.WebApp;
-using HebrewVerb.WebApp.Components;
-
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
 
 var configuration = builder.Configuration;
 
 builder.Services.AddLogging();
 
-// Add services to the container.
-builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 
-
 builder.Services.AddApplicationServices();
+
 builder.Services.AddInfrastructureServices(configuration);
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
+    .AddBearerToken(IdentityConstants.BearerScheme);
+
+builder.Services.AddIdentityCore<AppUser>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddApiEndpoints();
+
+//builder.Services.AddAuthorizationWithPolicies(configuration);
+
+//builder.Services.AddJwtTokenOptions(configuration);
 
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddJwtTokenOptions(configuration);
-builder.Services.AddAuthorizationWithPolicies(configuration);
 
 var app = builder.Build();
 
@@ -38,7 +43,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -55,11 +59,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseAntiforgery();
-
-app.MapRazorPages();
+app.MapIdentityApi<AppUser>();
 app.MapControllers();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+
 
 app.Run();

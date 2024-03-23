@@ -1,5 +1,6 @@
 ﻿@using HebrewVerb.Application.Models
 @using HebrewVerb.Application.Feature.Verbs.Queries;
+@using HebrewVerb.SharedKernel.Extensions;
 @using HebrewVerb.BlazorApp.Common.Extensions
 @inject IMediator mediator
 @inject IDialogService DialogService
@@ -21,6 +22,7 @@
         <MudTh><MudTableSortLabel SortLabel="bin_field" T="VerbTableItem">Биньян</MudTableSortLabel></MudTh>
         <MudTh>Гизра</MudTh>
         <MudTh>Модель</MudTh>
+        <MudTh>Тэги</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Enabled">
@@ -29,8 +31,8 @@
             </MudCheckBox>
         </MudTd>
         <MudTd DataLabel="Infinitive">
-            <MudTooltip Text="@context.Verb.Translate">
-                @context.Verb.InfinitiveFormatted()
+            <MudTooltip Text="@context.Verb.AllTranslations()">
+                <span class="hebrew-h4"> @context.Verb.InfinitiveFormatted() </span>
             </MudTooltip>
             @if (context.Verb.IsPassive())
             {
@@ -41,30 +43,31 @@
                     <TooltipContent>
                         <div style="max-width:120px">
                             <p style="font-size:smaller; color:khaki">
-                                Биньян @context.Verb.Binyan.ToBinyanName() не имеет инфинитива.
-                                Инфинитив от @Binyan.FromValue(context.Verb.Binyan).DualBinyan().NameRussian.</p>
+                                Биньян @context.Verb.Binyan.ToString(Language.Russian) не имеет инфинитива.
+                                Инфинитив от @context.Verb.Binyan.DualBinyan().ToString(Language.Russian).</p>
                         </div>
                     </TooltipContent>
                 </MudTooltip>
             }
         </MudTd>
-        <MudTd DataLabel="Shoresh"><span dir="auto">@context.Verb.Shoresh</span></MudTd>
-        <MudTd DataLabel="Binyan">@Binyan.FromValue(context.Verb.Binyan).NameRussian</MudTd>
-            <MudTd DataLabel="Gizras">@string.Join(" | ", @context.Verb.Gizras)</MudTd>
-            <MudTd DataLabel="VerbModels">@string.Join(" | ", @context.Verb.VerbModels)</MudTd>
-        </RowTemplate>
-        <NoRecordsContent>
-            <MudText>No matching records found</MudText>
-        </NoRecordsContent>
-        <LoadingContent>
-            <MudText>Loading...</MudText>
-        </LoadingContent>
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-    </MudTable>
+        <MudTd DataLabel="Shorech"> <span class="hebrew-accent">@context.Verb.Shoresh</span></MudTd>
+        <MudTd DataLabel="Binyan"> <span>@context.Verb.Binyan.ToString(Language.Russian)</span></MudTd>
+        <MudTd DataLabel="Gizras"> <span class="hebrew-nice">@context.Verb.Gizras.ToFormattedString(Language.Hebrew)</span></MudTd>
+        <MudTd DataLabel="VerbModels"> <span class="hebrew-nice"> @context.Verb.VerbModels.ToFormattedString(Language.Hebrew) </span> </MudTd>
+        <MudTd DataLabel="Tags"><TagsBar TagList="@context.Verb.Tags"></TagsBar></MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
 
-    @code {
+@code {
     [Parameter]
     public HashSet<VerbInfo> SelectedVerbs { get; set; } = new ();
 

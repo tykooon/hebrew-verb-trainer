@@ -13,8 +13,6 @@ public class UnitOfWork : IUnitOfWork
 
     private IVerbRepository? _verbRepo;
     private IShoreshRepository? _shoreshRepo;
-    private IGizraRepository? _gizraRepo;
-    private IVerbModelRepository? _verbModelRepo;
     private IWordFormRepository? _wordFormRepo;
     private IFilterRepository? _filterRepo;
     private IPrepositionRepository? _prepositionRepo;
@@ -24,8 +22,6 @@ public class UnitOfWork : IUnitOfWork
 
     public IVerbRepository VerbRepository => _verbRepo ??= new VerbRepository(Context);
     public IShoreshRepository ShoreshRepository => _shoreshRepo ??= new ShoreshRepository(Context);
-    public IGizraRepository GizraRepository => _gizraRepo ??= new GizraRepository(Context);
-    public IVerbModelRepository VerbModelRepository => _verbModelRepo ??= new VerbModelRepository(Context);
     public IWordFormRepository WordFormRepository => _wordFormRepo ??= new WordFormRepository(Context);
     public IFilterRepository FilterRepository => _filterRepo ??= new FilterRepository(Context);
     public IPrepositionRepository PrepositionRepository => _prepositionRepo ??= new PrepositionRepository(Context);

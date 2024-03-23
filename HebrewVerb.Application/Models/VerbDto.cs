@@ -8,7 +8,7 @@ public class VerbDto
     public WordFormDto Infinitive { get; set; } = WordFormDto.Default;
     public string Binyan { get; set; } = "Undefined";
     public string Shoresh { get; set; } = string.Empty;
-    public string Translate { get; set; } = string.Empty;
+    public string Translation { get; set; } = string.Empty;
     public int LangId { get; set; } = (int)Language.Russian;
 
     public WordFormDto? PresentMs { get; set; }
@@ -37,15 +37,11 @@ public class VerbDto
     public WordFormDto? ImperativeFs { get; set; }
     public WordFormDto? ImperativeMp { get; set; }
 
-    public int UseFrequency { get; set; }
+    public Dictionary<string, string> ExtraInfo { get; set; } = [];
 
-    public string? ExtraInfo { get; set; }
-    public bool IsArchaic { get; set; } = false;
-    public bool IsLiterary { get; set; } = false;
-    public bool IsSlang { get; set; } = false;
-
-    public List<string> VerbModels { get; set; } = [];
-    public List<string> Gizras { get; set; } = [];
+    public List<VerbModel> VerbModels { get; set; } = [];
+    public List<Gizra> Gizras { get; set; } = [];
+    public List<VerbTag> Tags { get; set; } = [];
 
     public VerbDto()
     {

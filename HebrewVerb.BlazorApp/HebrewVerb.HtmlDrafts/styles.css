@@ -1,0 +1,62 @@
+ul {
+    display: flex;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    display: inline-grid;
+    min-width: 25px;
+    height: 25px;
+    text-align: center;
+    align-content: center;    
+    border: solid 3px #001e0d;
+    border-radius: 6px ;
+    background-color:rgb(219, 255, 215);
+    margin-inline: 2px;
+    box-shadow: 3px 3px 3px rgb(105, 105, 105);;
+}
+
+.dash{
+    border: none;
+    font-weight: 600;
+    font-size: x-large;
+    min-width:fit-content;
+    margin-inline: -3px;
+    padding-inline: 0px;
+    padding-bottom: 6px;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.equal{
+    border: none;
+    color: #c41b0c;
+    font-weight: 600;
+    font-size: x-large;
+    min-width:fit-content;
+    margin-inline: -3px;
+    padding-inline: 0px;
+    padding-bottom: 6px;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+li span {
+    margin: 4px;
+    font-weight: 600;
+    font-size: x-large;
+    font-family:'Narkisim', 'Arial Narrow', Arial, sans-serif;
+}
+
+.special-letter-haseri{
+    background-color:#f4b4b4;
+}
+
+.special-letter-nahi{
+    background-color:#fff3bc;
+}
+
+.special-letter-caful{
+    background-color: #aac1ff;
+}

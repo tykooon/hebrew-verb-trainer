@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HebrewVerb.Infrastructure.Repositories;
 
-public class ShoreshRepository : Repository<Shoresh, int>, IShoreshRepository
+public class ShoreshRepository(AppDbContext context) :
+    Repository<Shoresh, int>(context), IShoreshRepository
 {
-    public ShoreshRepository(AppDbContext context) : base(context)
-    { }
+    public Task<Shoresh?> GetByNameAsync(string name)
+    {
+        return MakeInclusions().FirstOrDefaultAsync(x => x.Short.Equals(name));
+    }
 
     protected override IQueryable<Shoresh> MakeInclusions()
     {

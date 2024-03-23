@@ -8,9 +8,7 @@ namespace HebrewVerb.Application.Interfaces;
 public interface IAppDbContext
 {
     public DbSet<Verb> Verbs { get; }
-    public DbSet<VerbModel> VerbModels { get; }
     public DbSet<Shoresh> Shoreshes { get; }
-    public DbSet<Gizra> Gizras { get; }
     public DbSet<WordForm> WordForms { get; }
     public DbSet<Imperative> Imperatives { get; }
     public DbSet<Past> Pasts { get; }

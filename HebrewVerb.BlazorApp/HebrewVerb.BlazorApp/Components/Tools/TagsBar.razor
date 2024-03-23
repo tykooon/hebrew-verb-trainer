@@ -1,0 +1,40 @@
+﻿<div class="d-flex flex-wrap justify-content-start align-content-center" >
+    @foreach(var tag in TagList)
+    {
+        if (TagFiles.ContainsKey(tag))
+        {
+            @* <div class="m-1">
+                <img src="src/@(TagFiles[tag]).svg" height="20" width="20" alt="@tag.Name" />
+            </div> *@
+            <p style="margin:0 1px 1px; padding:3px; font-size:small;font-weight:400" class="badge rounded-pill text-bg-@(TagColors[tag])">#@tag.ToString(Language.Russian)</p>
+
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<VerbTag> TagList { get; set; } = [ ];
+
+    private static Dictionary<VerbTag, string> TagFiles = new()
+        {
+            [VerbTag.Archaic] = "archaic",
+            [VerbTag.Literary] = "literary",
+            [VerbTag.Slang] = "slang",
+            [VerbTag.Obsolete] = "obsolete",
+            [VerbTag.Rare] = "rare",
+            [VerbTag.Unformal] = "talking",
+            [VerbTag.Formal] = "official-tv"
+        };
+
+    private static Dictionary<VerbTag, string> TagColors = new()
+        {
+            [VerbTag.Archaic] = "warning",
+            [VerbTag.Literary] = "info",
+            [VerbTag.Slang] = "danger",
+            [VerbTag.Obsolete] = "dark",
+            [VerbTag.Rare] = "secondary",
+            [VerbTag.Unformal] = "success",
+            [VerbTag.Formal] = "primary"
+        };
+}

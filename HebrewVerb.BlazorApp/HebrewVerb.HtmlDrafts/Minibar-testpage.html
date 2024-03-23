@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+<div
+    class="table-responsive-md"
+>
+    <table
+        class="table table-light"
+    >
+        <thead>
+            <tr>
+                <th scope="col">Column 1</th>
+                <th scope="col">Column 2</th>
+                <th scope="col">Gizra</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="">
+                <td scope="row">Item</td>
+                <td>Item</td>
+                <td>
+                    <ul>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="">
+                <td scope="row"></td>
+                <td></td>
+                <td data-bs-toggle="tooltip" data-bs-title="Default tooltip">
+                    <ul>
+                        <li class="special-letter-nahi"><span>ה/י</span></li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="">
+                <td scope="row">Item</td>
+                <td>Item</td>
+                <td>
+                    <ul>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li class="special-letter-haseri"><span>נ</span> </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="">
+                <td scope="row">Item</td>
+                <td>Item</td>
+                <td>
+                    <ul>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li class="special-letter-nahi"><span>י/ו</span> </li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="">
+                <td scope="row">Item</td>
+                <td>Item</td>
+                <td>
+                    <ul>
+                        <li class="special-letter-caful"><span></span> </li>
+                        <li class="dash">.</li>
+                        <li class="special-letter-caful"><span></span> </li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="">
+                <td scope="row">Item</td>
+                <td>Item</td>
+                <td>
+                    <ul>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="">
+                <td scope="row">Item</td>
+                <td>Item</td>
+                <td>
+                    <ul>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li class="special-letter-haseri"><span>א</span> </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="">
+                <td scope="row">Item</td>
+                <td>Item</td>
+                <td>
+                    <ul>
+                        <li> </li>
+                        <li class="dash">.</li>
+                        <li><span>צ</span></li>
+                        <li class="dash">.</li>
+                        <li class="special-letter-nahi"><span>י</span> </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js" integrity="sha512-X/YkDZyjTf4wyc2Vy16YGCPHwAY8rZJY+POgokZjQB2mhIRFJCckEGc6YyX9eNsPfn0PzThEuNs+uaomE5CO6A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    </script>
+</body>

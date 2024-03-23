@@ -7,10 +7,10 @@ public class Filter
     public static readonly Filter Empty = new();
     public static readonly JsonSerializerOptions SerializerOptions = new() { };
 
-    public string FilterName { get; set; } = "";
     public HashSet<string> Binyans { get; set; } = [];
-    public HashSet<string> Gizras { get; set; } = [];
-    public HashSet<string> VerbModels { get; set; } = [];
+    public HashSet<int> Gizras { get; set; } = [];
+    public HashSet<int> VerbModels { get; set; } = [];
+    public HashSet<int> VerbTags { get; set; } = [];
     public HashSet<string> Zmans { get; set; } = [];
     public int VerbLimit { get; set; } = 10;
 
@@ -23,23 +23,21 @@ public class Filter
         JsonSerializer.Serialize(this, SerializerOptions);
 
     public static Filter FromParams(
-        string filterName,
         IEnumerable<string> binyans,
-        IEnumerable<string> gizras,
-        IEnumerable<string> verbModels,
+        IEnumerable<int> gizraIds,
+        IEnumerable<int> verbModelIds,
+        IEnumerable<int> verbTagIds,
         IEnumerable<string> tenses,
-        int verbLimit)
+        int verbLimit = 0)
     {
         return new Filter()
         {
-            FilterName = filterName,
             Binyans = binyans.ToHashSet(),
             Zmans = tenses.ToHashSet(),
-            Gizras = gizras.ToHashSet(),
-            VerbModels = verbModels.ToHashSet(),
+            Gizras = gizraIds.ToHashSet(),
+            VerbModels = verbModelIds.ToHashSet(),
+            VerbTags = verbTagIds.ToHashSet(),
             VerbLimit = verbLimit
         };
     }
-
-
 }

@@ -17,21 +17,6 @@ namespace HebrewVerb.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
 
-            modelBuilder.Entity("GizraVerb", b =>
-                {
-                    b.Property<int>("GizrasId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("VerbsId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("GizrasId", "VerbsId");
-
-                    b.HasIndex("VerbsId");
-
-                    b.ToTable("GizraVerb");
-                });
-
             modelBuilder.Entity("HebrewVerb.Application.Entities.AppFilter", b =>
                 {
                     b.Property<int>("Id")
@@ -187,30 +172,6 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.ToTable("Futures");
                 });
 
-            modelBuilder.Entity("HebrewVerb.Domain.Entities.Gizra", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte>("Binyans")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Gizras");
-                });
-
             modelBuilder.Entity("HebrewVerb.Domain.Entities.Imperative", b =>
                 {
                     b.Property<int>("Id")
@@ -332,8 +293,13 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.Property<int>("MS3Id")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("TranslationId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("TranslateEng")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TranslateRus")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -358,8 +324,6 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.HasIndex("MS2Id");
 
                     b.HasIndex("MS3Id");
-
-                    b.HasIndex("TranslationId");
 
                     b.ToTable("Prepositions");
                 });
@@ -419,23 +383,26 @@ namespace HebrewVerb.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("English")
+                    b.Property<string>("Auxillare")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("EnglishShort")
+                    b.Property<int>("Language")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Main")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Russian")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Tags")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("RussianShort")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("VerbId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("VerbId");
 
                     b.ToTable("Translations");
                 });
@@ -450,24 +417,19 @@ namespace HebrewVerb.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ExtraInfo")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("FutureId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Gizras")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("ImperativeId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("InfinitiveId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsArchaic")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsLiterary")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsSlang")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("PastId")
@@ -479,10 +441,10 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.Property<int>("ShoreshId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("TranslationId")
+                    b.Property<int>("Tags")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UseFrequency")
+                    b.Property<int>("VerbModels")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -499,60 +461,7 @@ namespace HebrewVerb.Infrastructure.Migrations
 
                     b.HasIndex("ShoreshId");
 
-                    b.HasIndex("TranslationId");
-
                     b.ToTable("Verbs");
-                });
-
-            modelBuilder.Entity("HebrewVerb.Domain.Entities.VerbModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte>("Binyans")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("VerbModels");
-                });
-
-            modelBuilder.Entity("HebrewVerb.Domain.Entities.VerbPreposition", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PrepositionId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TranslationId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("VerbId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PrepositionId");
-
-                    b.HasIndex("TranslationId");
-
-                    b.HasIndex("VerbId", "PrepositionId")
-                        .IsUnique();
-
-                    b.ToTable("VerbPreposition");
                 });
 
             modelBuilder.Entity("HebrewVerb.Domain.Entities.WordForm", b =>
@@ -712,34 +621,19 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("VerbVerbModel", b =>
+            modelBuilder.Entity("PrepositionTranslation", b =>
                 {
-                    b.Property<int>("VerbModelsId")
+                    b.Property<int>("PrepositionsId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("VerbsId")
+                    b.Property<int>("TranslationsId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("VerbModelsId", "VerbsId");
+                    b.HasKey("PrepositionsId", "TranslationsId");
 
-                    b.HasIndex("VerbsId");
+                    b.HasIndex("TranslationsId");
 
-                    b.ToTable("VerbVerbModel");
-                });
-
-            modelBuilder.Entity("GizraVerb", b =>
-                {
-                    b.HasOne("HebrewVerb.Domain.Entities.Gizra", null)
-                        .WithMany()
-                        .HasForeignKey("GizrasId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HebrewVerb.Domain.Entities.Verb", null)
-                        .WithMany()
-                        .HasForeignKey("VerbsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.ToTable("PrepositionTranslation");
                 });
 
             modelBuilder.Entity("HebrewVerb.Application.Entities.AppFilter", b =>
@@ -987,12 +881,6 @@ namespace HebrewVerb.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HebrewVerb.Domain.Entities.Translation", "Translation")
-                        .WithMany()
-                        .HasForeignKey("TranslationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("BaseForm");
 
                     b.Navigation("FP2");
@@ -1014,8 +902,6 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.Navigation("MS2");
 
                     b.Navigation("MS3");
-
-                    b.Navigation("Translation");
                 });
 
             modelBuilder.Entity("HebrewVerb.Domain.Entities.Present", b =>
@@ -1053,6 +939,17 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.Navigation("MS");
                 });
 
+            modelBuilder.Entity("HebrewVerb.Domain.Entities.Translation", b =>
+                {
+                    b.HasOne("HebrewVerb.Domain.Entities.Verb", "Verb")
+                        .WithMany("Translations")
+                        .HasForeignKey("VerbId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Verb");
+                });
+
             modelBuilder.Entity("HebrewVerb.Domain.Entities.Verb", b =>
                 {
                     b.HasOne("HebrewVerb.Domain.Entities.Future", "Future")
@@ -1083,10 +980,6 @@ namespace HebrewVerb.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HebrewVerb.Domain.Entities.Translation", "Translation")
-                        .WithMany()
-                        .HasForeignKey("TranslationId");
-
                     b.Navigation("Future");
 
                     b.Navigation("Imperative");
@@ -1098,31 +991,6 @@ namespace HebrewVerb.Infrastructure.Migrations
                     b.Navigation("Present");
 
                     b.Navigation("Shoresh");
-
-                    b.Navigation("Translation");
-                });
-
-            modelBuilder.Entity("HebrewVerb.Domain.Entities.VerbPreposition", b =>
-                {
-                    b.HasOne("HebrewVerb.Domain.Entities.Preposition", null)
-                        .WithMany()
-                        .HasForeignKey("PrepositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HebrewVerb.Domain.Entities.Translation", "Translation")
-                        .WithMany()
-                        .HasForeignKey("TranslationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HebrewVerb.Domain.Entities.Verb", null)
-                        .WithMany()
-                        .HasForeignKey("VerbId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Translation");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1176,17 +1044,17 @@ namespace HebrewVerb.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("VerbVerbModel", b =>
+            modelBuilder.Entity("PrepositionTranslation", b =>
                 {
-                    b.HasOne("HebrewVerb.Domain.Entities.VerbModel", null)
+                    b.HasOne("HebrewVerb.Domain.Entities.Preposition", null)
                         .WithMany()
-                        .HasForeignKey("VerbModelsId")
+                        .HasForeignKey("PrepositionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HebrewVerb.Domain.Entities.Verb", null)
+                    b.HasOne("HebrewVerb.Domain.Entities.Translation", null)
                         .WithMany()
-                        .HasForeignKey("VerbsId")
+                        .HasForeignKey("TranslationsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1202,6 +1070,11 @@ namespace HebrewVerb.Infrastructure.Migrations
             modelBuilder.Entity("HebrewVerb.Domain.Entities.Shoresh", b =>
                 {
                     b.Navigation("Verbs");
+                });
+
+            modelBuilder.Entity("HebrewVerb.Domain.Entities.Verb", b =>
+                {
+                    b.Navigation("Translations");
                 });
 #pragma warning restore 612, 618
         }

@@ -20,7 +20,7 @@ public static class WordFormExtensions
 
         if (!string.IsNullOrEmpty(dto.HebrewNikkud))
         {
-            wordForm.HebrewNiqqud = dto.HebrewNikkud;
+            wordForm.HebrewNikkud = dto.HebrewNikkud;
         }
 
         if (!string.IsNullOrEmpty(dto.Transcript))

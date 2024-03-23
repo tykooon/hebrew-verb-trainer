@@ -1,8 +1,11 @@
-﻿using Ardalis.SmartEnum;
+﻿using HebrewVerb.SharedKernel.Abstractions;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace HebrewVerb.SharedKernel.Enums;
 
-public class Guf : SmartEnum<Guf>
+[JsonConverter(typeof(GufJsonConverter))]
+public class Guf : HebrewTagFlag<Guf>, IHebrewTagFlag
 {
     public static readonly Guf Undefined = new(nameof(Undefined), 0b0000, "אין גוף", "Безличное");
 
@@ -24,19 +27,13 @@ public class Guf : SmartEnum<Guf>
     public static readonly Guf MP3 = new(nameof(MP3), 0b1110, "הם", "Они (м.)");
     public static readonly Guf FP3 = new(nameof(FP3), 0b1111, "הן", "Они (ж.)");
 
-
-    private Guf(string name, int value, string nameHebrew, string nameRussian) : base(name, value)
-    {
-        NameHebrew = nameHebrew;
-        NameRussian = nameRussian;
-    }
-
-    public string NameHebrew { get; }
-    public string NameRussian { get; }
+    private Guf(string name, int value, string nameHebrew, string nameRussian) :
+        base(name, value, nameHebrew, nameRussian)
+    { }
 
     public (Person Person, Number Number, Gender Gender) Details()
     {
-        var value = Value;
+        var value = Id;
         return value switch
         {
             0 => (Person.Impersonal, Number.Single, Gender.Male),
@@ -63,7 +60,7 @@ public class Guf : SmartEnum<Guf>
         }
 
         var value = (int)gender + (int)number * 2 + (int)person * 4;
-        return FromValue(value);
+        return FromId(value);
     }
 
     public static IEnumerable<Guf> All(bool noGender = true)
@@ -82,7 +79,7 @@ public class Guf : SmartEnum<Guf>
         }
         for (var i = 0b1000; i < 0b10000; i++)
         {
-            yield return FromValue(i);
+            yield return FromId(i);
         }
     }
 
@@ -90,7 +87,16 @@ public class Guf : SmartEnum<Guf>
     {
         for (var i = 0b1000; i < 0b01100; i++)
         {
-            yield return FromValue(i);
+            yield return FromId(i);
         }
     }
+}
+
+public class GufJsonConverter : JsonConverter<Guf>
+{
+    public override Guf? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        Guf.FromName(reader.GetString()!);
+
+    public override void Write(Utf8JsonWriter writer, Guf value, JsonSerializerOptions options) =>
+        writer.WriteStringValue(value.Name);
 }

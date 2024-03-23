@@ -8,7 +8,7 @@ public class WordForm : BaseEntity<int>
 
     public string Hebrew { get; set; } = String.Empty;
 
-    public string HebrewNiqqud { get; set; } = String.Empty;
+    public string HebrewNikkud { get; set; } = String.Empty;
 
     public string? TranscriptionRus { get; set; }
 
@@ -28,7 +28,7 @@ public class WordForm : BaseEntity<int>
         int stressLetterEng = 0)
     {
         Hebrew = hebrew;
-        HebrewNiqqud = hebrewNiqqud;
+        HebrewNikkud = hebrewNiqqud;
         TranscriptionRus = transcriptionRus;
         StressLetterRus = stressLetterRus;
         TranscriptionEng = transcriptionEng;

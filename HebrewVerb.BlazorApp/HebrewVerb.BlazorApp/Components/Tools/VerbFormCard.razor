@@ -13,11 +13,16 @@
                 <MudIcon Icon="@Icons.Material.Filled.ArrowRight" Size="Size.Small" Color="@CardViewModel.CardColor"></MudIcon>
             }
             <MudText Typo="Typo.h6" Color="CardViewModel.CardColor"> @CardViewModel.Zman</MudText>
-            </div>
-            <div>
-                <MudTooltip Duration="500" Text="@CardViewModel.Translation">
-                    <MudText Typo="Typo.h4">
-                        <b>@CardViewModel.Infinitive</b>
+        </div>
+        <div>
+            <MudTooltip Duration="500" Text="@CardViewModel.Translation">
+                <MudText Typo="Typo.h4">
+                    @if (CardViewModel.Binyan == Binyan.Pual.ToString(Language.Russian)
+                        || CardViewModel.Binyan == Binyan.Hufal.ToString(Language.Russian))
+                    {
+                        <span style="font-size:large; color:firebrick">(@CardViewModel.Binyan) </span>
+                    } 
+                    <b>@CardViewModel.Infinitive</b>
                 </MudText>
             </MudTooltip>
         </div>
@@ -26,7 +31,7 @@
         <MudText Color="@CardViewModel.CardColor" Typo="Typo.h5">@CardViewModel.Guf</MudText>
             @if (CardViewModel.IsAnswered)
         {
-            <MudText Typo="Typo.h4">@CardViewModel.VerbForm</MudText>
+            <MudText Typo="Typo.h4">@CardViewModel.VerbForm <span style="font-size:smaller;">(@CardViewModel.VerbFormNikkud)</span></MudText>
             <WordWithStress Word="@CardViewModel.VerbFormTranslit" Stress="@CardViewModel.VerbFormStress" />
         }
         else
@@ -45,6 +50,7 @@
             {
                 <MudChip Variant="Variant.Filled" Color="Color.Default" Size="Size.Medium">@model</MudChip>
             }
+            <TagsBar TagList="CardViewModel.Tags"></TagsBar>
 
         </div>
     </div>

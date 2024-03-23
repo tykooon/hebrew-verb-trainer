@@ -36,7 +36,7 @@ public class VerbDtoValidator : AbstractValidator<VerbDto>
 
     private async Task<bool> IsUniqueAsync(VerbDto dto)
     {
-        var filter = Filter.FromParams(string.Empty, [dto.Binyan], [], [], [], int.MaxValue);
+        var filter = Filter.FromParams([dto.Binyan], [], [], [], [], int.MaxValue);
         var res = await _mediator.Send(new GetVerbInfosByFilterQuery(filter)) ?? [];
         return !res.Any(v => v.VerbId != dto.Id && v.Infinitive == dto.Infinitive.Hebrew);
     }

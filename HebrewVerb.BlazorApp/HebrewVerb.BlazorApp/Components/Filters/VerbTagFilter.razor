@@ -1,0 +1,28 @@
+﻿@using HebrewVerb.Application.Models
+@using HebrewVerb.Application.Services
+@rendermode InteractiveServer
+
+<MudSelect T="VerbTag" AnchorOrigin="Origin.BottomCenter" MultiSelection="true" ToStringFunc="@((g) => g.NameRussian)"
+           SelectedValuesChanged="OptionsChanged" SelectedValues="Options" Label="Тэг:">
+    @foreach (var verbTag in VerbTagList)
+    {
+        <MudSelectItem T="VerbTag" Value="@verbTag">
+            <div style="max-width:300px;" class="d-flex justify-content-between">
+                <span class="hebrew-accent">@verbTag.NameRussian</span>
+            </div>
+        </MudSelectItem>
+
+    }
+</MudSelect>
+
+@code {
+    [Parameter]
+    public IEnumerable<VerbTag> Options { get; set; } = new HashSet<VerbTag>();
+
+    [Parameter]
+    public EventCallback<IEnumerable<VerbTag>> OptionsChanged { get; set; }
+
+    private IEnumerable<VerbTag> VerbTagList { get; set; } = Common.FilterOptions.VerbTagOptions;
+
+    private string TextFormat(VerbTag b) => b.ToString(Language.Russian);
+}

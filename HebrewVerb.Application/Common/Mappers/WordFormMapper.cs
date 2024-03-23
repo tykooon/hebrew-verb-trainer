@@ -22,9 +22,9 @@ public static class WordFormMapper
     {
         WordFormDto result = lang switch
         {
-            Language.Russian => new(wf.Hebrew, wf.HebrewNiqqud, wf.TranscriptionRus ?? "", wf.StressLetterRus),
-            Language.English => new(wf.Hebrew, wf.HebrewNiqqud, wf.TranscriptionEng ?? "", wf.StressLetterEng),
-            _ => new(wf.Hebrew, wf.HebrewNiqqud, string.Empty, -1),
+            Language.Russian => new(wf.Hebrew, wf.HebrewNikkud, wf.TranscriptionRus ?? "", wf.StressLetterRus),
+            Language.English => new(wf.Hebrew, wf.HebrewNikkud, wf.TranscriptionEng ?? "", wf.StressLetterEng),
+            _ => new(wf.Hebrew, wf.HebrewNikkud, string.Empty, -1),
         };
 
         return result;

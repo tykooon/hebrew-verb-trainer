@@ -1,13 +1,17 @@
 ﻿@using HebrewVerb.Application.Models
-@using HebrewVerb.Application.Feature.Verbs.Queries;
+@using HebrewVerb.Application.Feature.Verbs.Queries
+@using HebrewVerb.BlazorApp.Common.Extensions
 @inject IMediator mediator
 @inject IDialogService DialogService
 
-
 <MudTable ServerData="@(new Func<TableState, Task<TableData<VerbInfo>>>(ServerReload))"
-          Dense="true" Hover="true" @ref="table">
+          Dense="true" Hover="true" @ref="table" Class="verb-table">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Verbs</MudText>
+        <MudText Class="me-4" Typo="Typo.h6">Глаголы</MudText>
+        <MudButton Variant="Variant.Filled" Class="mx-3" Color="Color.Secondary" OnClick="AddNewVerb">
+            <TextHider Outtro="Добавить"> <MudIcon Icon="@Icons.Material.Filled.Add" /></TextHider>
+        </MudButton>
+        <AddVerbPopover @bind-IsOpen=@_addVerbIsOpen></AddVerbPopover>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -18,22 +22,24 @@
         <MudTh><MudTableSortLabel SortLabel="bin_field" T="VerbInfo">Биньян</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="tran_field" T="VerbInfo">Гизра</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="giz_field" T="VerbInfo">Модель</MudTableSortLabel></MudTh>
+        <MudTh>Тэги</MudTh>
         <MudTh>Действия</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Id">@context.VerbId</MudTd>
-        <MudTd DataLabel="Infunitive">
-            <MudTooltip Text="@context.Translate">
+        <MudTd Style="max-width:60px; text-align:center" DataLabel="Id">@context.VerbId</MudTd>
+        <MudTd Style="max-width:100px" DataLabel="Infunitive">
+            <MudTooltip Text="@context.AllTranslations()">
                 @context.Infinitive
             </MudTooltip>
         </MudTd>
-        <MudTd DataLabel="Binyan">@context.Binyan.ToBinyanName()</MudTd>
-        <MudTd DataLabel="Gizras">@string.Join(" | ", @context.Gizras)</MudTd>
-        <MudTd DataLabel="VerbModels">@string.Join(" | ", @context.VerbModels)</MudTd>
+        <MudTd DataLabel="Binyan">@context.Binyan.ToString(Language.Russian)</MudTd>
+        <MudTd DataLabel="Gizras">@context.Gizras.ToFormattedString(Language.Hebrew)</MudTd>
+        <MudTd DataLabel="VerbModels">@context.VerbModels.ToFormattedString(Language.Hebrew)</MudTd>
+        <MudTd DataLabel="Tags"><TagsBar TagList="@context.Tags"></TagsBar> </MudTd>
         <MudTd DataLabel="Actions">
-            <MudButton Size=Size.Medium Color="Color.Primary" IconClass="mx-auto" StartIcon="@Icons.Material.Filled.Edit"
+            <MudIconButton Size=Size.Small Color="Color.Primary" Icon="@Icons.Material.Filled.Edit"
                        OnClick=@(()=> EditVerb(context.VerbId)) />
-            <MudButton Size=Size.Medium Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete"
+            <MudIconButton Size=Size.Small Color="Color.Error" Icon="@Icons.Material.Filled.Delete"
                        OnClick=@(()=> DeleteVerb(context.VerbId, context.Infinitive)) />
         </MudTd>
         </RowTemplate>
@@ -52,13 +58,15 @@
     private IEnumerable<VerbInfo> pagedData = [];
     private MudTable<VerbInfo> table;
 
+    private bool _addVerbIsOpen;
+
     private int totalItems;
     private string searchString = "";
 
     private void EditVerb(int verbId)
     {
         DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
-        var parameters = new DialogParameters<EditGizraDialog>();
+        var parameters = new DialogParameters<EditVerbDialog>();
         parameters.Add("VerbId", verbId);
         parameters.Add("OnSuccess", new EventCallbackFactory().Create(this, table.ReloadServerData));
         DialogService.Show<EditVerbDialog>("Изменить", parameters, closeOnEscapeKey);
@@ -67,11 +75,16 @@
     private void DeleteVerb(int verbId, string infinitive)
     {
         DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
-        var parameters = new DialogParameters<DeleteGizraDialog>();
+        var parameters = new DialogParameters<DeleteVerbDialog>();
         parameters.Add("VerbId", verbId);
         parameters.Add("Infinitive", infinitive);
         parameters.Add("OnSuccess", new EventCallbackFactory().Create(this, table.ReloadServerData));
         DialogService.Show<DeleteVerbDialog>("Удалить", parameters, closeOnEscapeKey);
+    }
+
+    public void AddNewVerb()
+    {
+        _addVerbIsOpen = !_addVerbIsOpen;
     }
 
 

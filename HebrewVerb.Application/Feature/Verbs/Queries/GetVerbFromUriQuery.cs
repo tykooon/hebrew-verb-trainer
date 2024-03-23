@@ -4,7 +4,7 @@ using MediatR;
 
 namespace HebrewVerb.Application.Feature.Verbs.Queries;
 
-public record GetVerbFromUriQuery(string url,bool passive = false) : IRequest<VerbDto>
+public record GetVerbFromUriQuery(string Url,bool Passive = false) : IRequest<VerbDto>
 {
 }
 
@@ -13,7 +13,7 @@ public class GetVerbFromUriQueryHandler :
 {
     public async Task<VerbDto> Handle(GetVerbFromUriQuery request, CancellationToken cancellationToken)
     {
-        var result = await VerbParser.FromUri(request.url, request.passive);
+        var result = await VerbParser.FromUri(request.Url, request.Passive);
 
         if (!result.IsSuccess)
         {

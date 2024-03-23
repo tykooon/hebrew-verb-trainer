@@ -22,7 +22,7 @@
     [Parameter]
     public EventCallback<IEnumerable<Binyan>> OptionsChanged { get; set; }
 
-    private IEnumerable<Binyan> BinyanList { get; set; } = FilterService.BinyanOptions;
+    private IEnumerable<Binyan> BinyanList { get; set; } = Common.FilterOptions.BinyanOptions;
 
     private string TextFormat(Binyan b) => b.ToString(Language.Russian);
 

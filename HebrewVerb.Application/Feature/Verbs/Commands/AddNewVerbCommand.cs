@@ -40,7 +40,7 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
             return Result.Invalid(new ValidationError("Unknown language identifier."));
         }
 
-        if (!Binyan.TryFromName(dto.Binyan, true, out Binyan binyan))
+        if (!Binyan.TryFromName(dto.Binyan, out Binyan? binyan))
         {
             binyan = Binyan.Undefined;
         }
@@ -48,7 +48,7 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
         WordForm infinitive = dto.Infinitive.FromDto(lang);
 
         var sameInfinitive = _unitOfWork.VerbRepository
-            .FindAllBy(v => v.Infinitive.HebrewNiqqud == infinitive.HebrewNiqqud);
+            .FindAllBy(v => v.Infinitive.HebrewNikkud == infinitive.HebrewNikkud);
 
         if (sameInfinitive.Any() && sameInfinitive.Select(v => v.Binyan).Contains(binyan))
         {
@@ -109,9 +109,8 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
                 dto.ImperativeMp?.FromDto(lang))
             : null;
 
-        var translation = new Translation();
-        translation.Set(dto.Translate, lang);
-
+        var translation = new Translation(lang, dto.Translation);
+       
         var result = new Verb(
             binyan,
             shoresh,
@@ -120,13 +119,9 @@ public class AddNewVerbCommandHandler : IRequestHandler<AddNewVerbCommand, Resul
             present,
             future,
             imperative,
-            translation,
-            // TODO  Convertion from int to UseFrequency
-            UseFrequency.Undefined,
-            dto.ExtraInfo,
-            dto.IsArchaic,
-            dto.IsLiterary,
-            dto.IsSlang); ;
+            [ translation],
+            dto.Tags,
+            dto.ExtraInfo);
 
         _unitOfWork.VerbRepository.Add(result);
         await _unitOfWork.CommitAsync();

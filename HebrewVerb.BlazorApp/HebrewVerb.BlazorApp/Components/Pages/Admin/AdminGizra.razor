@@ -1,6 +1,5 @@
 ﻿@page "/admin/gizras"
 
-@using HebrewVerb.Application.Feature.Gizras.Queries
 @using HebrewVerb.Application.Models
 @inject IMediator mediator
 @inject IDialogService DialogService
@@ -10,111 +9,48 @@
 <PageTitle>Gizra Data Editing</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large">
-    <MudTable ServerData="@(new Func<TableState, Task<TableData<GizraDto>>>(ServerReload))"
-              Dense="false" Hover="true" @ref="table">
+    <MudTable T="Gizra" Dense="false" Hover="true" @ref="table" Items="Gizra.List">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Gizras</MudText>
-            <MudButton Variant="Variant.Filled" Class="mx-3" Color="Color.Secondary" OnClick=@(()=> EditGizra(0, true))>
-                <TextHider Outtro="Создать новую"> <MudIcon Icon="@Icons.Material.Filled.Add" /></TextHider>
-            </MudButton>
-            <MudSpacer />
-            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortLabel="id_field" T="GizraDto">Id</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="name_field" T="GizraDto">Название</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="id_field" T="Gizra">Id</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="name_field" T="Gizra">Название</MudTableSortLabel></MudTh>
             <MudTh>Биньяны</MudTh>
-            <MudTh>Действия</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Id">@context.Id</MudTd>
-                <MudTd DataLabel="Name">
-                    <MudTooltip Text="@context.Description" Placement="Placement.Right">
-                        <MudText Typo="Typo.h6">@context.Name</MudText>
-                    </MudTooltip>
-                </MudTd>
-                <MudTd DataLabel="Binyans">@string.Join(", ", @context.Binyans.GetBinyans().Select(b => b.NameRussian))</MudTd>
-                <MudTd DataLabel="Gizras">
-                    <MudButton Size=Size.Medium Color="Color.Primary" IconClass="mx-auto" StartIcon="@Icons.Material.Filled.Edit"
-                               OnClick=@(()=> EditGizra(context.Id)) />
-                    <MudButton Size=Size.Medium Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete"
-                               OnClick=@(()=> DeleteGizra(context.Id, context.Name)) />
-                </MudTd>
-            </RowTemplate>
-            <NoRecordsContent>
-                <MudText>No matching records found</MudText>
-            </NoRecordsContent>
-            <LoadingContent>
-                <MudText>Loading...</MudText>
-            </LoadingContent>
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-        </MudTable>
+           <MudTd DataLabel="Name">
+               <MudTooltip Text="@context.NameRussian" Placement="Placement.Right">
+                   <MudText Typo="Typo.h6">@context.NameHebrew</MudText>
+               </MudTooltip>
+           </MudTd>
+           <MudTd DataLabel= "Binyans">@context.Binyans.GetTagNames(Language.Russian)"</MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
 </MudContainer>
 
 
 
-@code {
-    private IEnumerable<GizraDto> pagedData = [];
-    private MudTable<GizraDto> table;
+    @code {
+    private IEnumerable<Gizra> pagedData = [];
+    private MudTable<Gizra> table;
 
     private int totalItems;
     private string searchString = "";
 
     private void EditGizra(int gizraId, bool isNew = false)
-    {
-        DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
-        var parameters = new DialogParameters<EditGizraDialog>();
-        parameters.Add("GizraId", gizraId);
-        parameters.Add("IsNew", isNew);
-        parameters.Add("OnSuccess", new EventCallbackFactory().Create(this, table.ReloadServerData));
-        var title = isNew ? "Создать" : "Редактировать";
-        DialogService.Show<EditGizraDialog>(title, parameters, closeOnEscapeKey);
-    }
+    { }
 
     private void DeleteGizra(int gizraId, string name)
-    {
-        DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium };
-        var parameters = new DialogParameters<DeleteGizraDialog>();
-        parameters.Add("GizraId", gizraId);
-        parameters.Add("Name", name);
-        parameters.Add("OnSuccess", new EventCallbackFactory().Create(this, table.ReloadServerData));
-        DialogService.Show<DeleteGizraDialog>("Удалить", parameters, closeOnEscapeKey);
-    }
-
-    // Getting the paged, filtered and ordered data from the server
-    private async Task<TableData<GizraDto>> ServerReload(TableState state)
-    {
-        var query = new GetAllGizrasQuery();
-        IEnumerable<GizraDto> data = await mediator.Send(query);
-        data = data.Where(element =>
-        {
-            if (string.IsNullOrWhiteSpace(searchString))
-                return true;
-            if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-                return true;
-            return false;
-        }).ToArray();
-        totalItems = data.Count();
-        switch (state.SortLabel)
-        {
-            case "id_field":
-                data = data.OrderByDirection(state.SortDirection, o => o.Id);
-                break;
-            case "name_field":
-                data = data.OrderByDirection(state.SortDirection, o => o.Name);
-                break;
-        }
-
-        pagedData = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
-        return new TableData<GizraDto>() { TotalItems = totalItems, Items = pagedData };
-    }
-
-    private void OnSearch(string text)
-    {
-        searchString = text;
-        table.ReloadServerData();
-    }
+    { }
 }

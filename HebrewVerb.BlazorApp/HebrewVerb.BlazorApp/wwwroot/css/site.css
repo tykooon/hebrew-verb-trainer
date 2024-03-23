@@ -3,3 +3,74 @@
         display: none
     }
 }
+
+
+ul.shoresh-scheme {
+    display: flex;
+    padding: 0;
+    margin: 0;
+}
+
+    ul.shoresh-scheme li {
+        display: inline-grid;
+        min-width: 22px;
+        height: 22px;
+        text-align: center;
+        align-content: center;
+        border: solid 2.5px rgba(0, 0, 0, 0.5);
+        border-radius: 6px;
+        background-color: rgb(120, 245, 163, 0.20);
+        margin-inline: 2px;
+        box-shadow: 1px 1px 2px rgb(190, 190, 190, 0.5);
+        padding-top: 2px;
+    }
+
+    ul.shoresh-scheme li.dash {
+        border: none;
+        font-weight: 600;
+        font-size: x-large;
+        color:black;
+        min-width: fit-content;
+        margin-inline: -3px;
+        padding-inline: 0px;
+        padding-bottom: 2px;
+        box-shadow: none;
+        background-color: transparent;
+    }
+
+        ul.shoresh-scheme li span {
+            margin: 3px;
+            font-weight: 600;
+            font-size: larger;
+            font-family: 'Narkisim', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        ul.shoresh-scheme li.special-letter-haser {
+            background-color: #f4b4b4;
+        }
+
+        ul.shoresh-scheme li.special-letter-nah {
+            background-color: #fff3bc;
+        }
+
+        ul.shoresh-scheme li.special-letter-kaful {
+            background-color: #aac1ff;
+        }
+
+span.hebrew-accent {
+    font-weight: 500;
+    font-size: larger;
+    font-family: 'Narkisim', 'Arial Narrow', Arial, sans-serif;
+}
+
+span.hebrew-nice {
+    font-weight: 500;
+    font-size: larger;
+    font-family: 'Narkisim', 'Arial Narrow', Arial, sans-serif;
+}
+
+span.hebrew-h4 {
+    font-weight: 600;
+    font-size: large;
+    font-family: 'Narkisim', 'Arial Narrow', Arial, sans-serif;
+}

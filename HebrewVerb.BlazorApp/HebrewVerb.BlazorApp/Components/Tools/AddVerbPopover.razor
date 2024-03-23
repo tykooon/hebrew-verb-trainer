@@ -1,0 +1,59 @@
+﻿﻿@using HebrewVerb.Application.Feature.Verbs.Commands
+@using HebrewVerb.Application.Feature.Verbs.Queries
+@inject ISnackbar snackbar
+@inject IMediator mediator
+
+@rendermode InteractiveAuto
+
+<MudPopover Open="IsOpen" Fixed="true" Style="width:400px" Class="pa-4"
+            AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+    <div class="d-flex flex-column">
+        <MudGrid Justify="Justify.FlexEnd">
+            <MudIconButton Icon="@Icons.Material.Filled.Close" Variant="Variant.Text" Color="Color.Dark" Size="Size.Medium" OnClick="Close" />
+        </MudGrid>
+        <MudText>Add verb from pealim.com</MudText>
+        <MudInput @bind-Value="@_addVerbUrl" Placeholder="input URL here"></MudInput>
+        <MudSwitch @bind-Value="_takePassive" Color="Color.Primary" Label="Passive Form" />
+        <MudButton OnClick="@LoadNewVerb" Variant="Variant.Filled" Class="ml-auto mr-2 my-2" Color="Color.Primary">Load</MudButton>
+    </div>
+</MudPopover>
+
+
+@code {
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    private async Task Close()
+    {
+        IsOpen = false;
+        await IsOpenChanged.InvokeAsync(IsOpen);
+    }
+
+    private string _addVerbUrl = "";
+    private bool _takePassive = false;
+
+    public async Task LoadNewVerb()
+    {
+        var query = new GetVerbFromUriQuery(_addVerbUrl, _takePassive);
+        var res = await mediator.Send(query);
+
+        if (res == null)
+        {
+            snackbar.Add("No verb found", Severity.Error);
+            return;
+        }
+
+        var command = new AddNewVerbCommand(res);
+        var addRes = await mediator.Send(command);
+
+        if (!addRes.IsSuccess)
+        {
+            snackbar.Add("Error with adding verb to database", Severity.Error);
+            return;
+        }
+        snackbar.Add("Successfully added", Severity.Success);
+    }
+}

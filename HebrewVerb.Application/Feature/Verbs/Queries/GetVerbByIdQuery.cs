@@ -9,30 +9,23 @@ using MediatR;
 
 namespace HebrewVerb.Application.Feature.Verbs.Queries;
 
-public record GetVerbByIdQuery(int VerbId) : IRequest<Result<VerbDto>>
+public record GetVerbByIdQuery(int VerbId, Language Lang = Language.Russian) : IRequest<Result<VerbDto>>
 {
 }
 
 public class GetVerbByIdQueryHandler(IUnitOfWork unitOfWork) : BaseRequestHandler(unitOfWork),
     IRequestHandler<GetVerbByIdQuery, Result<VerbDto>>
 {
-    public Task<Result<VerbDto>> Handle(GetVerbByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<VerbDto>> Handle(GetVerbByIdQuery request, CancellationToken cancellationToken)
     {
-        var verb = _unitOfWork.VerbRepository.GetById(request.VerbId);
+        var verb = await _unitOfWork.VerbRepository.GetVerbFullDataByIdAsync(request.VerbId);
 
         if (verb == null)
         {
-            return Task.FromResult(Result<VerbDto>.NotFound($"Verb with id {request.VerbId} not found"));
+            return Result<VerbDto>.NotFound($"Verb with id {request.VerbId} not found");
         }
 
-        var shoresh = _unitOfWork.ShoreshRepository.GetById(verb.ShoreshId);
-        var present = _unitOfWork.VerbRepository.GetTenseByVerbId(verb.Id, Zman.Present) as Present;
-        var past = _unitOfWork.VerbRepository.GetTenseByVerbId(verb.Id, Zman.Past) as Past;
-        var future = _unitOfWork.VerbRepository.GetTenseByVerbId(verb.Id, Zman.Future) as Future;
-        var imperative = _unitOfWork.VerbRepository.GetTenseByVerbId(verb.Id, Zman.Imperative) as Imperative;
-
-        // TODO Multi Language case
-        var dto = verb.ToDto(Language.Russian, shoresh, past, present, future, imperative);
-        return Task.FromResult(Result.Success(dto));
+        var dto = verb.ToDto(Language.Russian);
+        return Result.Success(dto);
     }
 }

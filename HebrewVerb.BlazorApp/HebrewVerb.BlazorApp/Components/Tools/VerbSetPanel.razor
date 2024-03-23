@@ -17,9 +17,9 @@
             </ChildContent>
             <TooltipContent>
                 <div style="max-width:150px">
-                    @value.Translate @if (value.IsPassive())
+                    @value.AllTranslations() @if (value.IsPassive())
                     {
-                        <p>(@value.Binyan.ToBinyanName())</p>
+                        <p>(@value.Binyan.ToString(Language.Russian))</p>
                     }
                 </div>
             </TooltipContent>
